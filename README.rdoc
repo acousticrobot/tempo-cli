@@ -1,0 +1,10 @@
+= tempo
+
+A command Line interface for time tracking.  Record projects to track time to, and report time based time periods and also by project.
+
+= running in development
+
+You need to use `bundle exec bin/tempo` to run in development
+
+:include:tempo.rdoc
+
