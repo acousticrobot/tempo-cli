@@ -23,13 +23,13 @@ default_value 'the default'
 arg_name 'The name of the argument'
 flag [:f,:flagname]
 
-desc 'Describe project here'
-arg_name 'Describe arguments to project here'
+desc 'Manage the Projects that timed tasks are assigned to'
+arg_name 'Right now project has no arguments'
 command :project do |c|
-  c.desc 'Describe a switch to project'
+  c.desc 'Right now there are no switches in project'
   c.switch :s
 
-  c.desc 'Describe a flag to project'
+  c.desc 'Right now there are no flags in project'
   c.default_value 'default'
   c.flag :f
   c.action do |global_options,options,args|

@@ -24,5 +24,7 @@ lib/tempo.rb
   s.add_development_dependency('rake')
   s.add_development_dependency('rdoc')
   s.add_development_dependency('aruba')
+  s.add_development_dependency('rspec', '~> 2.13.0')
+  s.add_development_dependency('pry','~> 0.9.12.2')
   s.add_runtime_dependency('gli','2.6.1')
 end
