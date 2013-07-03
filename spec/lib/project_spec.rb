@@ -1,6 +1,5 @@
 require "spec_helper"
-require 'tempo.rb'
-require 'pry'
+require "tempo.rb"
 
 describe "Projects" do
   p = Tempo::Project.new
