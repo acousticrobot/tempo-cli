@@ -1,4 +1,4 @@
-def file_contents_as_array( file )
+def eval_file_as_array( file )
   contents = []
   File.open(file, "r") do |f|
     f.readlines.each do |line|

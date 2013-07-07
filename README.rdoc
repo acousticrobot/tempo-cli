@@ -8,3 +8,8 @@ You need to use `bundle exec bin/tempo` to run in development
 
 :include:tempo.rdoc
 
+= other command line time tracking apps:
+
+https://github.com/samg/timetrap
+
+https://github.com/christiangenco/t_time_tracker

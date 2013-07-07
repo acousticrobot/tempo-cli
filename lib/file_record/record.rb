@@ -1,16 +1,34 @@
 module FileRecord
   class Record
 
-    def self.create( file, record, opts={} )
-      puts "FILE: #{file} and RECORD: #{record}"
-      opts[:format] ||= 'string'
+    # record text as a string, and all objects as yaml
+    # don't write over an existing document unless :force = true
+    # @params file file path to record to
+    # @params record string or object to record
+    # options
+    #  - force: true, overwrite file
+    #  - format: 'yaml', 'string'
+    def self.create( file, record, options={} )
+
+      if record.is_a?(String)
+        format = options.fetch(:format, 'string')
+      else
+        format = options.fetch(:format, 'yaml')
+      end
+
+      if File.exists?(file)
+        raise ArgumentError.new "file already exists" unless options[:force]
+      end
+
       File.open( file,'w' ) do |f|
-        if opts[:format] = 'string'
+
+        case format
+        when 'yaml'
+          f.puts YAML::dump( record )
+        when 'string'
           f.puts record
         else
-          # record.each do |r|
-          # file.puts r.to_s
-          #end
+          f.puts record
         end
       end
     end
