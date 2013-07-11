@@ -10,9 +10,7 @@ describe "File Record" do
   end
 
   after(:all) do
-    if File.exists?(@dir)
-      FileUtils.rm_r @dir
-    end
+      FileUtils.rm_r @dir if File.exists?(@dir)
   end
 
   describe "create" do
@@ -95,5 +93,7 @@ describe "File Record" do
         expect contents.should eql(["---", ":a: 1", ":b: true", ":c: {}", ":d: object", ":with:", "- an", "- array"])
       end
     end
+
+
   end
 end

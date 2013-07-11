@@ -8,5 +8,9 @@ module Tempo
       @tags = tags
       @sub_projects = sub_projects
     end
+
+    def to_s
+      puts "#{id}, #{title}, #{tags}, #{sub_projects}"
+    end
   end
 end
