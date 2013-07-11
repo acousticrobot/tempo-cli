@@ -1,12 +1,12 @@
 module Tempo
   class Project
-    attr_accessor :id, :title, :tags, :sub_projects
+    attr_reader :id
+    attr_accessor :title, :tags
 
     def initialize(id = -1, title = "new project", tags = [], sub_projects = [])
       @id = id
       @title = title
       @tags = tags
-      @sub_projects = sub_projects
     end
 
     def to_s

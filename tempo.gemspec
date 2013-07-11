@@ -11,9 +11,9 @@ spec = Gem::Specification.new do |s|
 # Add your other files here if you make them
 # Add lib files to lib.tempo.rb
   s.files = %w(
-bin/tempo
-lib/tempo/version.rb
-lib/tempo.rb
+    bin/tempo
+    lib/tempo/version.rb
+    lib/tempo.rb
   )
   s.require_paths << 'lib'
   s.has_rdoc = true
@@ -24,7 +24,7 @@ lib/tempo.rb
   s.add_development_dependency('rake')
   s.add_development_dependency('rdoc')
   s.add_development_dependency('aruba')
-  s.add_development_dependency('rspec', '~> 2.13.0')
+  s.add_development_dependency('turn', '~> 0.9.6')
   s.add_development_dependency('pry','~> 0.9.12.2')
   s.add_runtime_dependency('gli','2.6.1')
 end

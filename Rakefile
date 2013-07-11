@@ -4,7 +4,6 @@ require 'rubygems/package_task'
 require 'rdoc/task'
 require 'cucumber'
 require 'cucumber/rake/task'
-require "spec_helper"
 
 Rake::RDocTask.new do |rd|
   rd.main = "README.rdoc"
@@ -37,10 +36,26 @@ end
 task :cucumber => :features
 task 'cucumber:wip' => 'features:wip'
 task :wip => 'features:wip'
+
+desc :pre_test
+task :pre_test do |t|
+  @dir = File.join(Dir.home, ".tempo_test_directory")
+  Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+end
+
+desc :post_test
+task :post_test do |t|
+  @dir = File.join(Dir.home, ".tempo_test_directory")
+  FileUtils.rm_r @dir if File.exists?(@dir)
+end
+
 require 'rake/testtask'
 Rake::TestTask.new do |t|
+  t.name = "run_tests"
   t.libs << "test"
-  t.test_files = FileList['test/*_test.rb']
+  t.test_files = FileList['test/**/*_test.rb']
 end
+
+task :test => [:pre_test, :run_tests, :post_test]
 
 task :default => [:test,:features]
