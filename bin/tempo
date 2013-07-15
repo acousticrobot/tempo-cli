@@ -37,6 +37,9 @@ command :project do |c|
   c.desc 'Add a new Project'
   c.switch [:a, :add]
 
+  c.desc 'Delete a Project'
+  c.switch [:d, :delete]
+
   c.desc 'Change to another Project'
   c.switch [:c,:change]
 
@@ -56,6 +59,14 @@ command :project do |c|
       puts "args: #{args}"
     end
 
+    if options[:delete]
+      # make sure other flags are ignored if included
+      options[:change] = false
+      options[:add] = false
+
+      projects.delete(project) if projects.include?(project)
+    end
+
     if options[:add]
       if projects.include? project
         raise "project #{project} already exists"
@@ -68,7 +79,7 @@ command :project do |c|
       if projects.include? project
         current_project = project
       else
-        raise "no current project #{project} exists"
+        raise "no project '#{project}' exists"
       end
     end
 
@@ -82,9 +93,11 @@ command :project do |c|
       end
     else
       if options[:change]
-        puts "switched to #{current_project}"
+        puts "active project changed to '#{current_project}'"
       elsif options[:add]
-        puts "added '#{project}'"
+        puts "added project '#{project}'"
+      elsif options[:delete]
+        puts "deleted project '#{project}'"
       else
         puts current_project
       end

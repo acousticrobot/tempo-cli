@@ -6,8 +6,7 @@ describe Tempo do
     p = Tempo::Project.new
 
     it "should have readable only id" do
-      has_attr_reader?(p, :id).must_equal true
-      has_attr_writer?(p, :id).must_equal false
+      has_attr_read_only?(p, :id).must_equal true
     end
 
     it "should have accessible title" do

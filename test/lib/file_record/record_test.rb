@@ -4,14 +4,14 @@ describe FileRecord do
 
   before do
     # See Rakefile for directory prep and cleanup
-    @dir = File.join(Dir.home, ".tempo_test_directory")
+    @dir = File.join(Dir.home,".tempo_tests", "tempo_unit_tests")
     Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
   end
 
   describe "Record" do
 
       before do
-        @file = File.join( @dir, "create-test.txt")
+        @file = File.join( @dir, "filerecord_create.txt")
       end
 
       after do

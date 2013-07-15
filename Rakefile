@@ -15,7 +15,7 @@ spec = eval(File.read('tempo.gemspec'))
 
 Gem::PackageTask.new(spec) do |pkg|
 end
-CUKE_RESULTS = 'results.html'
+CUKE_RESULTS = 'features/results.html'
 CLEAN << CUKE_RESULTS
 desc 'Run features'
 Cucumber::Rake::Task.new(:features) do |t|
@@ -37,16 +37,16 @@ task :cucumber => :features
 task 'cucumber:wip' => 'features:wip'
 task :wip => 'features:wip'
 
-desc :pre_test
-task :pre_test do |t|
-  @dir = File.join(Dir.home, ".tempo_test_directory")
-  Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+desc :tests_setup
+task :tests_setup do |t|
+  dir = File.join(Dir.home,".tempo_tests")
+  Dir.mkdir(dir, 0700) unless File.exists?(dir)
 end
 
-desc :post_test
-task :post_test do |t|
-  @dir = File.join(Dir.home, ".tempo_test_directory")
-  FileUtils.rm_r @dir if File.exists?(@dir)
+desc :tests_teardown
+task :tests_teardown do |t|
+  @dir = File.join(Dir.home,".tempo_tests")
+  FileUtils.rm_r dir if File.exists?(dir)
 end
 
 require 'rake/testtask'
@@ -56,6 +56,6 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
-task :test => [:pre_test, :run_tests, :post_test]
+task :test => [:tests_setup, :run_tests, :tests_teardown]
 
-task :default => [:test,:features]
+task :default => [:tests_setup, :run_tests, :features, :tests_teardown]

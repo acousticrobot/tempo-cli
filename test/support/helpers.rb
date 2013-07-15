@@ -1,8 +1,3 @@
-def helpers_echo
-  "helpers loaded"
-end
-
-
 def eval_file_as_array( file )
   contents = []
   File.open(file, "r") do |f|
@@ -24,4 +19,8 @@ end
 
 def has_attr_accessor?( obj, attribute)
   has_attr_reader?(obj, attribute) && has_attr_writer?(obj, attribute)
+end
+
+def has_attr_read_only?( obj, attribute)
+  has_attr_reader?(obj, attribute) && !has_attr_writer?(obj, attribute)
 end
