@@ -15,31 +15,80 @@ program_desc 'Command line time tracking by project'
 
 version Tempo::VERSION
 
-desc 'Describe some switch here'
-switch [:s,:switch]
+# GLOBAL OPTIONS
+
+desc 'verbose output'
+switch [:v,:verbose]
 
 desc 'Describe some flag here'
 default_value 'the default'
 arg_name 'The name of the argument'
 flag [:f,:flagname]
 
-desc 'Manage the Projects that timed tasks are assigned to'
-arg_name 'Right now project has no arguments'
-command :project do |c|
-  c.desc 'Right now there are no switches in project'
-  c.switch :s
+# COMMAND: PROJECT
 
-  c.desc 'Right now there are no flags in project'
-  c.default_value 'default'
-  c.flag :f
+desc 'Manage the Projects that timed tasks are assigned to'
+arg_name '"name of the project"'
+command :project do |c|
+
+  c.desc 'List Projects'
+  c.switch [:l, :ls, :list]
+
+  c.desc 'Add a new Project'
+  c.switch [:a, :add]
+
+  c.desc 'Change to another Project'
+  c.switch [:c,:change]
+
   c.action do |global_options,options,args|
 
-    # Your command logic here
+    #Load Projects
+    projects = ['a','b','c','d']
+    current_project = 'a'
 
-    # If you have any errors, just raise them
-    # raise "that command made no sense"
+    project = ""
+    args.each { |a| project += " #{a}" }
+    project.strip!
 
-    puts "project command ran"
+    if global_options[:v]
+      puts "global_options: #{global_options}"
+      puts "options: #{options}"
+      puts "args: #{args}"
+    end
+
+    if options[:add]
+      if projects.include? project
+        raise "project #{project} already exists"
+      else
+        projects << project
+      end
+    end
+
+    if options[:change]
+      if projects.include? project
+        current_project = project
+      else
+        raise "no current project #{project} exists"
+      end
+    end
+
+    if options[:list]
+      projects.each do |p|
+        if p == current_project
+          puts "* #{p}"
+        else
+          puts "  #{p}"
+        end
+      end
+    else
+      if options[:change]
+        puts "switched to #{current_project}"
+      elsif options[:add]
+        puts "added '#{project}'"
+      else
+        puts current_project
+      end
+    end
   end
 end
 
