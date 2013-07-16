@@ -15,6 +15,15 @@ program_desc 'Command line time tracking by project'
 
 version Tempo::VERSION
 
+# Initial setup
+
+#Load Projects
+projects = ['sheep hearding',
+            'horticulture - basement mushrooms',
+            'horticulture - backyard bonsai',
+            ]
+current_project = 'horticulture - basement mushrooms'
+
 # GLOBAL OPTIONS
 
 desc 'verbose output'
@@ -28,30 +37,30 @@ flag [:f,:flagname]
 # COMMAND: PROJECT
 
 desc 'Manage the Projects that timed tasks are assigned to'
-long_desc "By default, lists all the projects that a timed task can be assigned to.\n
-One project at any time will be the active project, and can't be deleted until
-the the active project is changed to another project.\n
-Projects can be added, and deleted. In the current version, projects cannot be nested."
+long_desc """
+Manage the Projects that timed tasks are assigned to.
+
+By default, lists all the projects that a timed task can be assigned to.
+The active project will be marked by an asterisk.
+
+If suplied with arguments and no command options, a new project will be added
+
+example:\ntempo project 'my new project'
+
+Arguments supplied to --list and --delete will use fuzzy matching.
+"""
+
 arg_name '"name of the project"'
 command [:project, :p] do |c|
 
   c.desc 'List Projects'
-  c.switch [:l, :ls, :list]
-
-  c.desc 'Add a new Project'
-  c.switch [:a, :add]
+  c.long_desc "Lists all projects that match the supplied argument"
+  c.switch [:l, :list]
 
   c.desc 'Delete a Project'
-  c.switch [:d, :delete]
-
-  c.desc 'Change to another Project'
-  c.switch [:c,:change]
+  c.flag [:d, :delete]
 
   c.action do |global_options,options,args|
-
-    #Load Projects
-    projects = ['a','b','c','d']
-    current_project = 'a'
 
     project = ""
     args.each { |a| project += " #{a}" }
@@ -64,13 +73,18 @@ command [:project, :p] do |c|
     end
 
     if options[:delete]
-      # make sure other flags are ignored if included
-      options[:change] = false
-      options[:add] = false
+
+      project = options[:delete] + project
+      puts "project targeted for deletion: #{project}" if global_options[:v]
 
       raise "cannot delete the active project" if project == current_project
 
-      projects.delete(project) if projects.include?(project)
+      if projects.include?(project)
+        projects.delete(project)
+      else
+        raise "no such project #{project}"
+      end
+
     end
 
     if options[:add]

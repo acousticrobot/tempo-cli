@@ -3,61 +3,53 @@ Feature: Project Command manages a list of projects
   New projects can be added and deleted
   Projects can also be tagged as inactive or inactive
 
-  Scenario: Listing the current projects
+  Scenario: Listing all projects alphabetically by default
     When I successfully run `tempo project`
-    Then the stdout should contain "a"
+    Then the stdout should contain "* horticulture - basement mushrooms\n  sheep hearding\n"
 
-  Scenario: Listing all Projects
+  Scenario: Listing all Projects with --list
+    When I successfully run `tempo project --list`
+    Then the stdout should contain "  sheep hearding"
+    And the stdout should contain "* horticulture - basement mushrooms"
+    And the stdout should contain "  horticulture - backyard bonsai"
+
+  Scenario: Listing all Projects with --l
     When I successfully run `tempo project -l`
-    Then the stdout should contain "* a"
-    And the stdout should contain "  b"
-    And the stdout should contain "  c"
+    Then the stdout should contain "  sheep hearding"
+    And the stdout should contain "* horticulture - basement mushrooms"
+    And the stdout should contain "  horticulture - backyard bonsai"
 
-  Scenario: Listing all Projects with extra arguments
-    When I successfully run `tempo project -l "new project"`
-    Then the stdout should contain "* a"
-    And the stdout should not contain "  new project"
+  Scenario: Listing all Projects by matching against arguments
+    When I successfully run `tempo project -l "horticulture"`
+    Then the stdout should not contain "sheep hearding"
+    And the stdout should contain "* horticulture - basement mushrooms"
+    And the stdout should contain "  horticulture - backyard bonsai"
 
   Scenario: Adding a project
-    When I successfully run `tempo project -a "new project"`
-    Then the stdout should contain "added project 'new project'"
+    When I successfully run `tempo project "hang gliding"`
+    Then the stdout should contain "added project 'hang gliding'"
 
   Scenario: Adding a project without quotation marks
-    When I successfully run `tempo project -a a new project name`
+    When I successfully run `tempo project hang gliding`
     Then the stdout should contain "added project 'a new project name'"
 
-  Scenario: Adding a project and Listing projects
-    When I successfully run `tempo project -al "new project"`
-    Then the stdout should contain "* a"
-    And the stdout should contain "  new project"
+  Scenario: Deleting a project by exact match
+    When I successfully run `tempo project -d "horticulture - backyard bonsai"`
+    Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
 
-  Scenario: Deleting a project
-    When I successfully run `tempo project -d "b"`
-    Then the stdout should contain "deleted project 'b'"
+  Scenario: Deleting a project by partial match
+    When I successfully run `tempo project -d "backyard bonsai"`
+    Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
 
-  Scenario: Deleting a project and Listing projects
-    When I successfully run `tempo project -dl "b"`
-    Then the stdout should contain "* a"
-    And the stdout should not contain "b"
+  Scenario: Deleting a project without quotation marks
+    When I successfully run `tempo project -d horticulture - backyard bonsai`
+    Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
 
-  Scenario: Deleting the current project
-    When I run `tempo project -d "a"`
+  Scenario: Attempting to delete a non-existant project Fails
+    When I run `tempo project -d "lanolin extraction"`
+    Then the stderr should contain "no such project 'sheep hearding - lanolin extraction'"
+
+  Scenario: Attempting to Delete the current project Fails
+    When I run `tempo project -d "horticulture - basement mushrooms"`
     Then the stdout should not contain "deleted project"
     And the stderr should contain "error: cannot delete the active project"
-
-  Scenario: Changing the current project
-    When I successfully run `tempo project -c "b"`
-    Then the stdout should contain "active project changed to 'b'"
-
-  Scenario: Changing the current project and Listing projects
-    When I successfully run `tempo project -cl "b"`
-    Then the stdout should contain "* b"
-    And the stdout should not contain "* a"
-
-  Scenario: Trying to change to a non-existant project
-    When I run `tempo project -c "new project"`
-    Then the stderr should contain "error: no project 'new project' exists"
-    And the stdout should not contain "changed"
-
-
-  Scenario: Adding and changing to a new project
