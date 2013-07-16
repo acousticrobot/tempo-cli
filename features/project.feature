@@ -40,6 +40,11 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "* a"
     And the stdout should not contain "b"
 
+  Scenario: Deleting the current project
+    When I run `tempo project -d "a"`
+    Then the stdout should not contain "deleted project"
+    And the stderr should contain "error: cannot delete the active project"
+
   Scenario: Changing the current project
     When I successfully run `tempo project -c "b"`
     Then the stdout should contain "active project changed to 'b'"

@@ -28,8 +28,12 @@ flag [:f,:flagname]
 # COMMAND: PROJECT
 
 desc 'Manage the Projects that timed tasks are assigned to'
+long_desc "By default, lists all the projects that a timed task can be assigned to.\n
+One project at any time will be the active project, and can't be deleted until
+the the active project is changed to another project.\n
+Projects can be added, and deleted. In the current version, projects cannot be nested."
 arg_name '"name of the project"'
-command :project do |c|
+command [:project, :p] do |c|
 
   c.desc 'List Projects'
   c.switch [:l, :ls, :list]
@@ -63,6 +67,8 @@ command :project do |c|
       # make sure other flags are ignored if included
       options[:change] = false
       options[:add] = false
+
+      raise "cannot delete the active project" if project == current_project
 
       projects.delete(project) if projects.include?(project)
     end
