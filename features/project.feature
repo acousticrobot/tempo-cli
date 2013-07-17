@@ -31,7 +31,7 @@ Feature: Project Command manages a list of projects
 
   Scenario: Adding a project without quotation marks
     When I successfully run `tempo project hang gliding`
-    Then the stdout should contain "added project 'a new project name'"
+    Then the stdout should contain "added project 'hang gliding'"
 
   Scenario: Deleting a project by exact match
     When I successfully run `tempo project -d "horticulture - backyard bonsai"`
@@ -46,8 +46,8 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
 
   Scenario: Attempting to delete a non-existant project Fails
-    When I run `tempo project -d "lanolin extraction"`
-    Then the stderr should contain "no such project 'sheep hearding - lanolin extraction'"
+    When I run `tempo project -d "sheep hearding - lanolin extraction"`
+    Then the stderr should contain "error: no such project 'sheep hearding - lanolin extraction'"
 
   Scenario: Attempting to Delete the current project Fails
     When I run `tempo project -d "horticulture - basement mushrooms"`

@@ -2,6 +2,7 @@
 require 'gli'
 begin # XXX: Remove this begin/rescue before distributing your app
 require 'tempo'
+
 rescue LoadError
   STDERR.puts "In development, you need to use `bundle exec bin/tempo` to run your app"
   STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
@@ -18,11 +19,12 @@ version Tempo::VERSION
 # Initial setup
 
 #Load Projects
-projects = ['sheep hearding',
+@projects = ['sheep hearding',
             'horticulture - basement mushrooms',
             'horticulture - backyard bonsai',
             ]
-current_project = 'horticulture - basement mushrooms'
+@projects.sort!
+@current_project = 'horticulture - basement mushrooms'
 
 # GLOBAL OPTIONS
 
@@ -37,18 +39,16 @@ flag [:f,:flagname]
 # COMMAND: PROJECT
 
 desc 'Manage the Projects that timed tasks are assigned to'
-long_desc """
-Manage the Projects that timed tasks are assigned to.
+long_desc "Manage the Projects that timed tasks are assigned to.
 
 By default, lists all the projects that a timed task can be assigned to.
-The active project will be marked by an asterisk.
+The active project will be marked by an asterisk. If suplied with arguments
+and no command options, a new project will be added
 
-If suplied with arguments and no command options, a new project will be added
+example:
+tempo project 'my new project'
 
-example:\ntempo project 'my new project'
-
-Arguments supplied to --list and --delete will use fuzzy matching.
-"""
+Arguments supplied to --list and --delete will use fuzzy matching."
 
 arg_name '"name of the project"'
 command [:project, :p] do |c|
@@ -65,6 +65,7 @@ command [:project, :p] do |c|
     project = ""
     args.each { |a| project += " #{a}" }
     project.strip!
+    project_regex = /#{project}/
 
     if global_options[:v]
       puts "global_options: #{global_options}"
@@ -72,54 +73,64 @@ command [:project, :p] do |c|
       puts "args: #{args}"
     end
 
-    if options[:delete]
-
-      project = options[:delete] + project
-      puts "project targeted for deletion: #{project}" if global_options[:v]
-
-      raise "cannot delete the active project" if project == current_project
-
-      if projects.include?(project)
-        projects.delete(project)
-      else
-        raise "no such project #{project}"
-      end
-
-    end
-
-    if options[:add]
-      if projects.include? project
-        raise "project #{project} already exists"
-      else
-        projects << project
-      end
-    end
-
-    if options[:change]
-      if projects.include? project
-        current_project = project
-      else
-        raise "no project '#{project}' exists"
-      end
-    end
-
-    if options[:list]
-      projects.each do |p|
-        if p == current_project
+    def list_projects( project_array )
+      project_array.each do |p|
+        if p == @current_project
           puts "* #{p}"
         else
           puts "  #{p}"
         end
       end
-    else
-      if options[:change]
-        puts "active project changed to '#{current_project}'"
-      elsif options[:add]
-        puts "added project '#{project}'"
-      elsif options[:delete]
-        puts "deleted project '#{project}'"
+    end
+
+    if options[:delete]
+
+      # first arg without quotes from GLI will be the value of delete
+      args.unshift options[:delete]
+      matches = Tempo::fuzzy_match @projects, args
+
+      if matches.length == 0
+        request = args.join(" ")
+        raise "no such project '#{request}'"
+      elsif matches.length > 1
+        puts "The following projects matched your search:"
+        matches.each do |m|
+          puts "  #{m}"
+        end
+        puts "Please refine your search"
       else
-        puts current_project
+        project = matches[0]
+
+        if project == @current_project
+          raise "cannot delete the active project"
+        end
+
+        if @projects.include?(project)
+          @projects.delete(project)
+          if !options[:list]
+            puts "deleted project '#{project}'"
+          else
+            list_projects @projects
+          end
+        end
+      end
+
+    # Add a project
+    elsif !options[:list] && !args.empty?
+      if @projects.include? project
+        raise "project #{project} already exists"
+      else
+        @projects << project
+        puts "added project '#{project}'"
+      end
+
+    # List projects
+    else
+      if args.empty?
+        list_projects @projects
+      else
+        matches = Tempo::fuzzy_match @projects, args
+        list_projects matches
       end
     end
   end
