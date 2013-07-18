@@ -38,8 +38,8 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "added project 'hang gliding'"
 
   Scenario: Attempting to add an exising project
-    When I run `tempo checkout --add "horticulture - basement mushrooms"`
-    Then the stdout should contain "error: project 'horticulture - basement mushrooms' already exists"
+    When I run `tempo project "horticulture - basement mushrooms"`
+    Then the stderr should contain "error: project 'horticulture - basement mushrooms' already exists"
 
   Scenario: Deleting a project by exact match
     When I successfully run `tempo project -d "horticulture - backyard bonsai"`
@@ -55,7 +55,7 @@ Feature: Project Command manages a list of projects
 
   Scenario: Deleting a project with list flag works even without quotes around a partial match
     When I successfully run `tempo project -d backyard bonsai -l`
-    Then the stout should contain "* horticulture - basement mushrooms"
+    Then the stdout should contain "* horticulture - basement mushrooms"
     And the stdout should contain "  sheep hearding"
     And the stdout should not contain "backyard bonsai"
 

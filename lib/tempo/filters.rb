@@ -25,11 +25,9 @@ module Tempo
   # a flag in the front. Pass flags in as an array,
   # if only one flag is used with the command.
 
-  def self.reassemble_free_args(args,flags=[])
+  def self.reassemble_free_args(args,flag=nil)
     assembled = ""
-    flags.each do |flag|
-      args.unshift flag if flag
-    end
+    args.unshift flag if flag
     args.each { |a| assembled += " #{a}" }
     assembled.strip!
   end

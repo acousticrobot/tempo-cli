@@ -55,20 +55,21 @@ command [:project, :p] do |c|
 
   c.desc 'List Projects'
   c.long_desc "Lists all projects that match the supplied argument"
-  c.flag [:list, :l,], default_value: 'all'
+  c.switch [:l, :list], negatable: false
 
-  c.desc 'Delete a Project'
+  c.desc 'Delete a Prbunoject'
+  c.default_value nil
   c.flag [:d, :delete]
 
   c.action do |global_options,options,args|
-
-    project = Tempo::reassemble_free_args(args,[options[:d], options[:l]])
 
     if global_options[:v]
       Tempo::Report::options_report global_options, options, args
     end
 
     if options[:delete]
+
+      project = Tempo::reassemble_free_args args, options[:delete]
 
       # first arg without quotes from GLI will be the value of delete
       matches = Tempo::fuzzy_match @projects, args
@@ -101,6 +102,9 @@ command [:project, :p] do |c|
 
     # Add a project
     elsif !options[:list] && !args.empty?
+
+      project = Tempo::reassemble_free_args args
+
       if @projects.include? project
         raise "project '#{project}' already exists"
       else
@@ -113,6 +117,7 @@ command [:project, :p] do |c|
       if args.empty?
         Tempo::Report::list_projects @projects, @current_project
       else
+        project = Tempo::reassemble_free_args args
         matches = Tempo::fuzzy_match @projects, args
         if matches.empty?
           puts "no projects match '#{project}'"
@@ -138,7 +143,7 @@ command [:c, :checkout] do |c|
       Tempo::Report::options_report global_options, options, args
     end
 
-    project = Tempo::reassemble_free_args(args,[options[:add]])
+    project = Tempo::reassemble_free_args args, options[:add]
 
     if options[:add]
 

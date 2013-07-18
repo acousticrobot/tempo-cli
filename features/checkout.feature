@@ -2,7 +2,7 @@ Feature: Checkout Command manages the active project
   A New project can be added and checked out
   An Exiting project can be checked out
 
-  Scenario: Checkout an exising project with checkout
+  Scenario: Checkout an existing project with checkout
     When I successfully run `tempo checkout "horticulture - backyard bonsai"`
     Then the stdout should contain "Switched to project 'horticulture - backyard bonsai'"
 
