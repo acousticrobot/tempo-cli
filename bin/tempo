@@ -55,8 +55,7 @@ command [:project, :p] do |c|
 
   c.desc 'List Projects'
   c.long_desc "Lists all projects that match the supplied argument"
-  c.default_value 'all'
-  c.flag [:l, :list]
+  c.flag [:list, :l,], default_value: 'all'
 
   c.desc 'Delete a Project'
   c.flag [:d, :delete]
