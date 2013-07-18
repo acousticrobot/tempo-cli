@@ -45,7 +45,7 @@ end
 
 desc :tests_teardown
 task :tests_teardown do |t|
-  @dir = File.join(Dir.home,".tempo_tests")
+  dir = File.join(Dir.home,".tempo_tests")
   FileUtils.rm_r dir if File.exists?(dir)
 end
 
