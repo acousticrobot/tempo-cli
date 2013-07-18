@@ -6,8 +6,8 @@ Feature: Checkout Command manages the active project
     When I successfully run `tempo checkout "horticulture - backyard bonsai"`
     Then the stdout should contain "Switched to project 'horticulture - backyard bonsai'"
 
-  Scenario: Checkout an exising project with co
-    When I successfully run `tempo checkout "horticulture - backyard bonsai"`
+  Scenario: Checkout an exising project with c
+    When I successfully run `tempo c "horticulture - backyard bonsai"`
     Then the stdout should contain "Switched to project 'horticulture - backyard bonsai'"
 
   Scenario: Checkout an existing project by partial match
@@ -27,8 +27,12 @@ Feature: Checkout Command manages the active project
   Scenario: Attempting to checkout a non-existant project
     When I run `tempo checkout "new project"`
     Then the stderr should contain "error: no project 'new project' exists"
-    And the stdout should not contain "changed"
+    And the stdout should not contain "Switched"
 
   Scenario: Adding and checking out a new project
     When I successfully run `tempo checkout --add "bathtup scuba diving"`
-    Then the stdout should contain "Switched to a new branch 'bathtub scuba diving'"
+    Then the stdout should contain "Switched to project 'bathtub scuba diving'"
+
+  Scenario: Attempting to add an exising project
+    When I run `tempo checkout --add "horticulture - basement mushrooms"`
+    Then the stdout should contain "error: project 'horticulture - basement mushrooms' already exists"

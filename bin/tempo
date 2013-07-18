@@ -43,7 +43,7 @@ long_desc "Manage the Projects that timed tasks are assigned to.
 
 By default, lists all the projects that a timed task can be assigned to.
 The active project will be marked by an asterisk. If suplied with arguments
-and no command options, a new project will be added
+and no command options, a new project will be added.
 
 example:
 tempo project 'my new project'
@@ -55,38 +55,23 @@ command [:project, :p] do |c|
 
   c.desc 'List Projects'
   c.long_desc "Lists all projects that match the supplied argument"
-  c.switch [:l, :list]
+  c.default_value 'all'
+  c.flag [:l, :list]
 
   c.desc 'Delete a Project'
   c.flag [:d, :delete]
 
   c.action do |global_options,options,args|
 
-    project = ""
-    args.each { |a| project += " #{a}" }
-    project.strip!
-    project_regex = /#{project}/
+    project = Tempo::reassemble_free_args(args,[options[:d], options[:l]])
 
     if global_options[:v]
-      puts "global_options: #{global_options}"
-      puts "options: #{options}"
-      puts "args: #{args}"
-    end
-
-    def list_projects( project_array )
-      project_array.each do |p|
-        if p == @current_project
-          puts "* #{p}"
-        else
-          puts "  #{p}"
-        end
-      end
+      Tempo::Report::options_report global_options, options, args
     end
 
     if options[:delete]
 
       # first arg without quotes from GLI will be the value of delete
-      args.unshift options[:delete]
       matches = Tempo::fuzzy_match @projects, args
 
       if matches.length == 0
@@ -110,7 +95,7 @@ command [:project, :p] do |c|
           if !options[:list]
             puts "deleted project '#{project}'"
           else
-            list_projects @projects
+            Tempo::Report::list_projects @projects, @current_project
           end
         end
       end
@@ -118,7 +103,7 @@ command [:project, :p] do |c|
     # Add a project
     elsif !options[:list] && !args.empty?
       if @projects.include? project
-        raise "project #{project} already exists"
+        raise "project '#{project}' already exists"
       else
         @projects << project
         puts "added project '#{project}'"
@@ -127,12 +112,47 @@ command [:project, :p] do |c|
     # List projects
     else
       if args.empty?
-        list_projects @projects
+        Tempo::Report::list_projects @projects, @current_project
       else
         matches = Tempo::fuzzy_match @projects, args
-        list_projects matches
+        if matches.empty?
+          puts "no projects match '#{project}'"
+        else
+          Tempo::Report::list_projects matches, @current_project
+        end
       end
     end
+  end
+end
+
+desc 'Checkout a project to track time against'
+arg_name '"name of the project"'
+
+command [:c, :checkout] do |c|
+
+  c.desc 'Add and checkout a new project'
+  c.flag [:a, :add]
+
+  c.action do |global_options,options,args|
+
+    if global_options[:v]
+      Tempo::Report::options_report global_options, options, args
+    end
+
+    project = Tempo::reassemble_free_args(args,[options[:add]])
+
+    if options[:add]
+
+      if @projects.include? project
+        raise "project #{project} already exists"
+      else
+        @projects << project
+        current_project = project
+        puts "added project '#{project}'"
+      end
+    end
+
+    puts "project: #{project}"
   end
 end
 
