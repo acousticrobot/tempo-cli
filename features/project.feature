@@ -25,6 +25,12 @@ Feature: Project Command manages a list of projects
     And the stdout should contain "* horticulture - basement mushrooms"
     And the stdout should contain "  horticulture - backyard bonsai"
 
+  Scenario: Listing Projects by matching against regex
+    When I successfully run `tempo project -l ^h i$`
+    Then the stdout should not contain "sheep hearding"
+    And the stdout should not contain "horticulture - basement mushrooms"
+    And the stdout should contain "horticulture - backyard bonsai"
+
   Scenario: Listing no Project when matching against arguments returns nothing
     When I successfully run `tempo project -l "beekeeping"`
     Then the stdout should contain "no projects match 'beekeeping'"
@@ -37,11 +43,11 @@ Feature: Project Command manages a list of projects
     When I successfully run `tempo project hang gliding`
     Then the stdout should contain "added project 'hang gliding'"
 
-  Scenario: Attempting to add an exising project
+  Scenario: Attempting to add an existing project
     When I run `tempo project "horticulture - basement mushrooms"`
     Then the stderr should contain "error: project 'horticulture - basement mushrooms' already exists"
 
-  Scenario: Deleting a project by exact match
+  Scenario: Deleting a project by full match
     When I successfully run `tempo project -d "horticulture - backyard bonsai"`
     Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
 

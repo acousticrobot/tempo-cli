@@ -1,7 +1,7 @@
 module Tempo
-  module Report
+  module Views
 
-    def self.list_projects( project_array, current_project )
+    def self.projects_list( project_array, current_project=nil )
       project_array.each do |p|
         if p == current_project
           puts "* #{p}"
