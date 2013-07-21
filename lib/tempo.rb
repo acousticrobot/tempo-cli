@@ -3,5 +3,6 @@
 require 'tempo/version.rb'
 require 'tempo/filters.rb'
 require 'tempo/views.rb'
+require 'tempo/model.rb'
 require 'tempo/project.rb'
 require 'file_record/record.rb'
