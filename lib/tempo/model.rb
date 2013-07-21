@@ -1,4 +1,8 @@
 module Tempo
+
+  class IdentityConflictError < Exception
+  end
+
   class Model
     attr_accessor :id
 
@@ -24,10 +28,11 @@ module Tempo
       if !id_candidate
         @id = self.class.next_id
       elsif self.class.ids.include? id_candidate
-        raise ArgumentError "Id #{id_candidate} already exists"
+        raise IdentityConflictError, "Id #{id_candidate} already exists"
       else
         @id = id_candidate
       end
+      self.class.add_id @id
     end
 
     # record the state of all instance variables as a hash
@@ -44,9 +49,10 @@ module Tempo
 
     protected
 
-    def self.add_id( id=1 )
+    def self.add_id( id )
       @ids ||=[]
       @ids << id
+      @ids.sort!
     end
 
     def self.increase_id_counter
@@ -58,9 +64,6 @@ module Tempo
       while ids.include? id_counter
         increase_id_counter
       end
-
-      ids << id_counter
-      ids.sort!
       id_counter
     end
   end
