@@ -11,7 +11,7 @@ module Tempo
       # Maintain an array of unique ids for the class.
       # Initialize new members with the next numberical id
       # Ids can be assigned on init (for the purpose of reading
-      # in records of previous instances) but an error will
+      # in records of previous instances). An error will
       # be raised if there is already an instance with that
       # id.
       def id_counter
@@ -20,6 +20,10 @@ module Tempo
 
       def ids
         @ids ||= []
+      end
+
+      def index
+        @index ||= []
       end
     end
 
@@ -33,6 +37,7 @@ module Tempo
         @id = id_candidate
       end
       self.class.add_id @id
+      self.class.add_to_index self
     end
 
     # record the state of all instance variables as a hash
@@ -48,6 +53,11 @@ module Tempo
     end
 
     protected
+
+    def self.add_to_index( member)
+      @index ||= []
+      @index << member
+    end
 
     def self.add_id( id )
       @ids ||=[]

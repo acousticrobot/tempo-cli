@@ -30,9 +30,18 @@ describe Tempo do
       Tempo::Animal.superclass.must_equal Tempo::Model
     end
 
-    it "should allow child objects to freeze-dry" do
+    it "should grant child objects the freeze-dry method" do
       frozen = gray_tree_frog.freeze_dry
       frozen.must_equal( {:id=>1, :genious=>"hyla", :species=>"h. versicolor"} )
+    end
+
+    it "should grant child objects a self indexing method" do
+      Tempo::Animal.index.length.must_equal 5
+      Tempo::Animal.index.each do |animal|
+        animal.id.must_be_kind_of(Integer)
+        animal.genious.must_match "hyla"
+        animal.species.must_match /^h\. \w./
+      end
     end
 
     it "should give id as a readable attribute" do
