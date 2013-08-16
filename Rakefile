@@ -39,13 +39,19 @@ task :wip => 'features:wip'
 
 desc :tests_setup
 task :tests_setup do |t|
-  dir = File.join(Dir.home,".tempo_tests")
+  @ORIGINAL_HOME = ENV['HOME']
+  ENV['HOME'] = ENV['HOME'] + "/testing"
+  Dir.mkdir(ENV['HOME'], 0700) unless File.exists?(ENV['HOME'])
+  dir = File.join(Dir.home,".tempo")
   Dir.mkdir(dir, 0700) unless File.exists?(dir)
 end
 
 desc :tests_teardown
 task :tests_teardown do |t|
-  dir = File.join(Dir.home,".tempo_tests")
+  dir = File.join(Dir.home,".tempo")
+  FileUtils.rm_r dir if File.exists?(dir)
+  ENV['HOME'] = @ORIGINAL_HOME
+  dir = File.join(Dir.home,"testing")
   FileUtils.rm_r dir if File.exists?(dir)
 end
 

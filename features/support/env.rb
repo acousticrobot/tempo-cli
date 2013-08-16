@@ -12,7 +12,7 @@ Before do
   # switch home environment for testing, revert afterwards
   # see Rakefile
   @real_home = ENV['HOME']
-  testing_env = File.join(ENV['HOME'],'.tempo_tests', 'features')
+  testing_env = File.join(ENV['HOME'],'.tempo', 'features')
   FileUtils.rm_rf testing_env, :secure => true
   Dir.mkdir(testing_env, 0700)
   ENV['HOME'] = testing_env

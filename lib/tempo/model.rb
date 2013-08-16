@@ -25,6 +25,20 @@ module Tempo
       def index
         @index ||= []
       end
+
+      # example: Tempo::Animal -> tempo_animals.yaml
+      def file
+        @file = "tempo_#{self.name[7..-1].downcase}s.yaml"
+      end
+
+      def save_all_to_file
+        file = File.join(Dir.home,'.tempo', self.file)
+        File.open( file,'a' ) do |f|
+          self.index.each do |i|
+            f.puts YAML::dump( i )
+          end
+        end
+      end
     end
 
     def initialize( params={} )

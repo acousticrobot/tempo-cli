@@ -44,6 +44,16 @@ describe Tempo do
       end
     end
 
+    it "should create a file name to save to" do
+      Tempo::Animal.file.must_equal "tempo_animals.yaml"
+    end
+
+    it "should grant children the ability to write to file" do
+      test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+      Tempo::Animal.save_all_to_file
+      contents = eval_file_as_array( test_file )
+    end
+
     it "should give id as a readable attribute" do
       gray_tree_frog.id.must_equal 1
       copes_gray_tree_frog.id.must_equal 2

@@ -4,7 +4,7 @@ describe FileRecord do
 
   before do
     # See Rakefile for directory prep and cleanup
-    @dir = File.join(Dir.home,".tempo_tests", "tempo_unit_tests")
+    @dir = File.join(Dir.home,".tempo", "tempo_unit_tests")
     Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
   end
 
@@ -77,7 +77,7 @@ describe FileRecord do
 
     describe "recording a hash" do
 
-      it "should defualt to and record a hash as yaml" do
+      it "should default to and record a hash as yaml" do
         hash = {a: 1, b: true, c: Hash.new, d: "object", with: ['an', 'array']}
         FileRecord::Record.create( @file, hash )
         contents = eval_file_as_array( @file )
