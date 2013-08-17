@@ -35,7 +35,7 @@ module Tempo
         file = File.join(Dir.home,'.tempo', self.file)
         File.open( file,'a' ) do |f|
           self.index.each do |i|
-            f.puts YAML::dump( i )
+            f.puts YAML::dump( i.freeze_dry )
           end
         end
       end

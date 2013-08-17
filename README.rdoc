@@ -6,6 +6,14 @@ A command Line interface for time tracking.  Record projects to track time to, a
 
 You need to use `bundle exec bin/tempo` to run in development
 
+= testing
+
+rakes default behavior is to run unit tests and cucumber features
+
+run `bundle exec rake test` to run unit tests only
+
+if tests fail, cleanup the testing directories with `bundle exec rake clean`
+
 :include:tempo.rdoc
 
 = other command line time tracking apps:

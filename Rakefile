@@ -48,10 +48,9 @@ end
 
 desc :tests_teardown
 task :tests_teardown do |t|
-  dir = File.join(Dir.home,".tempo")
-  FileUtils.rm_r dir if File.exists?(dir)
   ENV['HOME'] = @ORIGINAL_HOME
   dir = File.join(Dir.home,"testing")
+  puts "removing #{dir}"
   FileUtils.rm_r dir if File.exists?(dir)
 end
 
@@ -63,5 +62,7 @@ Rake::TestTask.new do |t|
 end
 
 task :test => [:tests_setup, :run_tests, :tests_teardown]
+
+task :clean => [:tests_setup, :tests_teardown]
 
 task :default => [:tests_setup, :run_tests, :features, :tests_teardown]

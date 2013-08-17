@@ -52,11 +52,15 @@ describe Tempo do
       test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
       Tempo::Animal.save_all_to_file
       contents = eval_file_as_array( test_file )
+      contents.must_equal ["---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
+                           "---", ":id: 2", ":genious: hyla", ":species: h. chrysoscelis",
+                           "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
+                           "---", ":id: 3", ":genious: hyla", ":species: h. avivoca",
+                           "---", ":id: 5", ":genious: hyla", ":species: h. chinensis"]
     end
 
     it "should give id as a readable attribute" do
       gray_tree_frog.id.must_equal 1
-      copes_gray_tree_frog.id.must_equal 2
     end
 
     it "should manage uniqe ids" do
