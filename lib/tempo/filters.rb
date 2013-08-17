@@ -18,12 +18,11 @@ module Tempo
     haystack
   end
 
-  # When args are sent in without quotes, they
-  # are broken into an array, and the first block
-  # will be passed to a flag if present. Here we
-  # reassemble the string, and add value stored in
-  # a flag in the front. Pass flags in as an array,
-  # if only one flag is used with the command.
+  # Gli default behavior: When args are sent in a
+  # command without quotes, they are broken into an array,
+  # and the first block is passed to a flag if present.
+  # Here we reassemble the string, and add value stored in
+  # a flag in the front.
 
   def self.reassemble_the( args, flag=nil )
     assembled = ""
