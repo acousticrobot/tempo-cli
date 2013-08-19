@@ -10,6 +10,11 @@ module Tempo
       @genious = params[:genious]
       @species = params.fetch(:species, @genious)
     end
+
+    def self.clear_all()
+      @ids = []
+      @index = []
+    end
   end
 end
 
@@ -48,7 +53,7 @@ describe Tempo do
       Tempo::Animal.file.must_equal "tempo_animals.yaml"
     end
 
-    it "should grant children the ability to write to file" do
+    it "should grant children the ability to write to a file" do
       test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
       Tempo::Animal.save_all_to_file
       contents = eval_file_as_array( test_file )
@@ -56,7 +61,30 @@ describe Tempo do
                            "---", ":id: 2", ":genious: hyla", ":species: h. chrysoscelis",
                            "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
                            "---", ":id: 3", ":genious: hyla", ":species: h. avivoca",
-                           "---", ":id: 5", ":genious: hyla", ":species: h. chinensis"]
+                           "---", ":id: 5", ":genious: hyla", ":species: h. chinensis" ]
+     end
+
+    it "should grant children the ability to read from a file" do
+      test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+      File.delete(test_file) if File.exists?( test_file )
+      file_lines = [ "---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
+                     "---", ":id: 2", ":genious: hyla", ":species: h. chrysoscelis",
+                     "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
+                     "---", ":id: 3", ":genious: hyla", ":species: h. avivoca",
+                     "---", ":id: 5", ":genious: hyla", ":species: h. chinensis" ]
+      File.open( test_file,'a' ) do |f|
+        file_lines.each do |l|
+          f.puts l
+        end
+      end
+      Tempo::Animal.clear_all
+      Tempo::Animal.read_from_file
+      Tempo::Animal.ids.must_equal [1,2,3,4,5]
+      Tempo::Animal.index.each do |animal|
+        animal.id.must_be_kind_of(Integer)
+        animal.genious.must_match "hyla"
+        animal.species.must_match /^h\. \w./
+      end
     end
 
     it "should give id as a readable attribute" do

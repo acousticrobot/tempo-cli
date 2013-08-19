@@ -33,10 +33,19 @@ module Tempo
 
       def save_all_to_file
         file = File.join(Dir.home,'.tempo', self.file)
+        File.delete( file ) if File.exists?( file )
         File.open( file,'a' ) do |f|
           self.index.each do |i|
             f.puts YAML::dump( i.freeze_dry )
           end
+        end
+      end
+
+      def read_from_file
+        file = File.join(Dir.home,'.tempo', self.file)
+        instances = YAML::load_stream( File.open( file ) )
+        instances.each do |i|
+          new( i )
         end
       end
     end
