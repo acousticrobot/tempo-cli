@@ -19,14 +19,15 @@ describe Tempo do
 
     describe "reassemble to args" do
 
-      test_args = ["an", "array", "of", "args"]
-      test_flag = "I'm"
-
       it "should reassemble the args passed in as an array" do
+        test_args = ["an", "array", "of", "args"]
+        test_flag = "I'm"
         Tempo::reassemble_the( test_args ).must_equal "an array of args"
       end
 
       it "should reassemble the args with a flag in the front" do
+        test_args = ["an", "array", "of", "args"]
+        test_flag = "I'm"
         Tempo::reassemble_the( test_args, test_flag ).must_equal "I'm an array of args"
       end
     end

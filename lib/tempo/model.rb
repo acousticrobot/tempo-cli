@@ -4,7 +4,7 @@ module Tempo
   end
 
   class Model
-    attr_accessor :id
+    attr_reader :id
 
     class << self
 

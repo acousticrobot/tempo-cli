@@ -64,7 +64,7 @@ describe Tempo do
                            "---", ":id: 5", ":genious: hyla", ":species: h. chinensis" ]
      end
 
-    it "should grant children the ability to read from a file" do
+    it "should grant children ability to read from a file" do
       test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
       File.delete(test_file) if File.exists?( test_file )
       file_lines = [ "---", ":id: 1", ":genious: hyla", ":species: h. versicolor",

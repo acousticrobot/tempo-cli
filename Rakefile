@@ -50,8 +50,7 @@ desc :tests_teardown
 task :tests_teardown do |t|
   ENV['HOME'] = @ORIGINAL_HOME
   dir = File.join(Dir.home,"testing")
-  puts "removing #{dir}"
-  FileUtils.rm_r dir if File.exists?(dir)
+  #FileUtils.rm_r dir if File.exists?(dir)
 end
 
 require 'rake/testtask'

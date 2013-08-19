@@ -24,3 +24,17 @@ end
 def has_attr_read_only?( obj, attribute)
   has_attr_reader?(obj, attribute) && !has_attr_writer?(obj, attribute)
 end
+
+def inherits_attr_reader?(obj, attribute)
+  obj.class.instance_methods(true).include?(attribute)
+end
+
+def inherits_attr_writer?(obj, attribute)
+  attribute_writer = ( attribute.to_s + "=" ).to_sym
+  is_writable = obj.class.instance_methods(false).include?(attribute_writer)
+end
+
+def inherits_attr_read_only?( obj, attribute)
+  inherits_attr_reader?(obj, attribute) && !inherits_attr_writer?(obj, attribute)
+end
+

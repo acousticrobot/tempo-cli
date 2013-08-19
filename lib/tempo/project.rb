@@ -1,16 +1,15 @@
 module Tempo
-  class Project
-    attr_reader :id
+  class Project < Tempo::Model
     attr_accessor :title, :tags
 
-    def initialize(id = -1, title = "new project", tags = [], sub_projects = [])
-      @id = id
-      @title = title
-      @tags = tags
+    def initialize(params={})
+      super params
+      @title = params.fetch(:title, "new project")
+      @tags = params.fetch(:tags, [])
     end
 
     def to_s
-      puts "#{id}, #{title}, #{tags}, #{sub_projects}"
+      puts "#{id}, #{title}, #{tags}"
     end
   end
 end
