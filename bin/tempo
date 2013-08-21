@@ -23,6 +23,7 @@ version Tempo::VERSION
             'horticulture - basement mushrooms',
             'horticulture - backyard bonsai',
             ]
+
 @projects.sort!
 @current_project = 'horticulture - basement mushrooms'
 
