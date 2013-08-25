@@ -84,5 +84,14 @@ describe FileRecord do
         contents.must_equal ["---", ":a: 1", ":b: true", ":c: {}", ":d: object", ":with:", "- an", "- array"]
       end
     end
+
+    describe "recording a Tempo Model" do
+
+      it "should create a record of all instances of a tempo model object" do
+        pantherinae_factory
+        Tempo::Animal.index.length.must_equal 5
+      end
+    end
+
   end
 end

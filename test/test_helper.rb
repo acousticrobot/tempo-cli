@@ -25,3 +25,4 @@ $LOAD_PATH << File.dirname(__FILE__)
 
 require "./lib/tempo.rb"
 require "support/helpers"
+require "support/factories"
