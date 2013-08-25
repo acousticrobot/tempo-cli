@@ -28,17 +28,11 @@ module Tempo
 
       # example: Tempo::Animal -> tempo_animals.yaml
       def file
-        @file = "tempo_#{self.name[7..-1].downcase}s.yaml"
+        FileRecord::Record.model_filename( self )
       end
 
       def save_all_to_file
-        file = File.join(Dir.home,'.tempo', self.file)
-        File.delete( file ) if File.exists?( file )
-        File.open( file,'a' ) do |f|
-          self.index.each do |i|
-            f.puts YAML::dump( i.freeze_dry )
-          end
-        end
+        FileRecord::Record.model_save( self )
       end
 
       def read_from_file

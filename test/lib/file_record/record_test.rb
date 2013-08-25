@@ -88,10 +88,17 @@ describe FileRecord do
     describe "recording a Tempo Model" do
 
       it "should create a record of all instances of a tempo model object" do
+        test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+        File.delete( test_file ) if File.exists?( test_file )
         pantherinae_factory
-        Tempo::Animal.index.length.must_equal 5
+        FileRecord::Record.model_save( Tempo::Animal )
+        contents = eval_file_as_array( test_file )
+        contents.must_equal [ "---", ":id: 1", ":genious: Panthera", ":species: p. tigris",
+                              "---", ":id: 2", ":genious: Panthera", ":species: p. leo",
+                              "---", ":id: 3", ":genious: Panthera", ":species: p. onca",
+                              "---", ":id: 4", ":genious: Panthera", ":species: p. pardus",
+                              "---", ":id: 5", ":genious: Panthera", ":species: p. zdanskyi"]
       end
     end
-
   end
 end
