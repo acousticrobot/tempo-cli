@@ -1,6 +1,25 @@
-When /^I get help for "([^"]*)"$/ do |app_name|
+When /^I get help for "([^""]*)"$/ do |app_name|
   @app_name = app_name
   step %(I run `#{app_name} help`)
 end
 
-# Add more step definitions here
+Given /^An existing project file$/ do
+  @testing_env = File.join( ENV['HOME'], '.tempo' )
+  Dir.mkdir( @testing_env, 0700 ) unless File.exists?( @testing_env )
+  projects_file = File.join( @testing_env, 'tempo_projects.yaml' )
+
+  File.open( projects_file,'w' ) do |f|
+    projects = [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
+
+                 "---", ":id: 2", ":title: horticulture - basement mushrooms",
+                    ":tags:", "- fungi", "- farming",
+
+                 "---", ":id: 3", ":title: horticulture - backyard bonsai",
+                    ":tags:", "- trees", "- farming", "- miniaturization"
+                ]
+
+    projects.each do |p|
+      f.puts p
+    end
+  end
+end

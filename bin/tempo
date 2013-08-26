@@ -19,10 +19,15 @@ version Tempo::VERSION
 # Initial setup
 
 #Load Projects
-@projects = ['sheep hearding',
-            'horticulture - basement mushrooms',
-            'horticulture - backyard bonsai',
-            ]
+@projects = []
+
+if File.exists?( File.join( ENV['HOME'], '.tempo', Tempo::Project.file ))
+  Tempo::Project.read_from_file
+
+  Tempo::Project.index.each do |p|
+    @projects << p.title
+  end
+end
 
 @projects.sort!
 @current_project = 'horticulture - basement mushrooms'

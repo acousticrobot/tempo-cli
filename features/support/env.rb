@@ -13,13 +13,14 @@ Before do
   # switch home environment for testing in Rakefile
   # example for doing this within cucumber:
   #
-  # @real_home = ENV['HOME']
-  # testing_env = File.join(ENV['HOME'],'.testing', 'features')
-  # FileUtils.rm_rf testing_env, :secure => true
-  # Dir.mkdir(testing_env, 0700)
-  # ENV['HOME'] = testing_env
+  @real_home = ENV['HOME']
+  @testing_env = File.join(ENV['HOME'], 'testing_features')
+  #FileUtils.rm_rf @testing_env, :secure => true
+  Dir.mkdir(@testing_env, 0700) unless File.exists?(@testing_env)
+  ENV['HOME'] = @testing_env
 end
 
 After do
-  # ENV['HOME'] = @real_home
+  #FileUtils.rm_rf @testing_env, :secure => true
+  ENV['HOME'] = @real_home
 end
