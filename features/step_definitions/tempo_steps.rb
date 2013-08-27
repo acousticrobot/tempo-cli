@@ -23,3 +23,25 @@ Given /^An existing project file$/ do
     end
   end
 end
+
+Then /^the (.*?) file should contain "(.*?)"$/ do |arg1, arg2|
+  file = File.join( ENV['HOME'], '.tempo', "tempo_#{arg1}s.yaml")
+  contents = []
+  File.open(file, "r") do |f|
+    f.readlines.each do |line|
+      contents << line.chomp
+    end
+  end
+  contents.should include arg2
+end
+
+Then /^the (.*?) file should not contain "(.*?)"$/ do |arg1, arg2|
+  file = File.join( ENV['HOME'], '.tempo', "tempo_#{arg1}s.yaml")
+  contents = []
+  File.open(file, "r") do |f|
+    f.readlines.each do |line|
+      contents << line.chomp
+    end
+  end
+  contents.should_not include arg2
+end

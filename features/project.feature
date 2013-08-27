@@ -45,11 +45,13 @@ Feature: Project Command manages a list of projects
     Given An existing project file
     When I successfully run `tempo project "hang gliding"`
     Then the stdout should contain "added project 'hang gliding'"
+    And the project file should contain ":title: hang gliding"
 
   Scenario: Adding a project without quotation marks
     Given An existing project file
     When I successfully run `tempo project hang gliding`
     Then the stdout should contain "added project 'hang gliding'"
+    And the project file should contain ":title: hang gliding"
 
   Scenario: Attempting to add an existing project
     Given An existing project file
@@ -60,16 +62,19 @@ Feature: Project Command manages a list of projects
     Given An existing project file
     When I successfully run `tempo project -d "horticulture - backyard bonsai"`
     Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
+    And the project file should not contain ":title: horticulture - backyard bonsai"
 
   Scenario: Deleting a project by partial match
     Given An existing project file
     When I successfully run `tempo project -d "backyard bonsai"`
     Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
+    And the project file should not contain ":title: horticulture - backyard bonsai"
 
   Scenario: Deleting a project without quotation marks
     Given An existing project file
     When I successfully run `tempo project -d horticulture - backyard bonsai`
     Then the stdout should contain "deleted project 'horticulture - backyard bonsai'"
+    And the project file should not contain ":title: horticulture - backyard bonsai"
 
   Scenario: Deleting a project with list flag works even without quotes around a partial match
     Given An existing project file
@@ -77,6 +82,15 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "* horticulture - basement mushrooms"
     And the stdout should contain "  sheep hearding"
     And the stdout should not contain "backyard bonsai"
+    #And the project file should not contain ":title: horticulture - backyard bonsai"
+
+  # Scenario: Deleting a project with list flag works even without quotes around a partial match
+  #   Given An existing project file
+  #   When I successfully run `tempo project -d backyard bonsai -l`
+  #   Then the stdout should contain "* horticulture - basement mushrooms"
+  #   And the stdout should contain "  sheep hearding"
+  #   And the stdout should not contain "backyard bonsai"
+  #   And the project file should not contain ":title: horticulture - backyard bonsai"
 
   Scenario: Attempting to delete a non-existant project Fails
     Given An existing project file

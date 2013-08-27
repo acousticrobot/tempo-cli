@@ -73,22 +73,25 @@ command [:project, :p] do |c|
       Tempo::Views::options_report global_options, options, args
     end
 
+    # delete a project
+    #
     if options[:delete]
 
-      project = Tempo::reassemble_the args, options[:delete]
-
       # first arg without quotes from GLI will be the value of delete
+      project = Tempo::reassemble_the args, options[:delete]
       matches = Tempo::fuzzy_match @projects, args
 
       if matches.length == 0
         request = args.join(" ")
         raise "no such project '#{request}'"
+
       elsif matches.length > 1
         puts "The following projects matched your search:"
         matches.each do |m|
           puts "  #{m}"
         end
         puts "Please refine your search"
+
       else
         project = matches[0]
 
@@ -97,6 +100,8 @@ command [:project, :p] do |c|
         end
 
         if @projects.include?(project)
+          Tempo::Project.find( "title", project ).delete
+          Tempo::Project.save_to_file
           @projects.delete(project)
           if !options[:list]
             puts "deleted project '#{project}'"
@@ -107,6 +112,7 @@ command [:project, :p] do |c|
       end
 
     # Add a project
+    #
     elsif !options[:list] && !args.empty?
 
       project = Tempo::reassemble_the args
@@ -114,11 +120,13 @@ command [:project, :p] do |c|
       if @projects.include? project
         raise "project '#{project}' already exists"
       else
-        @projects << project
+        Tempo::Project.new({ title: project })
+        Tempo::Project.save_to_file
         puts "added project '#{project}'"
       end
 
     # List projects
+    #
     else
       if args.empty?
         Tempo::Views::projects_list @projects, @current_project

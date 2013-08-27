@@ -31,7 +31,7 @@ module Tempo
         FileRecord::Record.model_filename( self )
       end
 
-      def save_all_to_file
+      def save_to_file
         FileRecord::Record.model_save( self )
       end
 
@@ -41,6 +41,21 @@ module Tempo
         instances.each do |i|
           new( i )
         end
+      end
+
+      # example: Tempo::Model.find(id: 1)
+      def find( key, value )
+        key = "@#{key}".to_sym
+        index.each do |i|
+          return i if i.instance_variable_get(key) == value
+        end
+        nil
+      end
+
+      def delete( instance )
+        id = instance.id
+        index.delete( instance )
+        ids.delete( id )
       end
     end
 
@@ -69,9 +84,13 @@ module Tempo
       record
     end
 
+    def delete
+      self.class.delete( self )
+    end
+
     protected
 
-    def self.add_to_index( member)
+    def self.add_to_index( member )
       @index ||= []
       @index << member
     end

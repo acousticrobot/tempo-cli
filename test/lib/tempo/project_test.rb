@@ -30,7 +30,7 @@ describe Tempo do
 
     it "should save to file a collection of projects" do
       test_file = File.join(ENV['HOME'],'.tempo','tempo_projects.yaml')
-      Tempo::Project.save_all_to_file
+      Tempo::Project.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
                             "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- fungi", "- farming",

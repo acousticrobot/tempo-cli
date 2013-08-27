@@ -33,7 +33,7 @@ describe Tempo do
       frog_factory
       test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
       File.delete(test_file) if File.exists?( test_file )
-      contents = Tempo::Animal.save_all_to_file
+      contents = Tempo::Animal.save_to_file
       contents = eval_file_as_array( test_file )
       #binding.pry
       contents.must_equal ["---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
@@ -91,6 +91,18 @@ describe Tempo do
                 id: 1
               }
       proc { gassy_tree_frog = Tempo::Animal.new( args ) }.must_raise Tempo::IdentityConflictError
+    end
+
+    it "should find the first instance of the class" do
+      frog_factory
+      search = Tempo::Animal.find("species", "h. versicolor" )
+      search.must_equal @gray_tree_frog
+    end
+
+    it "should have a delete instance method" do
+      frog_factory
+      @gray_tree_frog.delete
+      Tempo::Animal.ids.must_equal [2,3,4,5]
     end
   end
 end

@@ -87,7 +87,7 @@ describe FileRecord do
 
     describe "recording a Tempo Model" do
 
-      it "should create a record of all instances of a tempo model object" do
+      it "should create a record of all instances" do
         test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
         File.delete( test_file ) if File.exists?( test_file )
         pantherinae_factory

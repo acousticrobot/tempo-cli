@@ -10,11 +10,9 @@ module Tempo
     matches = [matches] unless matches.is_a? Array
 
     if haystack.is_a? Array
-
       fuzzy_array_match( haystack, matches )
 
     elsif haystack.superclass == Tempo::Model
-
       fuzzy_model_match( haystack, matches, attribute )
     end
   end
