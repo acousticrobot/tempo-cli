@@ -1,38 +1,22 @@
 #!/usr/bin/env ruby
+
+# In development, you need to use `bundle exec bin/tempo` to run this app
 require 'gli'
-begin # XXX: Remove this begin/rescue before distributing your app
 require 'tempo'
-
-rescue LoadError
-  STDERR.puts "In development, you need to use `bundle exec bin/tempo` to run your app"
-  STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
-  STDERR.puts "Feel free to remove this message from bin/tempo now"
-  exit 64
-end
-
 include GLI::App
 
 program_desc 'Command line time tracking by project'
 
 version Tempo::VERSION
 
-# Initial setup
+# == Initial setup ==
 
 #Load Projects
-@projects = []
+@projects = Tempo::Procedures.load_projects
 
-if File.exists?( File.join( ENV['HOME'], '.tempo', Tempo::Project.file ))
-  Tempo::Project.read_from_file
-
-  Tempo::Project.index.each do |p|
-    @projects << p.title
-  end
-end
-
-@projects.sort!
 @current_project = 'horticulture - basement mushrooms'
 
-# GLOBAL OPTIONS
+# == GLOBAL OPTIONS ==
 
 desc 'verbose output'
 switch [:v,:verbose]
@@ -79,7 +63,7 @@ command [:project, :p] do |c|
 
       # first arg without quotes from GLI will be the value of delete
       project = Tempo::reassemble_the args, options[:delete]
-      matches = Tempo::fuzzy_match @projects, args
+      matches = Tempo::fuzzy_match @projects.list, args
 
       if matches.length == 0
         request = args.join(" ")
@@ -99,14 +83,13 @@ command [:project, :p] do |c|
           raise "cannot delete the active project"
         end
 
-        if @projects.include?(project)
-          Tempo::Project.find( "title", project ).delete
-          Tempo::Project.save_to_file
-          @projects.delete(project)
+        if @projects.list.include?(project)
+          @projects.find( "title", project ).delete
+          @projects.save_to_file
           if !options[:list]
             puts "deleted project '#{project}'"
           else
-            Tempo::Views::projects_list @projects, @current_project
+            Tempo::Views::projects_list @projects.list, @current_project
           end
         end
       end
@@ -117,11 +100,11 @@ command [:project, :p] do |c|
 
       project = Tempo::reassemble_the args
 
-      if @projects.include? project
+      if @projects.list.include? project
         raise "project '#{project}' already exists"
       else
-        Tempo::Project.new({ title: project })
-        Tempo::Project.save_to_file
+        @projects.new({ title: project })
+        @projects.save_to_file
         puts "added project '#{project}'"
       end
 
@@ -129,10 +112,10 @@ command [:project, :p] do |c|
     #
     else
       if args.empty?
-        Tempo::Views::projects_list @projects, @current_project
+        Tempo::Views::projects_list @projects.list, @current_project
       else
         project = Tempo::reassemble_the args
-        matches = Tempo::fuzzy_match @projects, args
+        matches = Tempo::fuzzy_match @projects.list, args
         if matches.empty?
           puts "no projects match '#{project}'"
         else
@@ -157,17 +140,20 @@ command [:checkout, :c] do |c|
       Tempo::Views::options_report global_options, options, args
     end
 
-    # Add a project
+    # Add and checkout a project
+    #
     if options[:add]
 
       project = Tempo::reassemble_the args, options[:add]
 
       puts "attempting to add #{project}"
-      if @projects.include? project
+      if @projects.list.include? project
         raise "project '#{project}' already exists"
       else
-        @projects << project
-        current_project = project
+        @projects.new({ title: project })
+        @projects.save_to_file
+        @projects.list << project
+        @current_project = project
         puts "switched to new project '#{project}'"
       end
 
@@ -178,7 +164,7 @@ command [:checkout, :c] do |c|
         puts "current project is #{@current_project}"
       else
         project = Tempo::reassemble_the args
-        matches = Tempo::fuzzy_match @projects, args
+        matches = Tempo::fuzzy_match @projects.list, args
         if matches.empty?
           puts "no projects match '#{project}'"
         elsif matches.length > 1

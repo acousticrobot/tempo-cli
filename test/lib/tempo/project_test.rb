@@ -36,5 +36,9 @@ describe Tempo do
                             "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- fungi", "- farming",
                             "---", ":id: 3", ":title: horticulture - backyard bonsai", ":tags:", "- trees", "- farming", "- miniaturization"]
     end
+
+    it "should return an alphabatized list of projects by title" do
+      Tempo::Project.list.must_equal [ "horticulture - backyard bonsai", "horticulture - basement mushrooms", "sheep hearding" ]
+    end
   end
 end
