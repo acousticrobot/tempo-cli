@@ -15,7 +15,7 @@ version Tempo::VERSION
 #Load Projects
 @projects = Tempo::Procedures.load_projects
 
-@current_project = 'horticulture - basement mushrooms'
+@current_project = @projects.find( "id", @projects.current ).title
 
 # == GLOBAL OPTIONS ==
 
@@ -151,7 +151,7 @@ command [:checkout, :c] do |c|
       if @projects.list.include? project
         raise "project '#{project}' already exists"
       else
-        @projects.new({ title: project })
+        @projects.new({ title: project, current: true })
         @projects.save_to_file
         @projects.list << project
         @current_project = project
