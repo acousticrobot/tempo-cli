@@ -40,7 +40,7 @@ module Tempo
   def self.fuzzy_array_match( haystack, matches )
     results = []
     matches.each do |m|
-      reg = /#{m}/
+      reg = match_to_regex m
       haystack.each do |h|
         results << h if reg.match h
       end

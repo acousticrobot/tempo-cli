@@ -40,6 +40,7 @@ Feature: Checkout Command manages the active project
     When I successfully run `tempo checkout --add "bathtup scuba diving"`
     Then the stdout should contain "switched to new project 'bathtup scuba diving'"
     And the project file should contain ":title: bathtup scuba diving"
+    And the project file should contain ":current: true"
 
   Scenario: Attempting to add an exising project
     Given An existing project file

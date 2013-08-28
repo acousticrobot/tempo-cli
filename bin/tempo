@@ -10,13 +10,6 @@ program_desc 'Command line time tracking by project'
 
 version Tempo::VERSION
 
-# == Initial setup ==
-
-#Load Projects
-@projects = Tempo::Procedures.load_projects
-
-@current_project = @projects.find( "id", @projects.current ).title
-
 # == GLOBAL OPTIONS ==
 
 desc 'verbose output'
@@ -210,11 +203,14 @@ command :report do |c|
 end
 
 pre do |global,command,options,args|
-  # Pre logic here
   # Return true to proceed; false to abort and not call the
   # chosen command
   # Use skips_pre before a command to skip this block
   # on that command only
+
+  @projects = Tempo::Procedures.load_projects
+  @current_project = @projects.find( "id", @projects.current ).title
+
   true
 end
 
