@@ -16,6 +16,17 @@ module Tempo
   end
 end
 
+module Tempo
+  class Project
+
+    def self.clear_all()
+      @ids = []
+      @index = []
+      @id_counter = 1
+    end
+  end
+end
+
 def pantherinae_factory
   Tempo::Animal.clear_all
   pantherinae = [ { genious: "Panthera", species: "p. tigris" },
@@ -38,3 +49,11 @@ def frog_factory
   @bird_voiced_tree_frog = Tempo::Animal.new( { genious: "hyla", species: "h. avivoca"} )
   @chinese_tree_frog = Tempo::Animal.new( { genious: "hyla", species: "h. chinensis"} )
 end
+
+def project_factory
+  Tempo::Project.clear_all
+  @project_1 = Tempo::Project.new title: 'sheep hearding'
+  @project_2 = Tempo::Project.new({ title: 'horticulture - basement mushrooms', tags: [ "fungi", "farming" ], current: true})
+  @project_3 = Tempo::Project.new({ title: 'horticulture - backyard bonsai', tags: [ "trees", "farming", "miniaturization" ]})
+end
+

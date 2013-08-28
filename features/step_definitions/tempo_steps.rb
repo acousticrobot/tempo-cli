@@ -12,7 +12,7 @@ Given /^An existing project file$/ do
     projects = [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
 
                  "---", ":id: 2", ":title: horticulture - basement mushrooms",
-                    ":tags:", "- fungi", "- farming",
+                    ":tags:", "- fungi", "- farming", ":current: true",
 
                  "---", ":id: 3", ":title: horticulture - backyard bonsai",
                     ":tags:", "- trees", "- farming", "- miniaturization"
