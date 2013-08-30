@@ -8,17 +8,31 @@ module Tempo
       view
     end
 
-    def self.projects_list( project_array, current_project=nil, output=true )
+    def self.projects_list_view( options={} )
+
+      projects = options.fetch( :projects, Tempo::Project.index )
+      output = options.fetch( :output, true )
+
+      # replace 'current' with a find_by_id method
+      current = nil
+      titles = []
+      projects.each do |p|
+        titles << p.title
+        current = p.title if Tempo::Project.current == p.id
+      end
+      titles.sort!
+
       view = []
-      project_array.each do |p|
-        if p == current_project
-          view << "* #{p}"
+      titles.each do |t|
+        if t == current
+          view << "* #{t}"
         else
-          view << "  #{p}"
+          view << "  #{t}"
         end
       end
       return_view view, output
     end
+
 
     def self.options_report(global_options, options, args, output=true)
       view = []

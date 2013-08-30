@@ -54,68 +54,13 @@ command [:project, :p] do |c|
     # delete a project
     #
     if options[:delete]
+      Tempo::Procedures.delete_project options, args
 
-      # first arg without quotes from GLI will be the value of delete
-      project = Tempo::reassemble_the args, options[:delete]
-      matches = Tempo::fuzzy_match @projects.list, args
-
-      if matches.length == 0
-        request = args.join(" ")
-        raise "no such project '#{request}'"
-
-      elsif matches.length > 1
-        puts "The following projects matched your search:"
-        matches.each do |m|
-          puts "  #{m}"
-        end
-        puts "Please refine your search"
-
-      else
-        project = matches[0]
-
-        if project == @current_project
-          raise "cannot delete the active project"
-        end
-
-        if @projects.list.include?(project)
-          @projects.find( "title", project ).delete
-          @projects.save_to_file
-          if !options[:list]
-            puts "deleted project '#{project}'"
-          else
-            Tempo::Views::projects_list @projects.list, @current_project
-          end
-        end
-      end
-
-    # Add a project
-    #
     elsif !options[:list] && !args.empty?
+      Tempo::Procedures.add_project args
 
-      project = Tempo::reassemble_the args
-
-      if @projects.list.include? project
-        raise "project '#{project}' already exists"
-      else
-        @projects.new({ title: project })
-        @projects.save_to_file
-        puts "added project '#{project}'"
-      end
-
-    # List projects
-    #
     else
-      if args.empty?
-        Tempo::Views::projects_list @projects.list, @current_project
-      else
-        project = Tempo::reassemble_the args
-        matches = Tempo::fuzzy_match @projects.list, args
-        if matches.empty?
-          puts "no projects match '#{project}'"
-        else
-          Tempo::Views::projects_list matches, @current_project
-        end
-      end
+      Tempo::Procedures.list_projects args
     end
   end
 end
@@ -157,13 +102,16 @@ command [:checkout, :c] do |c|
         # TODO: list the help for checkout
         puts "current project is #{@current_project}"
       else
+
         project = Tempo::reassemble_the args
-        matches = Tempo::fuzzy_match @projects.list, args
+
+        #TODO: use project.find_by
+        matches = Tempo::fuzzy_match @projects, args, "title"
         if matches.empty?
           puts "no projects match '#{project}'"
         elsif matches.length > 1
           puts "multiple projects found:"
-          Tempo::Views::projects_list matches, @current_project
+          Tempo::Views::projects_list_view({ projects: matches })
         else
           project = matches[0]
           if @current_project == project

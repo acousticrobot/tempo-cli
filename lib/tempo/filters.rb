@@ -57,7 +57,7 @@ module Tempo
     matches.each do |m|
       reg = match_to_regex m
       contenders.each do |c|
-        results << c if reg.match c.instance_variable_get(attribute)
+        results << c if reg.match c.instance_variable_get(attribute).to_s
       end
       contenders = results
       results = []
