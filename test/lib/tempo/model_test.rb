@@ -2,10 +2,10 @@ require "test_helper"
 require "pry"
 
 describe Tempo do
-  describe "Model" do
+  describe "Model::Base" do
 
     it "should be a easy to inherit from" do
-      Tempo::Animal.superclass.must_equal Tempo::Model
+      Tempo::Model::Animal.superclass.must_equal Tempo::Model::Base
     end
 
     it "should grant child objects the freeze-dry method" do
@@ -16,8 +16,8 @@ describe Tempo do
 
     it "should grant child objects a self indexing method" do
       frog_factory
-      Tempo::Animal.index.length.must_equal 5
-      Tempo::Animal.index.each do |animal|
+      Tempo::Model::Animal.index.length.must_equal 5
+      Tempo::Model::Animal.index.each do |animal|
         animal.id.must_be_kind_of(Integer)
         animal.genious.must_match "hyla"
         animal.species.must_match /^h\. \w./
@@ -26,14 +26,14 @@ describe Tempo do
 
     it "should create a file name to save to" do
       frog_factory
-      Tempo::Animal.file.must_equal "tempo_animals.yaml"
+      Tempo::Model::Animal.file.must_equal "tempo_animals.yaml"
     end
 
     it "should grant children the ability to write to a file" do
       frog_factory
       test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
       File.delete(test_file) if File.exists?( test_file )
-      contents = Tempo::Animal.save_to_file
+      contents = Tempo::Model::Animal.save_to_file
       contents = eval_file_as_array( test_file )
       #binding.pry
       contents.must_equal ["---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
@@ -56,10 +56,10 @@ describe Tempo do
           f.puts l
         end
       end
-      Tempo::Animal.clear_all
-      Tempo::Animal.read_from_file
-      Tempo::Animal.ids.must_equal [11,12,13,14,15]
-      Tempo::Animal.index.each do |animal|
+      Tempo::Model::Animal.clear_all
+      Tempo::Model::Animal.read_from_file
+      Tempo::Model::Animal.ids.must_equal [11,12,13,14,15]
+      Tempo::Model::Animal.index.each do |animal|
         animal.id.must_be_kind_of(Integer)
         animal.genious.must_match "hyla"
         animal.species.must_match /^h\. \w./
@@ -78,7 +78,7 @@ describe Tempo do
 
     it "should handle ids assigned and out of order" do
       frog_factory
-      Tempo::Animal.ids.must_equal [1,2,3,4,5]
+      Tempo::Model::Animal.ids.must_equal [1,2,3,4,5]
       @pine_barrens_tree_frog.id.must_equal 4
       @bird_voiced_tree_frog.id.must_equal 3
       @chinese_tree_frog.id.must_equal 5
@@ -90,19 +90,19 @@ describe Tempo do
                 species: "h. flatulus",
                 id: 1
               }
-      proc { gassy_tree_frog = Tempo::Animal.new( args ) }.must_raise Tempo::IdentityConflictError
+      proc { gassy_tree_frog = Tempo::Model::Animal.new( args ) }.must_raise Tempo::Model::IdentityConflictError
     end
 
     it "should find the first instance of the class" do
       frog_factory
-      search = Tempo::Animal.find("species", "h. versicolor" )
+      search = Tempo::Model::Animal.find("species", "h. versicolor" )
       search.must_equal @gray_tree_frog
     end
 
     it "should have a delete instance method" do
       frog_factory
       @gray_tree_frog.delete
-      Tempo::Animal.ids.must_equal [2,3,4,5]
+      Tempo::Model::Animal.ids.must_equal [2,3,4,5]
     end
   end
 end

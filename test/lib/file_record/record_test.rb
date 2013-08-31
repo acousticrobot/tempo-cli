@@ -91,7 +91,7 @@ describe FileRecord do
         test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
         File.delete( test_file ) if File.exists?( test_file )
         pantherinae_factory
-        FileRecord::Record.model_save( Tempo::Animal )
+        FileRecord::Record.model_save( Tempo::Model::Animal )
         contents = eval_file_as_array( test_file )
         contents.must_equal [ "---", ":id: 1", ":genious: Panthera", ":species: p. tigris",
                               "---", ":id: 2", ":genious: Panthera", ":species: p. leo",

@@ -12,7 +12,7 @@ module Tempo
     if haystack.is_a? Array
       fuzzy_array_match( haystack, matches )
 
-    elsif haystack.superclass == Tempo::Model
+    elsif haystack.superclass == Tempo::Model::Base
       fuzzy_model_match( haystack, matches, attribute )
     end
   end

@@ -12,7 +12,7 @@ describe Tempo do
 
       it "should be able to return a subset of projects" do
         project_factory
-        subset = Tempo::Project.index[0..1]
+        subset = Tempo::Model::Project.index[0..1]
         view = Tempo::Views::projects_list_view({ projects: subset })
         view.must_equal [ "* horticulture - basement mushrooms", "  sheep hearding" ]
       end

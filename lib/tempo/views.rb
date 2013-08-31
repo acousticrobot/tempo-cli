@@ -10,7 +10,7 @@ module Tempo
 
     def self.projects_list_view( options={} )
 
-      projects = options.fetch( :projects, Tempo::Project.index )
+      projects = options.fetch( :projects, Tempo::Model::Project.index )
       output = options.fetch( :output, true )
 
       # replace 'current' with a find_by_id method
@@ -18,7 +18,7 @@ module Tempo
       titles = []
       projects.each do |p|
         titles << p.title
-        current = p.title if Tempo::Project.current == p.id
+        current = p.title if Tempo::Model::Project.current == p
       end
       titles.sort!
 

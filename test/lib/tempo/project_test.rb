@@ -32,7 +32,7 @@ describe Tempo do
     it "should save to file a collection of projects" do
       project_factory
       test_file = File.join(ENV['HOME'],'.tempo','tempo_projects.yaml')
-      Tempo::Project.save_to_file
+      Tempo::Model::Project.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
                             "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- fungi", "- farming", ":current: true",
@@ -41,29 +41,29 @@ describe Tempo do
 
     it "should return an alphabatized list of project titles" do
       project_factory
-      Tempo::Project.list.must_equal [ "horticulture - backyard bonsai", "horticulture - basement mushrooms", "sheep hearding" ]
+      Tempo::Model::Project.list.must_equal [ "horticulture - backyard bonsai", "horticulture - basement mushrooms", "sheep hearding" ]
     end
 
     it "should have a current project getter" do
       project_factory
-      Tempo::Project.current.must_equal @project_2.id
+      Tempo::Model::Project.current.must_equal @project_2
     end
 
     it "should have a current project setter" do
       project_factory
-      Tempo::Project.current( 3 )
-      Tempo::Project.current.must_equal @project_3.id
+      Tempo::Model::Project.current @project_3
+      Tempo::Model::Project.current.must_equal @project_3
     end
 
     it "should not set a current non-existant project" do
       project_factory
-      proc { Tempo::Project.current( 10 ) }.must_raise ArgumentError
+      proc { Tempo::Model::Project.current( Tempo::Model::Base.new() )}.must_raise ArgumentError
     end
 
     it "should take current in args to new instance" do
       project_factory
-      project_4 = Tempo::Project.new({ title: 'horticulture - basement mushrooms', current: true})
-      Tempo::Project.current.must_equal project_4.id
+      project_4 = Tempo::Model::Project.new({ title: 'horticulture - basement mushrooms', current: true})
+      Tempo::Model::Project.current.must_equal project_4
     end
 
     it "should save current in freeze dry" do

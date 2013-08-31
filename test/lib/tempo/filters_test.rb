@@ -22,13 +22,13 @@ describe Tempo do
       describe "matching a Tempo Model" do
         it "should find all matches to a single match object" do
           pantherinae_factory
-          matches = Tempo::fuzzy_match( Tempo::Animal, "Panthera", "genious" )
+          matches = Tempo::fuzzy_match( Tempo::Model::Animal, "Panthera", "genious" )
           matches.length.must_equal 5
         end
 
         it "should find all matches to an array of match objects" do
           pantherinae_factory
-          matches = Tempo::fuzzy_match( Tempo::Animal, ["p. ", "a"], "species" )
+          matches = Tempo::fuzzy_match( Tempo::Model::Animal, ["p. ", "a"], "species" )
           # "p. onca", "p. pardus" "p. zdanskyi"
           matches.length.must_equal 3
         end

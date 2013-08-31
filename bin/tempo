@@ -54,13 +54,13 @@ command [:project, :p] do |c|
     # delete a project
     #
     if options[:delete]
-      Tempo::Procedures.delete_project options, args
+      Tempo::Controllers::ProjectsController.delete options, args
 
     elsif !options[:list] && !args.empty?
-      Tempo::Procedures.add_project args
+      Tempo::Controllers::ProjectsController.add args
 
     else
-      Tempo::Procedures.list_projects args
+      Tempo::Controllers::ProjectsController.index args
     end
   end
 end
@@ -92,7 +92,7 @@ command [:checkout, :c] do |c|
         @projects.new({ title: project, current: true })
         @projects.save_to_file
         @projects.list << project
-        @current_project = project
+        Tempo::Model::Project.current = Tempo::Model::Project.find( "title", project )
         puts "switched to new project '#{project}'"
       end
 
@@ -100,7 +100,7 @@ command [:checkout, :c] do |c|
     else
       if args.empty?
         # TODO: list the help for checkout
-        puts "current project is #{@current_project}"
+        puts "current project is #{Tempo::Model::Project.current.title}"
       else
 
         project = Tempo::reassemble_the args
@@ -114,10 +114,10 @@ command [:checkout, :c] do |c|
           Tempo::Views::projects_list_view({ projects: matches })
         else
           project = matches[0]
-          if @current_project == project
+          if Tempo::Model::Project.current == project
             puts "already on project '#{project}'"
           else
-            @current_project = project
+            Tempo::Model::Project.current = Tempo::Model::Project.find( "title", project )
             puts "switched to project '#{matches[0]}'"
           end
         end
@@ -156,9 +156,7 @@ pre do |global,command,options,args|
   # Use skips_pre before a command to skip this block
   # on that command only
 
-  @projects = Tempo::Procedures.load_projects
-  @current_project = @projects.find( "id", @projects.current ).title
-
+  @projects = Tempo::Controllers::ProjectsController.load
   true
 end
 
@@ -171,6 +169,7 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
+  puts exception.backtrace
   true
 end
 

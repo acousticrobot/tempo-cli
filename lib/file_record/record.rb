@@ -46,7 +46,7 @@ module FileRecord
     end
 
     def self.model_filename( model )
-      file = "tempo_#{model.name[7..-1].downcase}s.yaml"
+      file = "tempo_#{model.name[14..-1].downcase}s.yaml"
     end
 
     def read
