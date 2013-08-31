@@ -18,12 +18,6 @@ describe Tempo do
       has_attr_accessor?( @project_1, :tags ).must_equal true
     end
 
-    # activate sub project when tree structure is implemented
-    it "should not have accessible sub projects" do
-      project_factory
-      has_attr_accessor?( @project_1, :sub_projects ).must_equal false
-    end
-
     it "should come with freeze dry for free" do
       project_factory
       @project_3.freeze_dry.must_equal({:id=>3, :title=>"horticulture - backyard bonsai", :tags=>["trees", "farming", "miniaturization"]})

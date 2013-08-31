@@ -25,7 +25,7 @@ flag [:f,:flagname]
 desc 'Manage the Projects that timed tasks are assigned to'
 long_desc "Manage the Projects that timed tasks are assigned to.
 
-By default, lists all the projects that a timed task can be assigned to.
+By default, lists all the projects.
 The active project will be marked by an asterisk. If suplied with arguments
 and no command options, a new project will be added.
 
@@ -47,23 +47,27 @@ command [:project, :p] do |c|
 
   c.action do |global_options,options,args|
 
-    if global_options[:v]
-      Tempo::Views::options_report global_options, options, args
-    end
+    projects = Tempo::Controllers::Projects
 
     # delete a project
     #
     if options[:delete]
-      Tempo::Controllers::ProjectsController.delete options, args
+      projects.delete options, args
 
+    # add a project
+    #
     elsif !options[:list] && !args.empty?
-      Tempo::Controllers::ProjectsController.add args
+      projects.add args
 
+    # list projects
+    #
     else
-      Tempo::Controllers::ProjectsController.index args
+      projects.index args
     end
   end
 end
+
+# COMMAND: CHECKOUT
 
 desc 'Checkout a project to track time against'
 arg_name '"name of the project"'
@@ -75,52 +79,19 @@ command [:checkout, :c] do |c|
 
   c.action do |global_options,options,args|
 
-    if global_options[:v]
-      Tempo::Views::options_report global_options, options, args
-    end
+    checkout = Tempo::Controllers::Checkout
 
     # Add and checkout a project
     #
     if options[:add]
-
-      project = Tempo::reassemble_the args, options[:add]
-
-      puts "attempting to add #{project}"
-      if @projects.list.include? project
-        raise "project '#{project}' already exists"
-      else
-        @projects.new({ title: project, current: true })
-        @projects.save_to_file
-        @projects.list << project
-        Tempo::Model::Project.current = Tempo::Model::Project.find( "title", project )
-        puts "switched to new project '#{project}'"
-      end
+      checkout.add_project options, args
 
     # checkout existing project
     else
       if args.empty?
-        # TODO: list the help for checkout
-        puts "current project is #{Tempo::Model::Project.current.title}"
+        checkout.assistance
       else
-
-        project = Tempo::reassemble_the args
-
-        #TODO: use project.find_by
-        matches = Tempo::fuzzy_match @projects, args, "title"
-        if matches.empty?
-          puts "no projects match '#{project}'"
-        elsif matches.length > 1
-          puts "multiple projects found:"
-          Tempo::Views::projects_list_view({ projects: matches })
-        else
-          project = matches[0]
-          if Tempo::Model::Project.current == project
-            puts "already on project '#{project}'"
-          else
-            Tempo::Model::Project.current = Tempo::Model::Project.find( "title", project )
-            puts "switched to project '#{matches[0]}'"
-          end
-        end
+        checkout.existing_project args
       end
     end
   end
@@ -156,7 +127,11 @@ pre do |global,command,options,args|
   # Use skips_pre before a command to skip this block
   # on that command only
 
-  @projects = Tempo::Controllers::ProjectsController.load
+  if global[:v]
+    Tempo::Views::options_report global, options, args
+  end
+
+  Tempo::Controllers::Projects.load
   true
 end
 
@@ -169,7 +144,9 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
+
   puts exception.backtrace
+
   true
 end
 
