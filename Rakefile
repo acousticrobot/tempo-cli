@@ -20,22 +20,21 @@ CLEAN << CUKE_RESULTS
 desc 'Run features'
 Cucumber::Rake::Task.new(:features) do |t|
   opts = "features --format html -o #{CUKE_RESULTS} --format progress -x"
+  opts += ' --tags ~@pending'
   opts += " --tags #{ENV['TAGS']}" if ENV['TAGS']
   t.cucumber_opts =  opts
   t.fork = false
 end
 
-desc 'Run features tagged as work-in-progress (@wip)'
-Cucumber::Rake::Task.new('features:wip') do |t|
+desc 'Run features tagged with focus (@focus)'
+Cucumber::Rake::Task.new('cucumber:focus') do |t|
   tag_opts = ' --tags ~@pending'
-  tag_opts = ' --tags @wip'
+  tag_opts += ' --tags @focus'
   t.cucumber_opts = "features --format html -o #{CUKE_RESULTS} --format pretty -x -s#{tag_opts}"
   t.fork = false
 end
 
 task :cucumber => :features
-task 'cucumber:wip' => 'features:wip'
-task :wip => 'features:wip'
 
 desc :tests_setup
 task :tests_setup do |t|
@@ -65,3 +64,5 @@ task :test => [:tests_setup, :run_tests, :tests_teardown]
 task :clean => [:tests_setup, :tests_teardown]
 
 task :default => [:tests_setup, :run_tests, :features, :tests_teardown]
+
+task 'features:focus' => [:tests_setup, :run_tests, 'cucumber:focus', :tests_teardown]
