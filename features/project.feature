@@ -139,6 +139,14 @@ Feature: Project Command manages a list of projects
     And the project file should not contain "- miniaturization"
     And the project file should not contain "- trees"
 
+  Scenario: Tagging and Untagging a project
+    Given an existing project file
+    When I successfully run `tempo project backyard bonsai -u miniaturization -t shrubs`
+    Then the stdout should contain "project: horticulture - backyard bonsai"
+    And the stdout should contain "tags: farming, shrubs, trees"
+    And the project file should not contain "- miniaturization"
+    And the project file should contain "- shrubs"
+
   Scenario: Adding a new project with tags
     Given an existing project file
     When I successfully run `tempo project -a fly fishing -t 'patience fish'`
