@@ -29,13 +29,13 @@ module Tempo
           end
         end
 
-        def add( args )
+        def add( args, tags=nil )
           request = reassemble_the args
 
           if @projects.list.include? request
             raise "project '#{request}' already exists"
           else
-            @projects.new({ title: request })
+            @projects.new({ title: request, tags: tags })
             @projects.save_to_file
             puts "added project '#{request}'"
           end
@@ -48,12 +48,10 @@ module Tempo
           matches = fuzzy_match @projects, args, "title"
 
           if matches.length == 0
-            raise "no such project '#{request}'"
+            Views::no_project request
 
           elsif matches.length > 1
-            puts "The following projects matched your search:"
-            Views::projects_list_view matches
-            puts "Please refine your search"
+            Views::ambiguous_project matches, "delete"
 
           else
             match = matches[0]
@@ -69,6 +67,36 @@ module Tempo
               else
                 Views::projects_list_view
               end
+            end
+          end
+        end
+
+        def tag( options, args )
+          request = reassemble_the args
+          tags = options[:tag].split if options[:tag]
+          untags = options[:untag].split if options[:untag]
+
+          if options[:add]
+            add args, tags
+            Views::tag_view tags
+
+          else
+            matches = fuzzy_match @projects, args, "title"
+
+            if matches.length == 0
+              Views::no_project request
+
+            elsif matches.length > 1
+              command = options[:tag] ? "tag" : "untag"
+              Views::ambiguous_project matches, command
+
+            else
+              match = matches[0]
+              match.tag tags
+              match.untag untags
+              @projects.save_to_file
+              puts "project: #{match.title}"
+              Views::tag_view match.tags
             end
           end
         end

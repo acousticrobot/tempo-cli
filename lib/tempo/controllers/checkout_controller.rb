@@ -41,6 +41,7 @@ module Tempo
               puts "already on project '#{project.title}'"
             else
               @projects.current project
+              @projects.save_to_file
               puts "switched to project '#{project.title}'"
             end
           end

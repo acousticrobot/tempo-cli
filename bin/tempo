@@ -26,13 +26,17 @@ desc 'Manage the Projects that timed tasks are assigned to'
 long_desc "Manage the Projects that timed tasks are assigned to.
 
 By default, lists all the projects.
-The active project will be marked by an asterisk. If suplied with arguments
+The active project will be marked by an asterisk.
+
+If suplied with arguments
 and no command options, a new project will be added.
+
+Arguments supplied to --list, --delete, and --[un]tag will use fuzzy matching.
 
 example:
 tempo project 'my new project'
 
-Arguments supplied to --list and --delete will use fuzzy matching."
+tempo project 'my"
 
 arg_name '"name of the project"'
 command [:project, :p] do |c|
@@ -45,13 +49,35 @@ command [:project, :p] do |c|
   c.default_value nil
   c.flag [:d, :delete]
 
+  c.desc 'Add a Project'
+  c.long_desc "Add a Project (default command behavior). When used with --tag adds a new project with the given tag"
+  c.switch [:a, :add]
+
+  c.desc 'Tag a Project'
+  c.default_value nil
+  c.flag [:t, :tag]
+
+  c.desc 'Untag a Project'
+  c.default_value nil
+  c.flag [:u, :untag]
+
   c.action do |global_options,options,args|
 
     projects = Tempo::Controllers::Projects
 
+    # tag a project
+    #
+    if options[:tag]
+      projects.tag options, args
+
+    # untag a project
+    #
+    elsif options[:untag]
+      projects.tag options, args
+
     # delete a project
     #
-    if options[:delete]
+    elsif options[:delete]
       projects.delete options, args
 
     # add a project
@@ -59,7 +85,7 @@ command [:project, :p] do |c|
     elsif !options[:list] && !args.empty?
       projects.add args
 
-    # list projects
+    # list projects, fiter by args
     #
     else
       projects.index args
@@ -81,7 +107,7 @@ command [:checkout, :c] do |c|
 
     checkout = Tempo::Controllers::Checkout
 
-    # Add and checkout a project
+    # add and checkout a project
     #
     if options[:add]
       checkout.add_project options, args
@@ -145,7 +171,7 @@ on_error do |exception|
   # Error logic here
   # return false to skip default error handling
 
-  puts exception.backtrace
+  #puts exception.backtrace
 
   true
 end

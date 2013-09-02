@@ -13,14 +13,26 @@ describe Tempo do
       has_attr_accessor?( @project_1, :title ).must_equal true
     end
 
-    it "should have accessible tags" do
+    it "should have readable tags" do
       project_factory
-      has_attr_accessor?( @project_1, :tags ).must_equal true
+      has_attr_read_only?( @project_1, :tags ).must_equal true
+    end
+
+    it "should be taggable with an array of tags" do
+      project_factory
+      @project_2.tag(["seasonal", "moist"])
+      @project_2.tags.must_equal(["farming", "fungi", "moist", "seasonal"])
+    end
+
+    it "should be untaggable with an array of tags" do
+      project_factory
+      @project_3.untag( ["farming", "miniaturization"] )
+      @project_3.tags.must_equal(["trees"])
     end
 
     it "should come with freeze dry for free" do
       project_factory
-      @project_3.freeze_dry.must_equal({:id=>3, :title=>"horticulture - backyard bonsai", :tags=>["trees", "farming", "miniaturization"]})
+      @project_3.freeze_dry.must_equal({:id=>3, :title=>"horticulture - backyard bonsai", :tags=>["farming", "miniaturization", "trees"]})
     end
 
     it "should save to file a collection of projects" do
@@ -29,9 +41,8 @@ describe Tempo do
       Tempo::Model::Project.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
-                            "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- fungi", "- farming", ":current: true",
-                            "---", ":id: 3", ":title: horticulture - backyard bonsai", ":tags:", "- trees", "- farming", "- miniaturization"]
-    end
+                            "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- farming", "- fungi", ":current: true",
+                            "---", ":id: 3", ":title: horticulture - backyard bonsai", ":tags:", "- farming", "- miniaturization", "- trees"]    end
 
     it "should return an alphabatized list of project titles" do
       project_factory
@@ -62,7 +73,8 @@ describe Tempo do
 
     it "should save current in freeze dry" do
       project_factory
-      @project_2.freeze_dry.must_equal({ :id=>2, :title=>"horticulture - basement mushrooms", :tags=>[ "fungi", "farming" ], :current=>true})
+      @project_2.freeze_dry.must_equal({:id=>2, :title=>"horticulture - basement mushrooms", :tags=>["farming", "fungi"], :current=>true})
     end
+
   end
 end
