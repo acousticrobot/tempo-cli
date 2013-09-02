@@ -98,6 +98,16 @@ module Tempo
             end
           end
         end
+
+        def filter_projects_by_title( options, args )
+          if options[:exact]
+            match = reassemble_the args
+            match = [match]
+            model_match @projects, match, "title", :exact
+          else
+            model_match @projects, args, "title", :fuzzy
+          end
+        end
       end #class << self
     end
   end
