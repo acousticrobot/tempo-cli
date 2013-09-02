@@ -31,12 +31,16 @@ The active project will be marked by an asterisk.
 If suplied with arguments
 and no command options, a new project will be added.
 
-Arguments supplied to --list, --delete, and --[un]tag will use fuzzy matching.
+Arguments supplied to --list, --delete, and --[un]tag
+will use fuzzy matching, unless you use the --exact flag
 
-example:
-tempo project 'my new project'
+example: adding a new project titled 'star gazing'
 
-tempo project 'my"
+     tempo project star gazing
+
+example: adding a new project tagged 'stellar'
+
+     tempo project --add star gazing --tag stellar"
 
 arg_name '"name of the project"'
 command [:project, :p] do |c|
@@ -58,6 +62,7 @@ command [:project, :p] do |c|
   c.flag [:d, :delete]
 
   c.desc 'Tag a Project'
+  c.long_desc "Tag a project with one-word tags. Pass multiple tags in quotes to add multiple tags"
   c.default_value nil
   c.flag [:t, :tag]
 
