@@ -11,15 +11,14 @@ module Tempo
           end
         end
 
-        def index( args )
+        def index( options, args )
           request = reassemble_the args
 
           if args.empty?
             Views::projects_list_view
 
           else
-            matches = fuzzy_match @projects, args, "title"
-
+            matches = filter_projects_by_title options, args
             if matches.empty?
               puts "no projects match '#{request}'"
 
@@ -42,10 +41,9 @@ module Tempo
         end
 
         def delete( options, args )
-
           # first arg without quotes from GLI will be the value of delete
           request = reassemble_the args, options[:delete]
-          matches = fuzzy_match @projects, args, "title"
+          matches = filter_projects_by_title options, args
 
           if matches.length == 0
             Views::no_project request
@@ -81,7 +79,7 @@ module Tempo
             Views::tag_view tags
 
           else
-            matches = fuzzy_match @projects, args, "title"
+            matches = filter_projects_by_title options, args
 
             if matches.length == 0
               Views::no_project request

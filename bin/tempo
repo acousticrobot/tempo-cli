@@ -41,17 +41,21 @@ tempo project 'my"
 arg_name '"name of the project"'
 command [:project, :p] do |c|
 
+  c.desc 'Add a Project'
+  c.long_desc "Add a Project (default command behavior). When used with --tag adds a new project with the given tag"
+  c.switch [:a, :add]
+
   c.desc 'List Projects'
   c.long_desc "Lists all projects that match the supplied argument"
   c.switch [:l, :list], negatable: false
 
+  c.desc 'Exact Match'
+  c.long_desc "Match project with an exact title"
+  c.switch [:e, :exact]
+
   c.desc 'Delete a Project'
   c.default_value nil
   c.flag [:d, :delete]
-
-  c.desc 'Add a Project'
-  c.long_desc "Add a Project (default command behavior). When used with --tag adds a new project with the given tag"
-  c.switch [:a, :add]
 
   c.desc 'Tag a Project'
   c.default_value nil
@@ -88,7 +92,7 @@ command [:project, :p] do |c|
     # list projects, fiter by args
     #
     else
-      projects.index args
+      projects.index options, args
     end
   end
 end
@@ -171,7 +175,7 @@ on_error do |exception|
   # Error logic here
   # return false to skip default error handling
 
-  #puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

@@ -3,6 +3,16 @@ module Tempo
     class Base
       class << self
 
+        def filter_projects_by_title( options, args )
+          projects = Model::Project
+          if options[:exact]
+            match = reassemble_the args
+            match = [match]
+            model_match projects, match, "title", :exact
+          else
+            model_match projects, args, "title", :fuzzy
+          end
+        end
 
         # Takes an array of source strings
         # and filters them down to the ones
@@ -17,7 +27,7 @@ module Tempo
             fuzzy_array_match( haystack, matches )
 
           elsif haystack.superclass == Model::Base
-            fuzzy_model_match( haystack, matches, attribute )
+            model_match( haystack, matches, attribute )
           end
         end
 
@@ -25,7 +35,7 @@ module Tempo
         # command without quotes, they are broken into an array,
         # and the first block is passed to a flag if present.
         # Here we reassemble the string, and add value stored in
-        # a flag in the front.
+        # a flag in the front. The value is also added to the original array
 
         def reassemble_the( args, flag=nil )
           assembled = ""
@@ -37,8 +47,12 @@ module Tempo
         private
 
         # TODO: escape regex characters ., (), etc.
-        def match_to_regex( match )
-          /#{match}/
+        def match_to_regex( match, type=:fuzzy )
+          if type == :exact
+            /^#{match}$/
+          else
+            /#{match}/
+          end
         end
 
         def fuzzy_array_match( haystack, matches )
@@ -54,12 +68,12 @@ module Tempo
           haystack
         end
 
-        def fuzzy_model_match( haystack, matches, attribute )
+        def model_match( haystack, matches, attribute, type=:fuzzy )
           attribute = "@#{attribute}".to_sym
           contenders = haystack.index
           results = []
           matches.each do |m|
-            reg = match_to_regex m
+            reg = match_to_regex m, type
             contenders.each do |c|
               results << c if reg.match c.instance_variable_get(attribute).to_s
             end
@@ -68,7 +82,6 @@ module Tempo
           end
           contenders
         end
-
       end
     end
   end

@@ -36,6 +36,15 @@ Feature: Project Command manages a list of projects
     And the stdout should not contain "horticulture - basement mushrooms"
     And the stdout should contain "horticulture - backyard bonsai"
 
+@focus
+  Scenario: Matching Projects with an exact match
+    Given an existing project file
+    When I successfully run `tempo project horticulture`
+    And I successfully run `tempo project -le horticulture`
+    Then the stdout should contain "horticulture"
+    And the stdout should not contain "basement mushrooms"
+    And the stdout should not contain "backyard bonsai"
+
   Scenario: Listing no Project when matching against arguments returns nothing
     Given an existing project file
     When I successfully run `tempo project -l "beekeeping"`

@@ -35,7 +35,6 @@ describe Tempo do
       File.delete(test_file) if File.exists?( test_file )
       contents = Tempo::Model::Animal.save_to_file
       contents = eval_file_as_array( test_file )
-      #binding.pry
       contents.must_equal ["---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
                            "---", ":id: 2", ":genious: hyla", ":species: h. chrysoscelis",
                            "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
