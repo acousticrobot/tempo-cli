@@ -17,8 +17,13 @@ module Tempo
         current = nil
         titles = []
         projects.each do |p|
-          titles << p.title
-          current = p.title if Tempo::Model::Project.current == p
+          if options[:id]
+            title = p.title + " [#{p.id}]"
+          else
+            title = p.title
+          end
+          titles << title
+          current = title if Tempo::Model::Project.current == p
         end
         titles.sort!
 

@@ -46,7 +46,8 @@ module Tempo
 
         # TODO: try method_missing:
         # http://www.trottercashion.com/2011/02/08/rubys-define_method-method_missing-and-instance_eval.html
-        # example: Tempo::Model.find(id: 1)
+
+        # example: Tempo::Model.find("id", 1)
         def find( key, value )
           key = "@#{key}".to_sym
           index.each do |i|

@@ -15,7 +15,7 @@ module Tempo
           request = reassemble_the args
 
           if args.empty?
-            Views::projects_list_view
+            Views::projects_list_view options
 
           else
             matches = filter_projects_by_title options, args
@@ -41,36 +41,41 @@ module Tempo
         end
 
         def delete( options, args )
-          # first arg without quotes from GLI will be the value of delete
-          request = reassemble_the args, options[:delete]
-          matches = filter_projects_by_title options, args
 
-          if matches.length == 0
-            Views::no_project request
-
-          elsif matches.length > 1
-            Views::ambiguous_project matches, "delete"
-
+          if options[:id]
+            match = @projects.find_by_id options[:delete]
+            Views::no_project options[:id] if not match
           else
-            match = matches[0]
-            if match == @projects.current
-              raise "cannot delete the active project"
-            end
+            # first arg without quotes from GLI will be the value of delete
+            request = reassemble_the args, options[:delete]
+            matches = filter_projects_by_title options, args
 
-            if @projects.index.include?(match)
-              match.delete
-              @projects.save_to_file
-              if !options[:list]
-                puts "deleted project '#{match.title}'"
-              else
-                Views::projects_list_view
-              end
+            if matches.length == 0
+              Views::no_project request
+
+            elsif matches.length > 1
+              Views::ambiguous_project matches, "delete"
+
+            else
+              match = matches[0]
+            end
+          end
+          if match == @projects.current
+            raise "cannot delete the active project"
+          end
+
+          if @projects.index.include?(match)
+            match.delete
+            @projects.save_to_file
+            if !options[:list]
+              puts "deleted project '#{match.title}'"
+            else
+              Views::projects_list_view
             end
           end
         end
 
         def tag( options, args )
-          request = reassemble_the args
           tags = options[:tag].split if options[:tag]
           untags = options[:untag].split if options[:untag]
 
@@ -79,23 +84,30 @@ module Tempo
             Views::tag_view tags
 
           else
-            matches = filter_projects_by_title options, args
-
-            if matches.length == 0
-              Views::no_project request
-
-            elsif matches.length > 1
-              command = options[:tag] ? "tag" : "untag"
-              Views::ambiguous_project matches, command
-
+            if options[:id]
+              match = @projects.find_by_id args[0]
+              Views::no_project options[:id] if not match
             else
-              match = matches[0]
-              match.tag tags
-              match.untag untags
-              @projects.save_to_file
-              puts "project: #{match.title}"
-              Views::tag_view match.tags
+              request = reassemble_the args
+              matches = filter_projects_by_title options, args
+
+              if matches.length == 0
+                Views::no_project request
+
+              elsif matches.length > 1
+                command = options[:tag] ? "tag" : "untag"
+                Views::ambiguous_project matches, command
+
+              else
+                match = matches[0]
+              end
             end
+
+            match.tag tags
+            match.untag untags
+            @projects.save_to_file
+            puts "project: #{match.title}"
+            Views::tag_view match.tags
           end
         end
 

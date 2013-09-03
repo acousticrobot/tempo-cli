@@ -76,5 +76,10 @@ describe Tempo do
       @project_2.freeze_dry.must_equal({:id=>2, :title=>"horticulture - basement mushrooms", :tags=>["farming", "fungi"], :current=>true})
     end
 
+    it "should find a project by id" do
+      project_factory
+      project = Tempo::Model::Project.find_by_id(1)
+      project.must_equal @project_1
+    end
   end
 end

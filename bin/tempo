@@ -57,6 +57,9 @@ command [:project, :p] do |c|
   c.long_desc "Match project with an exact title"
   c.switch [:e, :exact]
 
+  c.desc 'show IDs in output'
+  c.switch [:i, :id]
+
   c.desc 'Delete a Project'
   c.default_value nil
   c.flag [:d, :delete]
