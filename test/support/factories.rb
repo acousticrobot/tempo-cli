@@ -18,6 +18,15 @@ module Tempo
         @species = params.fetch(:species, @genious)
       end
     end
+
+    class Tree < Tempo::Model::Composite
+      attr_accessor :position
+
+      def initialize( params={})
+        super params
+        @position = params[:position]
+      end
+    end
   end
 end
 
@@ -34,7 +43,6 @@ def pantherinae_factory
   end
 end
 
-
 def frog_factory
   Tempo::Model::Animal.clear_all
   @gray_tree_frog = Tempo::Model::Animal.new( { genious: "hyla", species: "h. versicolor" } )
@@ -42,6 +50,23 @@ def frog_factory
   @pine_barrens_tree_frog = Tempo::Model::Animal.new( { genious: "hyla", species: "h. andersonii", id: 4 } )
   @bird_voiced_tree_frog = Tempo::Model::Animal.new( { genious: "hyla", species: "h. avivoca"} )
   @chinese_tree_frog = Tempo::Model::Animal.new( { genious: "hyla", species: "h. chinensis"} )
+end
+
+def tree_factory
+  Tempo::Model::Tree.clear_all
+  @forest = []
+
+  trees = [{ position: "root1"},
+            { position: "root2"},
+            { position: "branch1"},
+            { position: "branch2"},
+            { position: "branch3"},
+            { position: "branch4"},
+            { position: "leaf1"},
+            { position: "leaf2"}]
+  trees.each do |t|
+    @forest << Tempo::Model::Tree.new(t)
+  end
 end
 
 def project_factory

@@ -13,27 +13,22 @@ module Tempo
         projects = options.fetch( :projects, Tempo::Model::Project.index )
         output = options.fetch( :output, true )
 
-        # replace 'current' with a find_by_id method
-        current = nil
         titles = []
         projects.each do |p|
+          spacer = p == Tempo::Model::Project.current ? "*" : " "
+
           if options[:id]
-            title = p.title + " [#{p.id}]"
+            title = p.title + spacer + "[#{p.id}]"
           else
-            title = p.title
+            title = p.title + spacer
           end
           titles << title
-          current = title if Tempo::Model::Project.current == p
         end
         titles.sort!
 
         view = []
         titles.each do |t|
-          if t == current
-            view << "* #{t}"
-          else
-            view << "  #{t}"
-          end
+          view << t.gsub( /^(.*)(([*| ])(\[\d+\])?)$/, '\4\3 \1')
         end
         return_view view, output
       end

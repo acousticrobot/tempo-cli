@@ -44,16 +44,62 @@ module Tempo
           end
         end
 
-        # TODO: try method_missing:
-        # http://www.trottercashion.com/2011/02/08/rubys-define_method-method_missing-and-instance_eval.html
+        def method_missing( meth, *args, &block )
+
+          # modified Active Record find by method:
+          if meth.to_s =~ /^find_by_(.+)$/
+            run_find_by_method($1, *args, &block)
+          else
+            super
+          end
+        end
+
+        def run_find_by_method( attrs, *args, &block )
+          # Make an array of attribute names
+          attrs = attrs.split('_and_')
+
+          # #transpose will zip the two arrays together like so:
+          #   [[:a, :b, :c], [1, 2, 3]].transpose
+          #   # => [[:a, 1], [:b, 2], [:c, 3]]
+          attrs_with_args = [attrs, args].transpose
+
+          filtered = @index.clone
+          attrs_with_args.each do | kv |
+            matches = find kv[0], kv[1]
+            matches.each do |match|
+              matches.delete match unless filtered.include? match
+              filtered = matches
+            end
+          end
+          filtered
+        end
+
+        # find by id should be exact, so we remove the array wrapper
+        def find_by_id( id )
+          matches = find "id", id
+          match = matches[0]
+        end
 
         # example: Tempo::Model.find("id", 1)
+        #
         def find( key, value )
           key = "@#{key}".to_sym
+          matches = []
           index.each do |i|
-            return i if i.instance_variable_get(key) == value
+            stored_value = i.instance_variable_get( key )
+
+            if stored_value.kind_of? String
+              if value.kind_of? Regexp
+                matches << i if value.match stored_value
+              else
+                matches << i if stored_value.include? value.to_s
+              end
+
+            elsif stored_value.kind_of? Integer
+              matches << i if stored_value == value.to_i
+            end
           end
-          nil
+          matches
         end
 
         def delete( instance )

@@ -23,11 +23,6 @@ module Tempo
           end
          titles.sort!
         end
-
-        # TODO replace with find_by_xxx
-        def find_by_id( id )
-          find("id", id.to_i)
-        end
       end
 
       def initialize(params={})

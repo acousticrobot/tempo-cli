@@ -92,10 +92,32 @@ describe Tempo do
       proc { gassy_tree_frog = Tempo::Model::Animal.new( args ) }.must_raise Tempo::Model::IdentityConflictError
     end
 
-    it "should find the first instance of the class" do
+    it "should find matching instances of the class" do
       frog_factory
+      search = Tempo::Model::Animal.find("id", 2)
+      search.must_equal [ @copes_gray_tree_frog ]
+
       search = Tempo::Model::Animal.find("species", "h. versicolor" )
-      search.must_equal @gray_tree_frog
+      search.must_equal [ @gray_tree_frog ]
+
+      search = Tempo::Model::Animal.find("species", /h\. / )
+      search.length.must_equal 5
+    end
+
+    it "should have a find_by_  method" do
+      frog_factory
+      search = Tempo::Model::Animal.find_by_id(2)
+      search.must_equal @copes_gray_tree_frog
+
+      search = Tempo::Model::Animal.find_by_species("h. versicolor")
+      search.must_equal [ @gray_tree_frog ]
+
+      search = Tempo::Model::Animal.find_by_genious_and_species("hayla", /versicolor/)
+      search.must_equal [ @gray_tree_frog ]
+    end
+
+    it "should still have a functioning method missing method" do
+      proc { Tempo::Model::Animal.foo }.must_raise NoMethodError
     end
 
     it "should have a delete instance method" do
