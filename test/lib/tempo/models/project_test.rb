@@ -1,7 +1,7 @@
 require "test_helper"
 
 describe Tempo do
-  describe "Project" do
+  describe "Model::Project" do
 
     it "should inherit readable only id" do
       project_factory
