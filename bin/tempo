@@ -32,7 +32,11 @@ If suplied with arguments
 and no command options, a new project will be added.
 
 Arguments supplied to --list, --delete, and --[un]tag
-will use fuzzy matching, unless you use the --exact flag
+will use fuzzy matching unless you:
+
+ - Use the --exact flag to match the arguments exactly
+
+ - Use the --id tag to match by id
 
 example: adding a new project titled 'star gazing'
 
@@ -57,7 +61,8 @@ command [:project, :p] do |c|
   c.long_desc "Match project with an exact title"
   c.switch [:e, :exact]
 
-  c.desc 'show IDs in output'
+  c.long_desc 'list by or perfom command by project id'
+  c.desc 'show IDs in output or perform command by matching to id'
   c.switch [:i, :id]
 
   c.desc 'Delete a Project'
@@ -108,12 +113,35 @@ end
 # COMMAND: CHECKOUT
 
 desc 'Checkout a project to track time against'
-arg_name '"name of the project"'
+long_desc "Checkout the Projects that timed tasks are assigned to.
 
+Arguments supplied will use fuzzy matching unless you:
+
+ - Use the --exact flag to match the arguments exactly
+
+ - Use the --id tag to match by id
+
+example: checking out an existing project titled 'star gazing'
+
+     tempo checkout star gazing
+
+example: checking out a new project titled 'star gazing'
+
+     tempo checkout -a star gazing"
+
+arg_name '"name of the project"'
 command [:checkout, :c] do |c|
 
   c.desc 'Add and checkout a new project'
   c.flag [:a, :add]
+
+  c.desc 'Exact Match'
+  c.long_desc "Match project with an exact title"
+  c.switch [:e, :exact]
+
+  c.desc 'checkout by project id'
+  c.switch [:i, :id]
+
 
   c.action do |global_options,options,args|
 
@@ -129,7 +157,7 @@ command [:checkout, :c] do |c|
       if args.empty?
         checkout.assistance
       else
-        checkout.existing_project args
+        checkout.existing_project options, args
       end
     end
   end
@@ -183,7 +211,8 @@ on_error do |exception|
   # Error logic here
   # return false to skip default error handling
 
-  puts exception.backtrace
+  # remove before distribution:
+  #puts exception.backtrace
 
   true
 end

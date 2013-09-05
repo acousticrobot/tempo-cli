@@ -3,6 +3,16 @@ module Tempo
     class Base
       class << self
 
+        def filter_projects_by_title( options, args )
+          if options[:exact]
+            match = reassemble_the args
+            match = [match]
+            model_match @projects, match, "title", :exact
+          else
+            model_match @projects, args, "title", :fuzzy
+          end
+        end
+
         # Takes an array of source strings
         # and filters them down to the ones
         # that match positively against every

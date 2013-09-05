@@ -21,29 +21,33 @@ module Tempo
           end
         end
 
-        def existing_project( args )
+        def existing_project( options, args )
 
-          #TODO: create project.find_by
-          matches = fuzzy_match @projects, args, "title"
-
-          if matches.empty?
-            puts "no projects match '#{reassemble_the args}'"
-
-          elsif matches.length > 1
-            puts "multiple projects found:"
-            # TODO projects_refine
-            Views::projects_list_view({ projects: matches })
+          if options[:id]
+            match = @projects.find_by_id args[0]
+            Views::no_project options[:id] if not match
 
           else
-            project = matches[0]
-            # TODO project.current?
-            if @projects.current == project
-              puts "already on project '#{project.title}'"
+            matches = filter_projects_by_title options, args
+
+            if matches.empty?
+              raise "no projects match '#{reassemble_the args}'"
+
+            elsif matches.length > 1
+              Views::ambiguous_project matches, "checkout"
+
             else
-              @projects.current project
-              @projects.save_to_file
-              puts "switched to project '#{project.title}'"
+              match = matches[0]
             end
+          end
+
+          # TODO project.current?
+          if @projects.current == match
+            puts "already on project '#{match.title}'"
+          else
+            @projects.current match
+            @projects.save_to_file
+            puts "switched to project '#{match.title}'"
           end
         end
 
