@@ -1,6 +1,6 @@
 module Tempo
   module Model
-    class Project < Tempo::Model::Base
+    class Project < Tempo::Model::Composite
       attr_accessor :title
       attr_reader :tags
       @current = 0

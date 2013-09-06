@@ -6,19 +6,19 @@ Feature: Checkout Command manages the active project
     Given an existing project file
     When I successfully run `tempo checkout "horticulture - backyard bonsai"`
     Then the stdout should contain "switched to project 'horticulture - backyard bonsai'"
-    And the project file should contain ":current: true" at line 18
+    And the project file should contain ":current: true" at line 24
 
   Scenario: Checkout an exising project with c
     Given an existing project file
     When I successfully run `tempo c "horticulture - backyard bonsai"`
     Then the stdout should contain "switched to project 'horticulture - backyard bonsai'"
-    And the project file should contain ":current: true" at line 18
+    And the project file should contain ":current: true" at line 24
 
   Scenario: Checkout an existing project by partial match
     Given an existing project file
     When I successfully run `tempo checkout "backyard bonsai"`
     Then the stdout should contain "switched to project 'horticulture - backyard bonsai'"
-    And the project file should contain ":current: true" at line 18
+    And the project file should contain ":current: true" at line 24
 
   Scenario: Checkout a project by id
     Given an existing project file
