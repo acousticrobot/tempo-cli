@@ -25,9 +25,9 @@ Feature: Project Command manages a list of projects
   Scenario: Listing all Projects with Ids displayed
     Given an existing project file
     When I successfully run `tempo project -li`
-    Then the stdout should contain "[1]  sheep hearding"
-    And the stdout should contain "[2]* horticulture - basement mushrooms"
-    And the stdout should contain "[3]  horticulture - backyard bonsai"
+    Then the output should match /\[1\]\t  sheep hearding/
+    Then the output should match /\[2\]\t\* horticulture - basement mushrooms/
+    Then the output should match /\[3\]\t  horticulture - backyard bonsai/
 
   Scenario: Listing Projects by matching against arguments
     Given an existing project file

@@ -116,6 +116,28 @@ describe Tempo do
       search.must_equal [ @gray_tree_frog ]
     end
 
+    it "should have a sort_by_ method" do
+      frog_factory
+      list = Tempo::Model::Animal.sort_by_species [ @gray_tree_frog, @pine_barrens_tree_frog ]
+      list.must_equal [ @pine_barrens_tree_frog, @gray_tree_frog ]
+
+      list = Tempo::Model::Animal.sort_by_id [ @gray_tree_frog, @pine_barrens_tree_frog ]
+      list.must_equal [ @gray_tree_frog, @pine_barrens_tree_frog ]
+
+      list = Tempo::Model::Animal.sort_by_species
+      list.must_equal [ @pine_barrens_tree_frog, @bird_voiced_tree_frog,
+                        @chinese_tree_frog, @copes_gray_tree_frog, @gray_tree_frog ]
+
+      list = Tempo::Model::Animal.sort_by_species do |frog|
+        species_list = ""
+        frog.each do |f|
+          species_list += "#{f.species}, "
+        end
+        species_list[0..-3]
+      end
+      list.must_equal "h. andersonii, h. avivoca, h. chinensis, h. chrysoscelis, h. versicolor"
+    end
+
     it "should still have a method_missing method" do
       proc { Tempo::Model::Animal.foo }.must_raise NoMethodError
     end

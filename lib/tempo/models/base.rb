@@ -46,12 +46,21 @@ module Tempo
 
         def method_missing( meth, *args, &block )
 
-          # modified Active Record find by method:
           if meth.to_s =~ /^find_by_(.+)$/
             run_find_by_method($1, *args, &block)
+
+          elsif meth.to_s =~ /^sort_by_(.+)$/
+            run_sort_by_method($1, *args, &block)
           else
             super
           end
+        end
+
+        def run_sort_by_method( attribute, args=@index.clone, &block )
+          attr = "@#{attribute}".to_sym
+          args.sort! { |a,b| a.instance_variable_get( attr ) <=> b.instance_variable_get( attr ) }
+          return args unless block
+          block.call args
         end
 
         def run_find_by_method( attrs, *args, &block )

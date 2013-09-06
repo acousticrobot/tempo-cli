@@ -9,27 +9,26 @@ module Tempo
         view
       end
 
+      def active_indicator( project )
+        indicator = project == Tempo::Model::Project.current ? "* " : "  "
+      end
+
       def projects_list_view( options={} )
         projects = options.fetch( :projects, Tempo::Model::Project.index )
         output = options.fetch( :output, true )
 
-        titles = []
-        projects.each do |p|
-          spacer = p == Tempo::Model::Project.current ? "*" : " "
-
-          if options[:id]
-            title = p.title + spacer + "[#{p.id}]"
-          else
-            title = p.title + spacer
+        view = Tempo::Model::Project.sort_by_title projects do |projects|
+          view = []
+          projects.each do |p|
+            if options[:id]
+              view << "[#{p.id}]\t#{active_indicator p}#{p.title}"
+            else
+              view << "#{active_indicator p}#{p.title}"
+            end
           end
-          titles << title
+          view
         end
-        titles.sort!
 
-        view = []
-        titles.each do |t|
-          view << t.gsub( /^(.*)(([*| ])(\[\d+\])?)$/, '\4\3 \1')
-        end
         return_view view, output
       end
 
