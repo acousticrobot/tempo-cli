@@ -42,7 +42,8 @@ describe Tempo do
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
                             "---", ":id: 2", ":title: horticulture - basement mushrooms", ":tags:", "- farming", "- fungi", ":current: true",
-                            "---", ":id: 3", ":title: horticulture - backyard bonsai", ":tags:", "- farming", "- miniaturization", "- trees"]    end
+                            "---", ":id: 3", ":title: horticulture - backyard bonsai", ":tags:", "- farming", "- miniaturization", "- trees"]
+    end
 
     it "should return an alphabatized list of project titles" do
       project_factory

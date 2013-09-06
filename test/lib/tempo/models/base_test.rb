@@ -116,7 +116,7 @@ describe Tempo do
       search.must_equal [ @gray_tree_frog ]
     end
 
-    it "should still have a functioning method missing method" do
+    it "should still have a method_missing method" do
       proc { Tempo::Model::Animal.foo }.must_raise NoMethodError
     end
 

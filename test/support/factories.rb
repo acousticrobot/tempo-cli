@@ -67,6 +67,13 @@ def tree_factory
   trees.each do |t|
     @forest << Tempo::Model::Tree.new(t)
   end
+
+  @forest[0] << @forest[2]
+  @forest[2] << @forest[6]
+  @forest[2] << @forest[7]
+  @forest[1] << @forest[3]
+  @forest[1] << @forest[4]
+  @forest[4] << @forest[5]
 end
 
 def project_factory
