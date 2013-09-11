@@ -184,7 +184,7 @@ end
 # COMMAND: ARRANGE
 
 desc '@TODO Arrange project hierarchy'
-long_desc "Arrange projects into a child / parent hierarchy
+long_desc "Arrange projects into a parent/child hierarchy
 
 New projects are added as root projects by default.
 
@@ -210,8 +210,8 @@ $ tempo arrange << aquascaping
 # Arrange an existing project as a child project
 $ tempo arrange aquascaping << coral pruning"
 
-arg_name 'parent project << child project'
-command [:a, :arrange] do |c|
+arg_name '[parent project] : child project'
+command [:arrange, :a ] do |c|
 
   c.desc 'use an exact match for project title'
   c.switch [:e, :exact]
