@@ -3,7 +3,17 @@ Feature: Project Command manages a list of projects
   New projects can be added and deleted
   Projects can also be tagged as inactive or inactive
 
-  Scenario: Adding the first project creates a file n current project
+  Scenario: Listing projects before any projects exist
+    Given no existing project file
+    When I run `tempo project`
+    Then the stderr should contain "error: no projects file exists"
+
+  Scenario: Listing projects before any projects exist
+    Given no existing project file
+    When I run `tempo project --list`
+    Then the stderr should contain "error: no projects file exists"
+
+  Scenario: Adding the first project creates a file with a current project
     Given no existing project file
     When I successfully run `tempo project horticulture`
     Then the project file should contain ":title: horticulture" at line 5

@@ -48,7 +48,10 @@ module Tempo
       # list of projects, build according to options
       #
       def projects_list_view( options={} )
+
         projects = options.fetch( :projects, Tempo::Model::Project.index )
+        return no_file( "projects" ) if projects.empty?
+
         output = options.fetch( :output, true )
         depth = options.fetch( :depth, 0 )
         parent = options.fetch( :parent, :root )
@@ -101,6 +104,10 @@ module Tempo
         view << "options: #{options}"
         view << "args: #{args}"
         return_view view, output
+      end
+
+      def no_file( request )
+        raise "no #{request} file exists"
       end
 
       def no_project( request )

@@ -106,6 +106,7 @@ module Tempo
         end
 
         def active_only( options )
+          raise Views::no_file( :projects ) if @projects.index.empty?
           puts Views::project_view @projects.current, options
         end
       end #class << self
