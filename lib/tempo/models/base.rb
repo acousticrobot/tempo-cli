@@ -67,14 +67,13 @@ module Tempo
           # Make an array of attribute names
           attrs = attrs.split('_and_')
 
-          # #transpose will zip the two arrays together like so:
-          #   [[:a, :b, :c], [1, 2, 3]].transpose
-          #   # => [[:a, 1], [:b, 2], [:c, 3]]
           attrs_with_args = [attrs, args].transpose
 
-          filtered = @index.clone
+          filtered = index.clone
           attrs_with_args.each do | kv |
             matches = find kv[0], kv[1]
+
+            return matches if matches.empty?
             matches.each do |match|
               matches.delete match unless filtered.include? match
               filtered = matches

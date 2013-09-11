@@ -10,8 +10,7 @@ module Tempo
 
           puts "attempting to add #{request}"
 
-          # TODO projects.include? :title, request
-          if @projects.list.include? request
+          if @projects.include? request
             raise "project '#{request}' already exists"
 
           else
@@ -30,6 +29,8 @@ module Tempo
           else
             matches = filter_projects_by_title options, args
 
+            # request = reassemble_the args
+            # TODO match = single_match matches, request, :checkout
             if matches.empty?
               raise "no projects match '#{reassemble_the args}'"
 

@@ -16,12 +16,13 @@ module Tempo
           end
         end
 
-        def list
-          titles = []
-          index.each do |p|
-            titles << p.title
+        def include?( title )
+          matches = find_by_title( title )
+          return false if matches.empty?
+          matches.each do |match|
+            return true if match.title == title
           end
-         titles.sort!
+          false
         end
       end
 

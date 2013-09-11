@@ -28,7 +28,7 @@ module Tempo
       end
 
       def << child
-        @children << child.id
+        @children << child.id unless @children.include? child.id
         @children.sort!
         child.parent = self.id
       end

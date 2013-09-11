@@ -3,20 +3,25 @@ When /^I get help for "([^""]*)"$/ do |app_name|
   step %(I run `#{app_name} help`)
 end
 
+Given /^no existing project file$/ do
+  @testing_env = File.join( ENV['HOME'], '.tempo' )
+  Dir.mkdir( @testing_env, 0700 ) unless File.exists?( @testing_env )
+  projects_file = File.join( @testing_env, 'tempo_projects.yaml' )
+  FileUtils.rm( projects_file ) if File.exists?( projects_file )
+end
+
 Given /^an existing project file$/ do
   @testing_env = File.join( ENV['HOME'], '.tempo' )
   Dir.mkdir( @testing_env, 0700 ) unless File.exists?( @testing_env )
   projects_file = File.join( @testing_env, 'tempo_projects.yaml' )
 
   File.open( projects_file,'w' ) do |f|
-    projects = [ "---", ":id: 1", ":title: sheep hearding", ":tags: []",
-
-                 "---", ":id: 2", ":title: horticulture - basement mushrooms",
-                    ":tags:", "- fungi", "- farming", ":current: true",
-
-                 "---", ":id: 3", ":title: horticulture - backyard bonsai",
-                    ":tags:", "- trees", "- farming", "- miniaturization"
-                ]
+    projects = ["---", ":id: 1", ":parent: :root", ":children:", "- 2", "- 3", ":title: horticulture", ":tags:", "- cultivation", ":current: true",
+                "---", ":id: 2", ":parent: 1", ":children: []", ":title: backyard bonsai", ":tags:", "- miniaturization", "- outdoors",
+                "---", ":id: 3", ":parent: 1", ":children: []", ":title: basement mushrooms", ":tags:", "- fungi", "- indoors",
+                "---", ":id: 4", ":parent: :root", ":children:", "- 5", "- 6", ":title: aquaculture", ":tags:", "- cultivation",
+                "---", ":id: 5", ":parent: 4", ":children: []", ":title: nano aquarium", ":tags:", "- miniaturization",
+                "---", ":id: 6", ":parent: 4", ":children: []", ":title: reading aquaculture digest", ":tags: []"]
 
     projects.each do |p|
       f.puts p

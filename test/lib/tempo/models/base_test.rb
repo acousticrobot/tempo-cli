@@ -112,7 +112,10 @@ describe Tempo do
       search = Tempo::Model::Animal.find_by_species("h. versicolor")
       search.must_equal [ @gray_tree_frog ]
 
-      search = Tempo::Model::Animal.find_by_genious_and_species("hayla", /versicolor/)
+      search = Tempo::Model::Animal.find_by_genious("hyla")
+      search.length.must_equal 5
+
+      search = Tempo::Model::Animal.find_by_genious_and_species("hyla", /versicolor/)
       search.must_equal [ @gray_tree_frog ]
     end
 

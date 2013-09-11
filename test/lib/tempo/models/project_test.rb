@@ -51,9 +51,10 @@ describe Tempo do
                               ":tags:", "- farming", "- miniaturization", "- trees"]
     end
 
-    it "should return an alphabatized list of project titles" do
+    it "should return an boolean to the include? method" do
       project_factory
-      Tempo::Model::Project.list.must_equal [ "horticulture - backyard bonsai", "horticulture - basement mushrooms", "sheep hearding" ]
+      Tempo::Model::Project.include?("bonsai").must_equal false
+      Tempo::Model::Project.include?("horticulture - backyard bonsai").must_equal true
     end
 
     it "should have a current project getter" do

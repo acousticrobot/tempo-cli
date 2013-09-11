@@ -13,23 +13,27 @@ version Tempo::VERSION
 # == GLOBAL OPTIONS ==
 
 desc 'verbose output'
+long_desc 'include variable reporting in the command output'
 switch [:v,:verbose]
 
-desc 'Describe some flag here'
-default_value 'the default'
-arg_name 'The name of the argument'
-flag [:f,:flagname]
+# desc 'Describe some flag here'
+# default_value 'the default'
+# arg_name 'The name of the argument'
+# flag [:f,:flagname]
 
 # COMMAND: PROJECT
 
 desc 'Manage the Projects that timed tasks are assigned to'
 long_desc "Manage the Projects that timed tasks are assigned to.
 
-By default, lists all the projects.
+By default, lists the current project.
+
+With --list tag an no arguments suplied, lists all projects.
+
 The active project will be marked by an asterisk.
 
-If suplied with arguments
-and no command options, a new project will be added.
+If suplied with arguments and no command options,
+a new project will be added.
 
 Arguments supplied to --list, --delete, and --[un]tag
 will use fuzzy matching unless you:
@@ -38,13 +42,19 @@ will use fuzzy matching unless you:
 
  - Use the --id tag to match by id
 
-example: adding a new project titled 'star gazing'
+examples:
 
-     tempo project star gazing
+# list current project
+$ tempo project
 
-example: adding a new project tagged 'stellar'
+# list all projects
+$ tempo project --list
 
-     tempo project --add star gazing --tag stellar"
+# adding a new project titled 'star gazing'
+$ tempo project star gazing
+
+# adding a new project tagged 'stellar'
+$ tempo project --add star gazing --tag stellar"
 
 arg_name '"name of the project"'
 command [:project, :p] do |c|
@@ -61,51 +71,59 @@ command [:project, :p] do |c|
   c.long_desc "Match project with an exact title"
   c.switch [:e, :exact]
 
-  c.long_desc 'list by or perfom command by project id'
-  c.desc 'show IDs in output or perform command by matching to id'
+  c.desc 'list by or perfom command by project id'
+  c.long_desc 'show IDs in output or perform command by matching to id'
   c.switch [:i, :id]
 
   c.desc 'Delete a Project'
   c.default_value nil
+  c.arg_name 'project title'
   c.flag [:d, :delete]
 
   c.desc 'Tag a Project'
   c.long_desc "Tag a project with one-word tags. Pass multiple tags in quotes to add multiple tags"
   c.default_value nil
+  c.arg_name 'tagword'
   c.flag [:t, :tag]
 
   c.desc 'Untag a Project'
   c.default_value nil
+  c.arg_name 'tagword'
   c.flag [:u, :untag]
 
   c.action do |global_options,options,args|
 
-    projects = Tempo::Controllers::Projects
+    controller = Tempo::Controllers::Projects
+
+    options[:verbose] = global_options[:verbose]
 
     # tag a project
     #
     if options[:tag]
-      projects.tag options, args
+      controller.tag options, args
 
     # untag a project
     #
     elsif options[:untag]
-      projects.tag options, args
+      controller.tag options, args
 
     # delete a project
     #
     elsif options[:delete]
-      projects.delete options, args
+      controller.delete options, args
 
     # add a project
     #
     elsif !options[:list] && !args.empty?
-      projects.add args
+      controller.add options, args
+
+    elsif !options[:list] && args.empty?
+      controller.active_only options
 
     # list projects, fiter by args
     #
     else
-      projects.index options, args
+      controller.index options, args
     end
   end
 end
@@ -121,69 +139,131 @@ Arguments supplied will use fuzzy matching unless you:
 
  - Use the --id tag to match by id
 
-example: checking out an existing project titled 'star gazing'
+examples:
 
-     tempo checkout star gazing
+# checking out an existing project titled 'star gazing'
+$ tempo checkout star gazing
 
-example: checking out a new project titled 'star gazing'
-
-     tempo checkout -a star gazing"
+# adding and checking out a new project titled 'star gazing'
+$ tempo checkout -a star gazing"
 
 arg_name '"name of the project"'
 command [:checkout, :c] do |c|
 
-  c.desc 'Add and checkout a new project'
+  c.desc 'Add and Checkout a new project'
+  c.arg_name 'project title'
   c.flag [:a, :add]
 
-  c.desc 'Exact Match'
-  c.long_desc "Match project with an exact title"
+  c.desc 'use an exact match for project title'
   c.switch [:e, :exact]
 
   c.desc 'checkout by project id'
   c.switch [:i, :id]
 
-
   c.action do |global_options,options,args|
 
-    checkout = Tempo::Controllers::Checkout
+    controller = Tempo::Controllers::Checkout
 
     # add and checkout a project
     #
     if options[:add]
-      checkout.add_project options, args
+      controller.add_project options, args
 
     # checkout existing project
     else
       if args.empty?
-        checkout.assistance
+        controller.assistance
       else
-        checkout.existing_project options, args
+        controller.existing_project options, args
       end
     end
   end
 end
 
-desc 'Describe begin here'
-arg_name 'Describe arguments to begin here'
+
+# COMMAND: ARRANGE
+
+desc '@TODO Arrange project hierarchy'
+long_desc "Arrange projects into a child / parent hierarchy
+
+New projects are added as root projects by default.
+
+Use the --child flag with the project command to add a new project as the child of the current project
+
+Use arrange to arrange existing projects as child or root projects.
+
+Arguments supplied will use fuzzy matching unless you:
+
+ - Use the --exact flag to match the arguments exactly
+
+ - Use the --id tag to match by id
+
+examples:
+
+# Add a new project as a child of the current project
+$ tempo checkout aquascaping
+$ tempo project --child mow the seagrass
+
+# Arrange an existing project as a root project
+$ tempo arrange << aquascaping
+
+# Arrange an existing project as a child project
+$ tempo arrange aquascaping << coral pruning"
+
+arg_name 'parent project << child project'
+command [:a, :arrange] do |c|
+
+  c.desc 'use an exact match for project title'
+  c.switch [:e, :exact]
+
+  c.desc 'checkout by project id'
+  c.switch [:i, :id]
+
+  c.action do |global_options,options,args|
+    controller = Tempo::Controllers::Arrange
+    controller.parse options, args
+  end
+end
+
+# parent << child
+# << project
+# tempo arrange << project
+# tempo arrange parent << child
+
+# COMMAND: EDIT
+
+# ( COMMAND: TAGS )?
+
+# COMMAND: BEGIN
+
+desc '@TODO Begin a time entry'
+arg_name 'time in, defaults to now'
 command :begin do |c|
   c.action do |global_options,options,args|
-    puts "begin command ran"
+    controller = Tempo::Controllers::Time
+    controller.start options, args
   end
 end
 
-desc 'Describe end here'
-arg_name 'Describe arguments to end here'
+# COMMAND: END
+
+desc '@Todo End a time entry'
+arg_name 'time out, defaults to now'
 command :end do |c|
   c.action do |global_options,options,args|
-    puts "end command ran"
+    end_time = Tempo::Controllers::Time
+    controller.end options args
   end
 end
 
-desc 'Describe report here'
-arg_name 'Describe arguments to report here'
+# COMMAND: REPORT
+
+desc '@Todo Report time entries'
+arg_name 'args'
 command :report do |c|
   c.action do |global_options,options,args|
-    puts "report command ran"
+    controller = Tempo::Controllers::Report
+    controller.report options args
   end
 end
 
@@ -212,7 +292,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  #puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

@@ -28,15 +28,23 @@ module Tempo
           end
         end
 
-        def add( args, tags=nil )
+        def add( options, args, tags=nil )
           request = reassemble_the args
 
-          if @projects.list.include? request
+          if @projects.include? request
             raise "project '#{request}' already exists"
+
           else
-            @projects.new({ title: request, tags: tags })
+            project = @projects.new({ title: request, tags: tags })
+
+            if @projects.index.length == 1
+              @projects.current project
+            end
+
             @projects.save_to_file
-            puts "added project '#{request}'"
+
+            options[:active] = false
+            puts "added project: #{Views::project_view( project, options )}"
           end
         end
 
@@ -50,15 +58,7 @@ module Tempo
             request = reassemble_the args, options[:delete]
             matches = filter_projects_by_title options, args
 
-            if matches.length == 0
-              Views::no_project request
-
-            elsif matches.length > 1
-              Views::ambiguous_project matches, "delete"
-
-            else
-              match = matches[0]
-            end
+            match = single_match matches, request, :delete
           end
           if match == @projects.current
             raise "cannot delete the active project"
@@ -76,11 +76,14 @@ module Tempo
         end
 
         def tag( options, args )
+
+          # TODO @projects_find_by_tag if args.empty?
+
           tags = options[:tag].split if options[:tag]
           untags = options[:untag].split if options[:untag]
 
           if options[:add]
-            add args, tags
+            add options, args, tags
             Views::tag_view tags
 
           else
@@ -91,24 +94,19 @@ module Tempo
               request = reassemble_the args
               matches = filter_projects_by_title options, args
 
-              if matches.length == 0
-                Views::no_project request
-
-              elsif matches.length > 1
-                command = options[:tag] ? "tag" : "untag"
-                Views::ambiguous_project matches, command
-
-              else
-                match = matches[0]
-              end
+              command = options[:tag] ? "tag" : "untag"
+              match = single_match matches, request, command
             end
 
             match.tag tags
             match.untag untags
             @projects.save_to_file
-            puts "project: #{match.title}"
-            Views::tag_view match.tags
+            puts Views::project_view match, options
           end
+        end
+
+        def active_only( options )
+          puts Views::project_view @projects.current, options
         end
       end #class << self
     end
