@@ -2,6 +2,13 @@ require "test_helper"
 require "pry"
 
 describe Tempo do
+
+  before do
+    # See Rakefile for directory prep and cleanup
+    @dir = File.join( Dir.home,"tempo" )
+    Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+  end
+
   describe "Model::Base" do
 
     it "should be a easy to inherit from" do
@@ -31,7 +38,7 @@ describe Tempo do
 
     it "should grant children the ability to write to a file" do
       frog_factory
-      test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+      test_file = File.join(ENV['HOME'],'tempo','tempo_animals.yaml')
       File.delete(test_file) if File.exists?( test_file )
       contents = Tempo::Model::Animal.save_to_file
       contents = eval_file_as_array( test_file )
@@ -43,7 +50,7 @@ describe Tempo do
      end
 
     it "should grant children ability to read from a file" do
-      test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+      test_file = File.join(ENV['HOME'],'tempo','tempo_animals.yaml')
       File.delete(test_file) if File.exists?( test_file )
       file_lines = [ "---", ":id: 11", ":genious: hyla", ":species: h. versicolor",
                      "---", ":id: 12", ":genious: hyla", ":species: h. chrysoscelis",

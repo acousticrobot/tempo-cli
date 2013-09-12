@@ -1,6 +1,13 @@
 require "test_helper"
 
 describe Tempo do
+
+  before do
+    # See Rakefile for directory prep and cleanup
+    @dir = File.join( Dir.home,"tempo" )
+    Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+  end
+
   describe "Model::Composite" do
 
     it "should inherit readable only id" do
@@ -21,7 +28,7 @@ describe Tempo do
 
     it "should save to file a collection of composits" do
       tree_factory
-      test_file = File.join(ENV['HOME'],'.tempo','tempo_trees.yaml')
+      test_file = File.join(ENV['HOME'],'tempo','tempo_trees.yaml')
       Tempo::Model::Tree.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":parent: :root", ":children:", "- 3", ":position: root1",
@@ -36,7 +43,7 @@ describe Tempo do
 
     it "should revive a tree structure from a file" do
        tree_factory
-       test_file = File.join(ENV['HOME'],'.tempo','tempo_trees.yaml')
+       test_file = File.join(ENV['HOME'],'tempo','tempo_trees.yaml')
        File.delete(test_file) if File.exists?( test_file )
        contents = Tempo::Model::Tree.save_to_file
        Tempo::Model::Tree.clear_all

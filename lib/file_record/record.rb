@@ -36,7 +36,7 @@ module FileRecord
     # record a child of Tempo::Model
     def self.model_save( model )
       file = model_filename model
-      file_path = File.join(Dir.home,'.tempo', file)
+      file_path = File.join(Dir.home,'tempo', file)
       File.delete( file_path ) if File.exists?( file_path )
       File.open( file_path,'a' ) do |f|
         model.index.each do |m|

@@ -32,7 +32,7 @@ module Tempo
         def match_project( options, args )
           if options[:id]
             match = @projects.find_by_id args[0]
-            Views::no_project args if not match
+            Views::no_items "projects", args if not match
           else
             matches = filter_projects_by_title options, args
             request = reassemble_the args

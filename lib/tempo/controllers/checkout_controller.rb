@@ -11,12 +11,12 @@ module Tempo
           puts "attempting to add #{request}"
 
           if @projects.include? request
-            raise "project '#{request}' already exists"
+            Views::already_exists "project", request
 
           else
             project = @projects.new({ title: request, current: true })
             @projects.save_to_file
-            puts "switched to new project '#{project.title}'"
+            Views::switched_item "new project", project.title
           end
         end
 
@@ -24,31 +24,22 @@ module Tempo
 
           if options[:id]
             match = @projects.find_by_id args[0]
-            Views::no_project options[:id] if not match
+            Views::no_items "projects", options[:id] if not match
 
           else
             matches = filter_projects_by_title options, args
 
-            # request = reassemble_the args
-            # TODO match = single_match matches, request, :checkout
-            if matches.empty?
-              raise "no projects match '#{reassemble_the args}'"
-
-            elsif matches.length > 1
-              Views::ambiguous_project matches, "checkout"
-
-            else
-              match = matches[0]
-            end
+            request = reassemble_the args
+            match = single_match matches, request, :checkout
           end
 
           # TODO project.current?
           if @projects.current == match
-            puts "already on project '#{match.title}'"
+            puts "already on project: #{match.title}"
           else
             @projects.current match
             @projects.save_to_file
-            puts "switched to project '#{match.title}'"
+            Views::switched_item "project", match.title
           end
         end
 

@@ -4,17 +4,17 @@ Feature: Project Command manages a list of projects
   Projects can also be tagged as inactive or inactive
 
   Scenario: Listing projects before any projects exist
-    Given no existing project file
+    Given a clean installation
     When I run `tempo project`
-    Then the stderr should contain "error: no projects file exists"
+    Then the project file should contain "#" at line 1
 
   Scenario: Listing projects before any projects exist
-    Given no existing project file
+    Given a clean installation
     When I run `tempo project --list`
-    Then the stderr should contain "error: no projects file exists"
+    Then the stdout should contain "no projects exist"
 
   Scenario: Adding the first project creates a file with a current project
-    Given no existing project file
+    Given a clean installation
     When I successfully run `tempo project horticulture`
     Then the project file should contain ":title: horticulture" at line 5
     And the project file should contain "current" at line 7
@@ -76,8 +76,8 @@ Feature: Project Command manages a list of projects
 
   Scenario: Listing no Project when matching against arguments returns nothing
     Given an existing project file
-    When I successfully run `tempo project -l "beekeeping"`
-    Then the stdout should contain "no projects match 'beekeeping'"
+    When I run `tempo project -l "beekeeping"`
+    Then the stderr should contain "no projects match the request: beekeeping"
 
   Scenario: Adding a project
     Given an existing project file
@@ -99,19 +99,19 @@ Feature: Project Command manages a list of projects
   Scenario: Deleting a project by full match
     Given an existing project file
     When I successfully run `tempo project -d "backyard bonsai"`
-    Then the stdout should contain "deleted project 'backyard bonsai'"
+    Then the stdout should contain "deleted project: backyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project by partial match
     Given an existing project file
     When I successfully run `tempo project -d "bonsai"`
-    Then the stdout should contain "deleted project 'backyard bonsai'"
+    Then the stdout should contain "deleted project: backyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project without quotation marks
     Given an existing project file
     When I successfully run `tempo project -d backyard bonsai`
-    Then the stdout should contain "deleted project 'backyard bonsai'"
+    Then the stdout should contain "deleted project: backyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project with list flag works even without quotes around a partial match
@@ -137,13 +137,13 @@ Feature: Project Command manages a list of projects
   Scenario: Deleting a project by Id
     Given an existing project file
     When I successfully run `tempo project -id 3`
-    Then the stdout should contain "deleted project 'basement mushrooms'"
+    Then the stdout should contain "deleted project: basement mushrooms"
     And the project file should not contain ":title: basement mushrooms"
 
   Scenario: Attempting to delete a non-existing project Fails
     Given an existing project file
     When I run `tempo project -d "sheep hearding - lanolin extraction"`
-    Then the stderr should contain "error: no such project 'sheep hearding - lanolin extraction'"
+    Then the stderr should contain "error: no projects match the request: sheep hearding - lanolin extraction"
 
   Scenario: Attempting to Delete the current project Fails
     Given an existing project file

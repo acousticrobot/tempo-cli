@@ -41,7 +41,7 @@ task :tests_setup do |t|
   @ORIGINAL_HOME = ENV['HOME']
   ENV['HOME'] = ENV['HOME'] + "/testing"
   Dir.mkdir(ENV['HOME'], 0700) unless File.exists?(ENV['HOME'])
-  dir = File.join(Dir.home,".tempo")
+  dir = File.join(Dir.home,"tempo")
   Dir.mkdir(dir, 0700) unless File.exists?(dir)
 end
 
@@ -59,7 +59,7 @@ Rake::TestTask.new do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
-task :test => [:tests_setup, :run_tests, :tests_teardown]
+task :test => [:tests_setup, :run_tests, :tests_teardown ]
 
 task :clean => [:tests_setup, :tests_teardown]
 

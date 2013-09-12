@@ -4,7 +4,9 @@ describe FileRecord do
 
   before do
     # See Rakefile for directory prep and cleanup
-    @dir = File.join(Dir.home,".tempo", "tempo_unit_tests")
+    dir = File.join(Dir.home,"tempo")
+    Dir.mkdir(dir, 0700) unless File.exists?(dir)
+    @dir = File.join(Dir.home,"tempo", "tempo_unit_tests")
     Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
   end
 
@@ -88,7 +90,7 @@ describe FileRecord do
     describe "recording a Tempo Model" do
 
       it "should create a record of all instances" do
-        test_file = File.join(ENV['HOME'],'.tempo','tempo_animals.yaml')
+        test_file = File.join(ENV['HOME'],'tempo','tempo_animals.yaml')
         File.delete( test_file ) if File.exists?( test_file )
         pantherinae_factory
         FileRecord::Record.model_save( Tempo::Model::Animal )

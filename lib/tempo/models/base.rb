@@ -38,7 +38,7 @@ module Tempo
         end
 
         def read_from_file
-          file = File.join(Dir.home,'.tempo', self.file)
+          file = File.join(Dir.home,'tempo', self.file)
           instances = YAML::load_stream( File.open( file ) )
           instances.each do |i|
             new( i )

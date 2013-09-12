@@ -1,6 +1,13 @@
 require "test_helper"
 
 describe Tempo do
+
+  before do
+    # See Rakefile for directory prep and cleanup
+    @dir = File.join( Dir.home,"tempo" )
+    Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+  end
+
   describe "Model::Project" do
 
     it "should inherit readable only id" do
@@ -39,7 +46,7 @@ describe Tempo do
 
     it "should save to file a collection of projects" do
       project_factory
-      test_file = File.join(ENV['HOME'],'.tempo','tempo_projects.yaml')
+      test_file = File.join(ENV['HOME'],'tempo','tempo_projects.yaml')
       Tempo::Model::Project.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":parent: :root", ":children: []",

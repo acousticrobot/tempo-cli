@@ -50,7 +50,7 @@ module Tempo
       def projects_list_view( options={} )
 
         projects = options.fetch( :projects, Tempo::Model::Project.index )
-        return no_file( "projects" ) if projects.empty?
+        return no_items( "projects" ) if projects.empty?
 
         output = options.fetch( :output, true )
         depth = options.fetch( :depth, 0 )
@@ -106,12 +106,28 @@ module Tempo
         return_view view, output
       end
 
-      def no_file( request )
-        raise "no #{request} file exists"
+      def added_item( item, request )
+        puts "added #{item}: #{request}"
       end
 
-      def no_project( request )
-        raise "no such project '#{request}'"
+      def deleted_item( item, request )
+        puts "deleted #{item}: #{request}"
+      end
+
+      def switched_item( item, request )
+        puts "switched to #{item}: #{request}"
+      end
+
+      def no_items( items )
+        puts "no #{items} exist"
+      end
+
+      def no_match( items, request )
+        raise "no #{items} match the request: #{request}"
+      end
+
+      def already_exists( item, request )
+        raise "#{item} '#{request}' already exists"
       end
 
       def ambiguous_project( matches, command, options={} )

@@ -17,7 +17,7 @@ module Tempo
           else
             project = @projects.new({ title: request, current: true })
             @projects.save_to_file
-            puts "switched to new project '#{project.title}'"
+            Views::switched_item "project", project.title
           end
         end
 

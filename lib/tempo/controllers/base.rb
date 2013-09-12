@@ -86,7 +86,7 @@ module Tempo
         # returns the single match
         def single_match( matches, request, command )
           if matches.length == 0
-            Views::no_project request
+            Views::no_match "projects", request
 
           elsif matches.length > 1
             Views::ambiguous_project matches, command

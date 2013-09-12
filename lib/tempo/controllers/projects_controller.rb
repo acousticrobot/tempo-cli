@@ -6,7 +6,7 @@ module Tempo
       class << self
 
         def load
-          if File.exists?( File.join( ENV['HOME'], '.tempo', @projects.file ))
+          if File.exists?( File.join( ENV['HOME'], 'tempo', @projects.file ))
             @projects.read_from_file
           end
         end
@@ -19,8 +19,9 @@ module Tempo
 
           else
             matches = filter_projects_by_title options, args
+
             if matches.empty?
-              puts "no projects match '#{request}'"
+              Views::no_match "projects", request
 
             else
               Views::projects_list_view({ projects: matches })
@@ -32,7 +33,7 @@ module Tempo
           request = reassemble_the args
 
           if @projects.include? request
-            raise "project '#{request}' already exists"
+            Views::already_exists "project", request
 
           else
             project = @projects.new({ title: request, tags: tags })
@@ -44,7 +45,7 @@ module Tempo
             @projects.save_to_file
 
             options[:active] = false
-            puts "added project: #{Views::project_view( project, options )}"
+            Views::added_item "project", Views::project_view( project, options )
           end
         end
 
@@ -52,7 +53,7 @@ module Tempo
 
           if options[:id]
             match = @projects.find_by_id options[:delete]
-            Views::no_project options[:id] if not match
+            Views::no_items "projects", options[:id] if not match
           else
             # first arg without quotes from GLI will be the value of delete
             request = reassemble_the args, options[:delete]
@@ -68,7 +69,7 @@ module Tempo
             match.delete
             @projects.save_to_file
             if !options[:list]
-              puts "deleted project '#{match.title}'"
+              Views::deleted_item "project", match.title
             else
               Views::projects_list_view
             end
@@ -89,7 +90,7 @@ module Tempo
           else
             if options[:id]
               match = @projects.find_by_id args[0]
-              Views::no_project options[:id] if not match
+              Views::no_items "projects", options[:id] if not match
             else
               request = reassemble_the args
               matches = filter_projects_by_title options, args
