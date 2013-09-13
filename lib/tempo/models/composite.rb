@@ -1,3 +1,9 @@
+# Composite Model extends base to accomodate tree structures
+# Each instance can be a root instance, or a child of another
+# instance, and each instance can have any number of children.
+# report_trees is a utility method for testing the validity of the
+# model, and cam be used as a template for creating tree reports.
+
 module Tempo
   module Model
     class Composite < Tempo::Model::Base

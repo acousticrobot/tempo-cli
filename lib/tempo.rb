@@ -4,10 +4,11 @@ require 'tempo/version.rb'
 require 'tempo/views.rb'
 
 require 'tempo/models/base.rb'
+require 'tempo/models/composite.rb'
+require 'tempo/models/log.rb'
 Dir[File.dirname(__FILE__) + '/tempo/models/*.rb'].each {|file| require file }
 
 require 'tempo/controllers/base.rb'
-require 'tempo/models/composite.rb'
 Dir[File.dirname(__FILE__) + '/tempo/controllers/*.rb'].each {|file| require file }
 
 require 'file_record/directory.rb'

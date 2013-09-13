@@ -151,6 +151,7 @@ module Tempo
       def self.add_to_index( member )
         @index ||= []
         @index << member
+        @index.sort! { |a,b| a.id <=> b.id }
       end
 
       def self.add_id( id )

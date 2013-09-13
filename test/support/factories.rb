@@ -27,6 +27,16 @@ module Tempo
         @position = params[:position]
       end
     end
+
+    class MessageLogs < Tempo::Model::Log
+      attr_accessor :message
+
+      def initialize( params={} )
+        super params
+        @message = params[:message]
+      end
+    end
+
   end
 end
 
@@ -83,3 +93,13 @@ def project_factory
   @project_3 = Tempo::Model::Project.new({ title: 'horticulture - backyard bonsai', tags: [ "trees", "farming", "miniaturization" ]})
 end
 
+def log_factory
+  Tempo::Model::MessageLogs.clear_all
+  @log1 = Tempo::Model::MessageLogs.new({ message: "day 1 pet the sheep", start_time: Time.new(2013, 1, 1, 7 ) })
+  @log2 = Tempo::Model::MessageLogs.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2013, 1, 1, 7, 30 ) })
+  @log3 = Tempo::Model::MessageLogs.new({ message: "day 1 water the bonsai", start_time: Time.new(2013, 1, 1, 12, 30 ) })
+
+  @log1 = Tempo::Model::MessageLogs.new({ message: "day 2 pet the sheep", start_time: Time.new(2013, 1, 2, 7, 15 ) })
+  @log2 = Tempo::Model::MessageLogs.new({ message: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2013, 1, 2, 7, 45 ) })
+  @log3 = Tempo::Model::MessageLogs.new({ message: "day 2 water the bonsai", start_time: Time.new(2013, 1, 2, 12, 00 ) })
+end

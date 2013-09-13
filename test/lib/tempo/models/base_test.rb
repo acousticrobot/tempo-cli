@@ -1,5 +1,4 @@
 require "test_helper"
-require "pry"
 
 describe Tempo do
 
@@ -44,8 +43,8 @@ describe Tempo do
       contents = eval_file_as_array( test_file )
       contents.must_equal ["---", ":id: 1", ":genious: hyla", ":species: h. versicolor",
                            "---", ":id: 2", ":genious: hyla", ":species: h. chrysoscelis",
-                           "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
                            "---", ":id: 3", ":genious: hyla", ":species: h. avivoca",
+                           "---", ":id: 4", ":genious: hyla", ":species: h. andersonii",
                            "---", ":id: 5", ":genious: hyla", ":species: h. chinensis" ]
      end
 
