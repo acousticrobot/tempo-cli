@@ -4,9 +4,14 @@ module Tempo
 
       # puts each line if output=true
       # else returns an array of view lines
-      def return_view( view, output )
+      def return_view( view, options={} )
+        output = options.fetch( :output, true )
         if output
-          view.each { |line| puts line }
+          if view.is_a? String
+            puts view
+          else
+            view.each { |line| puts line }
+          end
         end
         view
       end
@@ -75,13 +80,12 @@ module Tempo
           view
         end
 
-        return_view view, output
+        return_view view, options
       end
 
-      # list of projects, view build according to options
+      # list of sorted projects, no hierarchy
       def flat_projects_list_view( options={} )
         projects = options.fetch( :projects, Tempo::Model::Project.index )
-        output = options.fetch( :output, true )
 
         view = Tempo::Model::Project.sort_by_title projects do |projects|
           view = []
@@ -95,31 +99,31 @@ module Tempo
           view
         end
 
-        return_view view, output
+        return_view view, options
       end
 
-      def options_report(global_options, options, args, output=true)
+      def options_report( global_options, options, args )
         view = []
         view << "global_options: #{global_options}"
         view << "options: #{options}"
         view << "args: #{args}"
-        return_view view, output
+        return_view view, options
       end
 
       def added_item( item, request )
-        puts "added #{item}: #{request}"
+        return_view "added #{item}: #{request}"
       end
 
       def deleted_item( item, request )
-        puts "deleted #{item}: #{request}"
+        return_view "deleted #{item}: #{request}"
       end
 
       def switched_item( item, request )
-        puts "switched to #{item}: #{request}"
+        return_view "switched to #{item}: #{request}"
       end
 
       def no_items( items )
-        puts "no #{items} exist"
+        return_view "no #{items} exist"
       end
 
       def no_match( items, request )
@@ -131,10 +135,11 @@ module Tempo
       end
 
       def ambiguous_project( matches, command, options={} )
-        output = options.fetch( :output, true )
-        puts "The following projects matched your search:"
-        projects_list_view({ projects: matches })
-        puts "please refine your search or use --exact to match args exactly"
+        view = []
+        view << "The following projects matched your search:"
+        view.push *projects_list_view({ projects: matches, output: false })
+        view << "please refine your search or use --exact to match args exactly"
+        return_view view, options
         raise "cannot #{command} multiple projects"
       end
     end

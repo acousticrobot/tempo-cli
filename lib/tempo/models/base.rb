@@ -1,4 +1,3 @@
-
 module Tempo
   module Model
 

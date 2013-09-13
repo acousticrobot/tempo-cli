@@ -20,8 +20,6 @@ module Tempo
             end
           end
 
-#          puts "parent: #{parent_args}, child: #{child_args}"
-
           if parent_args.empty?
             make_root_project( options, child_args )
           else

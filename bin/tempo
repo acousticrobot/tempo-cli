@@ -225,14 +225,7 @@ command [:arrange, :a ] do |c|
   end
 end
 
-# parent << child
-# << project
-# tempo arrange << project
-# tempo arrange parent << child
-
 # COMMAND: EDIT
-
-# ( COMMAND: TAGS )?
 
 # COMMAND: BEGIN
 

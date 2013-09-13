@@ -10,3 +10,4 @@ Feature: GLI bootstrapping sets up cucumber
     Given a clean installation
     When I successfully run `tempo project new project`
     Then the exit status should be 0
+    And the project file should contain ":title: new project"
