@@ -46,7 +46,8 @@ module FileRecord
     end
 
     def self.model_filename( model )
-      file = "tempo_#{model.name[14..-1].downcase}s.yaml"
+      file_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
+      file = "tempo#{file_name}s.yaml"
     end
 
     def read
