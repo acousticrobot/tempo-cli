@@ -28,8 +28,14 @@ module Tempo
       end
     end
 
-    class MessageLogs < Tempo::Model::Log
+    class MessageLog < Tempo::Model::Log
       attr_accessor :message
+
+      def self.clear_all()
+        @ids = {}
+        @index = {}
+        @id_counter = {}
+      end
 
       def initialize( params={} )
         super params
@@ -94,12 +100,12 @@ def project_factory
 end
 
 def log_factory
-  Tempo::Model::MessageLogs.clear_all
-  @log1 = Tempo::Model::MessageLogs.new({ message: "day 1 pet the sheep", start_time: Time.new(2013, 1, 1, 7 ) })
-  @log2 = Tempo::Model::MessageLogs.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2013, 1, 1, 7, 30 ) })
-  @log3 = Tempo::Model::MessageLogs.new({ message: "day 1 water the bonsai", start_time: Time.new(2013, 1, 1, 12, 30 ) })
+  Tempo::Model::MessageLog.clear_all
+  @log1 = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
+  @log2 = Tempo::Model::MessageLog.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
+  @log3 = Tempo::Model::MessageLog.new({ message: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 12, 30 ) })
 
-  @log1 = Tempo::Model::MessageLogs.new({ message: "day 2 pet the sheep", start_time: Time.new(2013, 1, 2, 7, 15 ) })
-  @log2 = Tempo::Model::MessageLogs.new({ message: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2013, 1, 2, 7, 45 ) })
-  @log3 = Tempo::Model::MessageLogs.new({ message: "day 2 water the bonsai", start_time: Time.new(2013, 1, 2, 12, 00 ) })
+  @log4 = Tempo::Model::MessageLog.new({ message: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
+  @log5 = Tempo::Model::MessageLog.new({ message: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
+  @log6 = Tempo::Model::MessageLog.new({ message: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
 end
