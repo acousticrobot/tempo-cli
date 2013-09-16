@@ -227,11 +227,11 @@ end
 
 # COMMAND: EDIT
 
-# COMMAND: BEGIN
+# COMMAND: START
 
-desc '@TODO Begin a time entry'
+desc '@TODO Start a time entry'
 arg_name 'time in, defaults to now'
-command :begin do |c|
+command :start do |c|
   c.action do |global_options,options,args|
     controller = Tempo::Controllers::Time
     controller.start options, args

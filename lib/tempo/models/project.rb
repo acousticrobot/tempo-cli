@@ -56,7 +56,6 @@ module Tempo
         tags.each do |tag|
           tag.split.each {|t_t| @tags.delete t_t }
         end
-        tags.sort!
       end
 
       def to_s

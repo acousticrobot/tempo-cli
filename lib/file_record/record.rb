@@ -95,7 +95,9 @@ module FileRecord
       def read_log( model, time )
         dir = File.join(Dir.home,'tempo', model.dir)
         file = File.join(dir, model.file( time ))
-        read_instances model, file
+        if File.exists? file
+          read_instances model, file
+        end
       end
     end
 

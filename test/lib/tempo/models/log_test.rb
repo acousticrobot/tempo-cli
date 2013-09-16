@@ -8,6 +8,10 @@ describe Tempo do
     Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
   end
 
+  after do
+    FileUtils.rm_r(@dir) if File.exists?(@dir)
+  end
+
   describe "Model::Log" do
 
     it "should inherit the freeze-dry method" do

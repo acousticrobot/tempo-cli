@@ -47,7 +47,17 @@ module Tempo
         end
 
         def read_from_file time
+          dsym = date_symbol time
+          @days_index[ dsym ] = [] if not @days_index.has_key? dsym
           FileRecord::Record.read_log( self, time )
+        end
+
+        def load_days_record time
+          dsym = date_symbol time
+          if not @days_index.has_key? dsym
+            @days_index[ dsym ] = []
+            read_from_file time
+          end
         end
 
         def find_by_id id, time
@@ -84,6 +94,7 @@ module Tempo
 
         @start_time = params.fetch(:start_time, Time.now )
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
+        self.class.load_days_record(@start_time)
 
         id_candidate = params[:id]
         if !id_candidate
