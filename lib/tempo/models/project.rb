@@ -46,7 +46,7 @@ module Tempo
       def tag( tags )
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
-          tag.split.each {|t_t| @tags << t_t }
+          tag.split.each {|t| @tags << t if ! @tags.include? t }
         end
         @tags.sort!
       end

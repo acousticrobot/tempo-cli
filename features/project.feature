@@ -178,6 +178,12 @@ Feature: Project Command manages a list of projects
     And the stdout should contain "tags: [ japanese, miniaturization, outdoors, patience ]"
     And the project file should contain "- patience"
     And the project file should contain "- japanese"
+@focus
+  Scenario: Attempting to tag a project with a duplicate tag
+    Given an existing project file
+    When I successfully run `tempo project backyard bonsai -t outdoors`
+    Then the stdout should contain "backyard bonsai"
+    And the stdout should contain "tags: [ miniaturization, outdoors ]"
 
   Scenario: Untagging a project with a tag
     Given an existing project file
