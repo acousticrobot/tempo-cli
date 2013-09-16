@@ -40,7 +40,7 @@ module FileRecord
       end
 
       def log_filename( model, time )
-        file = "#{model.date_id( time )}.yaml"
+        file = "#{model.day_id( time )}.yaml"
       end
 
       def model_filename( model )
@@ -67,7 +67,7 @@ module FileRecord
         dir = File.join(Dir.home,'tempo', dir_name)
         Dir.mkdir(dir, 0700) unless File.exists?(dir)
 
-        model.index.each do |day, days_logs|
+        model.days_index.each do |day, days_logs|
           file = "#{day.to_s}.yaml"
           file_path = File.join(dir, file)
           File.delete( file_path ) if File.exists?( file_path )

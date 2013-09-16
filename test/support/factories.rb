@@ -33,7 +33,8 @@ module Tempo
 
       def self.clear_all()
         @ids = {}
-        @index = {}
+        @index = []
+        @days_index = {}
         @id_counter = {}
       end
 
