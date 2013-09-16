@@ -100,14 +100,17 @@ describe Tempo do
       search.must_equal [ @log2, @log5 ]
     end
 
+    it "should have a day_id method" do
+      day_id = Tempo::Model::MessageLog.day_id Time.new(2014, 1, 1)
+      day_id.must_equal "20140101"
+    end
+
     it "should have a find_by_id using day_id method" do
       log_factory
-      day_id = Tempo::Model::MessageLog.day_id Time.new(2014, 1, 1)
-      search = Tempo::Model::MessageLog.find_by_id( 2, day_id )
+      search = Tempo::Model::MessageLog.find_by_id( 2, "20140101" )
       search.must_equal [ @log2 ]
 
-      day_id = Tempo::Model::MessageLog.day_id Time.new(2014, 1, 2)
-      search = Tempo::Model::MessageLog.find_by_id( 2, day_id )
+      search = Tempo::Model::MessageLog.find_by_id( 2, "20140102" )
       search.must_equal [ @log5 ]
     end
 
