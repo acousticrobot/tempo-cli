@@ -54,7 +54,7 @@ module Tempo
       def untag( tags )
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
-          tag.split.each {|t_t| @tags.delete t_t }
+          tag.split.each {|t| @tags.delete t }
         end
       end
 

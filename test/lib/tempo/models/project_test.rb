@@ -50,7 +50,7 @@ describe Tempo do
       Tempo::Model::Project.save_to_file
       contents = eval_file_as_array( test_file )
       contents.must_equal [ "---", ":id: 1", ":parent: :root", ":children: []",
-                              ":title: sheep hearding", ":tags: []",
+                              ":title: sheep herding", ":tags: []",
                             "---", ":id: 2", ":parent: :root", ":children: []",
                               ":title: horticulture - basement mushrooms",
                               ":tags:", "- farming", "- fungi", ":current: true",

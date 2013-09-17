@@ -48,13 +48,13 @@ module Tempo
 
         def read_from_file time
           dsym = date_symbol time
-          @days_index[ dsym ] = [] if not @days_index.has_key? dsym
+          @days_index[ dsym ] = [] if not days_index.has_key? dsym
           FileRecord::Record.read_log( self, time )
         end
 
         def load_days_record time
           dsym = date_symbol time
-          if not @days_index.has_key? dsym
+          if not days_index.has_key? dsym
             @days_index[ dsym ] = []
             read_from_file time
           end

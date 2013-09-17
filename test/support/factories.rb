@@ -28,15 +28,17 @@ module Tempo
       end
     end
 
-    class MessageLog < Tempo::Model::Log
-      attr_accessor :message
-
+    class Log
       def self.clear_all()
         @ids = {}
         @index = []
         @days_index = {}
         @id_counter = {}
       end
+    end
+
+    class MessageLog < Tempo::Model::Log
+      attr_accessor :message
 
       def initialize( params={} )
         super params
@@ -95,18 +97,30 @@ end
 
 def project_factory
   Tempo::Model::Project.clear_all
-  @project_1 = Tempo::Model::Project.new title: 'sheep hearding'
+  @project_1 = Tempo::Model::Project.new title: 'sheep herding'
   @project_2 = Tempo::Model::Project.new({ title: 'horticulture - basement mushrooms', tags: [ "fungi", "farming" ], current: true})
   @project_3 = Tempo::Model::Project.new({ title: 'horticulture - backyard bonsai', tags: [ "trees", "farming", "miniaturization" ]})
 end
 
 def log_factory
   Tempo::Model::MessageLog.clear_all
-  @log1 = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
-  @log2 = Tempo::Model::MessageLog.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
-  @log3 = Tempo::Model::MessageLog.new({ message: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 12, 30 ) })
+  @log_1 = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
+  @log_2 = Tempo::Model::MessageLog.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
+  @log_3 = Tempo::Model::MessageLog.new({ message: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 12, 30 ) })
 
-  @log4 = Tempo::Model::MessageLog.new({ message: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
-  @log5 = Tempo::Model::MessageLog.new({ message: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
-  @log6 = Tempo::Model::MessageLog.new({ message: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
+  @log_4 = Tempo::Model::MessageLog.new({ message: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
+  @log_5 = Tempo::Model::MessageLog.new({ message: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
+  @log_6 = Tempo::Model::MessageLog.new({ message: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
+end
+
+def time_record_factory
+  project_factory
+  Tempo::Model::TimeRecord.clear_all
+  @record_1 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
+  @record_2 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
+  @record_3 = Tempo::Model::TimeRecord.new({ project: @project_3,description: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 12, 30 ), tags: ["horticulture", "trees"] })
+
+  @record_4 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
+  @record_5 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
+  @record_6 = Tempo::Model::TimeRecord.new({ project: @project_3, description: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
 end

@@ -26,3 +26,6 @@ $LOAD_PATH << File.dirname(__FILE__)
 require "./lib/tempo.rb"
 require "support/helpers"
 require "support/factories"
+
+# to run a single test file, load the path:
+# bundle exec rake test TEST=test/lib/tempo/models/time_record_test.rb

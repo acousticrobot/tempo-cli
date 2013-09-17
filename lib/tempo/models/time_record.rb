@@ -10,10 +10,9 @@ module Tempo
 
       def initialize(params={})
         super params
-        @project = params[:project]
-        @start_time = params.fetch(:start_time, "now" )
-        @end_time = params[:end]
-        @description = params[:description]
+        @project = params[:project].id
+        @end_time = params.fetch(:end_time, :running )
+        @description = params.fetch(:description, "" )
         @tags = []
         tag params.fetch(:tags, [])
 
@@ -22,14 +21,14 @@ module Tempo
 
       def freeze_dry
         record = super
-        record[:project_title] = Projects.find_by_id( @project ).title
+        record[:project_title] = Project.find_by_id( @project ).title
         record
       end
 
       def tag( tags )
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
-          tag.split.each {|t_t| @tags << t_t }
+          tag.split.each {|t| @tags << t if ! @tags.include? t }
         end
         @tags.sort!
       end
@@ -37,7 +36,7 @@ module Tempo
       def untag( tags )
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
-          tag.split.each {|t_t| @tags.delete t_t }
+          tag.split.each {|t| @tags.delete t }
         end
       end
     end
