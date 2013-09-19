@@ -71,13 +71,13 @@ describe Tempo do
 
     it "should have a current project setter" do
       project_factory
-      Tempo::Model::Project.current @project_3
+      Tempo::Model::Project.current = @project_3
       Tempo::Model::Project.current.must_equal @project_3
     end
 
     it "should not set a current non-existant project" do
       project_factory
-      proc { Tempo::Model::Project.current( Tempo::Model::Base.new() )}.must_raise ArgumentError
+      proc { Tempo::Model::Project.current = Tempo::Model::Base.new }.must_raise ArgumentError
     end
 
     it "should take current in args to new instance" do

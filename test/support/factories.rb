@@ -34,6 +34,7 @@ module Tempo
         @index = []
         @days_index = {}
         @id_counter = {}
+        @current = nil
       end
     end
 
@@ -118,9 +119,9 @@ def time_record_factory
   Tempo::Model::TimeRecord.clear_all
   @record_1 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
   @record_2 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
-  @record_3 = Tempo::Model::TimeRecord.new({ project: @project_3,description: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 12, 30 ), tags: ["horticulture", "trees"] })
+  @record_3 = Tempo::Model::TimeRecord.new({ project: @project_3,description: "day 1 water the bonsai", start_time: Time.new(2014, 1, 1, 17, 30 ), tags: ["horticulture", "trees"] })
 
   @record_4 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
   @record_5 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
-  @record_6 = Tempo::Model::TimeRecord.new({ project: @project_3, description: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
+  @record_6 = Tempo::Model::TimeRecord.new({ project: @project_3, description: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 17, 00 ) })
 end

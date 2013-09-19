@@ -8,7 +8,10 @@ module Tempo
       class << self
 
         def current( instance=nil )
-          return @current unless instance
+          @current
+        end
+
+        def current=( instance )
           if instance.class == self
             @current = instance
           else
@@ -32,7 +35,7 @@ module Tempo
         @tags = []
         tag params.fetch(:tags, [])
         current = params.fetch(:current, false)
-        self.class.current(self) if current
+        self.class.current = self if current
       end
 
       def freeze_dry
