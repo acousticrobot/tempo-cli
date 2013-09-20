@@ -17,7 +17,8 @@ describe Tempo do
     it "should inherit the freeze-dry method" do
       log_factory
       frozen = @log_4.freeze_dry
-      frozen.must_equal({:start_time=>Time.new(2014, 01, 02, 07, 15), :id=>1, :message=>"day 2 pet the sheep"})
+      frozen.must_equal({ :start_time=>Time.new(2014, 01, 02, 07, 15),
+                          :id=>1, :message=>"day 2 pet the sheep"})
     end
 
     it "should inherit the same indexing method" do
@@ -25,7 +26,7 @@ describe Tempo do
       Tempo::Model::MessageLog.index.length.must_equal 6
     end
 
-    it "should should also have a days indexing method" do
+    it "should also have a days indexing method" do
       log_factory
       Tempo::Model::MessageLog.days_index.length.must_equal 2
       Tempo::Model::MessageLog.days_index[:"20140101"].length.must_equal 3
@@ -62,26 +63,18 @@ describe Tempo do
      end
 
     it "should grant children ability to read from a file" do
-      test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
-      FileUtils.rm_r test_dir if File.exists?(test_dir)
-      Dir.mkdir(test_dir, 0700) unless File.exists?(test_dir)
-      file_lines = ["---", ":start_time: 2014-01-02 07:15:00.000000000 -05:00",
-                    ":id: 1", ":message: day 2 pet the sheep",
-                    "---", ":start_time: 2014-01-02 07:45:00.000000000 -05:00",
-                    ":id: 2", ":message: day 2 drinking coffee, check on the mushrooms",
-                    "---", ":start_time: 2014-01-02 12:00:00.000000000 -05:00",
-                    ":id: 3", ":message: day 2 water the bonsai"]
-      test_file = File.join(test_dir, "20140102.yaml")
-      File.open( test_file,'a' ) do |f|
-        file_lines.each do |l|
-          f.puts l
-        end
-      end
-      Tempo::Model::MessageLog.clear_all
+      log_record_factory
       time = Time.new(2014, 1, 2, 5, 30)
       Tempo::Model::MessageLog.read_from_file time
       Tempo::Model::MessageLog.ids( time ).must_equal [1,2,3]
       Tempo::Model::MessageLog.index[0].message.must_equal "day 2 pet the sheep"
+    end
+
+    it "should load the days index before adding new" do
+      log_record_factory
+      new_record = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep",
+                                                  start_time: Time.new(2014, 1, 2, 7 ) })
+      new_record.id.must_equal 4
     end
 
     it "should give id as a readable attribute" do
@@ -95,7 +88,7 @@ describe Tempo do
                 start_time: Time.new(2014, 1, 1, 3 ),
                 id: 1
               }
-      proc { bad_log = Tempo::Model::MessageLog.new( args ) }.must_raise Tempo::Model::IdentityConflictError
+      proc { Tempo::Model::MessageLog.new( args ) }.must_raise Tempo::Model::IdentityConflictError
     end
 
     it "should find logs by id" do

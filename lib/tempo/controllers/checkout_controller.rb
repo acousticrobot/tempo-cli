@@ -37,20 +37,15 @@ module Tempo
           if @projects.current == match
             puts "already on project: #{match.title}"
           else
-            @projects.current match
+            @projects.current = match
             @projects.save_to_file
             Views::switched_item "project", match.title
           end
         end
 
         def assistance
-          puts "checkout command run with no arguments"
-          puts "perhaps you meant one of these?"
-          puts "  tempo checkout --add <new project name>"
-          puts "  tempo checkout <existing project>"
-          puts "run `tempo checkout --help` for more information"
+          Views::checkout_assistance
         end
-
       end #class << self
     end
   end

@@ -14,12 +14,12 @@ describe Tempo do
 
   describe "Model::TimeRecord" do
 
-    it "should have project as an accessible attribute" do
+    it "has project as an accessible attribute" do
       time_record_factory
       has_attr_accessor?( @record_1, :description ).must_equal true
     end
 
-    it "should default to the current project" do
+    it "defaults to the current project" do
       project_factory
       Tempo::Model::TimeRecord.clear_all
       @record_1 = Tempo::Model::TimeRecord.new({ description: "day 1 pet the sheep",
@@ -27,35 +27,35 @@ describe Tempo do
       @record_1.project.must_equal Tempo::Model::Project.current.id
     end
 
-    it "should have and accessible description" do
+    it "has and accessible description" do
       time_record_factory
       has_attr_accessor?( @record_1, :description ).must_equal true
     end
 
-    it "should have readable tags" do
+    it "has readable tags" do
       time_record_factory
       has_attr_read_only?( @record_1, :tags ).must_equal true
     end
 
-    it "should be taggable with an array of tags" do
+    it "is taggable with an array of tags" do
       time_record_factory
       @record_2.tag(["fungi", "breakfast"])
       @record_2.tags.must_equal(["breakfast", "fungi"])
     end
 
-    it "should be untaggable with an array of tags" do
+    it "is untaggable with an array of tags" do
       time_record_factory
       @record_3.untag( ["horticulture"] )
       @record_3.tags.must_equal(["trees"])
     end
 
-    it "should have a current project getter" do
+    it "has a current project getter" do
       time_record_factory
       Tempo::Model::TimeRecord.current.must_equal @record_6
       @record_6.end_time.must_equal :running
     end
 
-    it "should close out the last current project on new" do
+    it "closes out the last current project on new" do
       time_record_factory
       @record_1.end_time.must_equal @record_2.start_time
       @record_2.end_time.must_equal @record_3.start_time
@@ -64,12 +64,12 @@ describe Tempo do
       @record_5.end_time.must_equal @record_6.start_time
     end
 
-    it "should close projects on the start day" do
+    it "closes projects on the start day" do
       time_record_factory
       @record_3.end_time.must_equal Time.new(2014,1,1,23,59)
     end
 
-    it "should close out new projects when a more recent project exists" do
+    it "closes out new projects if not the most recent" do
       project_factory
       Tempo::Model::TimeRecord.clear_all
       @record_2 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
@@ -78,12 +78,12 @@ describe Tempo do
       @record_1.end_time.must_equal @record_2.start_time
     end
 
-    it "should error if start time coincides with an existing project" do
+    it "errors when new time collides with existing" do
       time_record_factory
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
     end
 
-    it "should come with freeze dry for free" do
+    it "comes with freeze dry for free" do
       Tempo::Model::TimeRecord.clear_all
       time_record_factory
       @record_3.freeze_dry.must_equal({ :start_time=>Time.new(2014,1,1,17,30), :id=>3, :project=>3,
@@ -91,7 +91,7 @@ describe Tempo do
                                         :tags=>["horticulture", "trees"], :project_title=>"horticulture - backyard bonsai"})
     end
 
-    it "should save to file a collection of projects" do
+    it "saves to file a collection of projects" do
       time_record_factory
       Tempo::Model::TimeRecord.save_to_file
       test_file_1 = File.join(ENV['HOME'],'tempo/tempo_time_records/20140101.yaml')

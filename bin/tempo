@@ -234,9 +234,21 @@ end
 desc '@TODO Start a time entry'
 arg_name 'time in, defaults to now'
 command :start do |c|
+
+  c.desc 'end the entry at a given time'
+  c.arg_name 'end time'
+  c.flag [:e, :end]
+
+  c.desc 'describe the current time entry'
+  c.arg_name 'description'
+  c.flag [:d, :description]
+
   c.action do |global_options,options,args|
-    controller = Tempo::Controllers::Time
-    controller.start options, args
+    controller = Tempo::Controllers::Start
+
+    return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
+
+    controller.start_timer options, args
   end
 end
 
@@ -287,7 +299,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  #puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

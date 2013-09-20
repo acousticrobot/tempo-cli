@@ -6,7 +6,8 @@ Feature: Project Command manages a list of projects
   Scenario: Listing projects before any projects exist
     Given a clean installation
     When I run `tempo project`
-    Then the project file should contain "#" at line 1
+    Then the stdout should contain "no projects exist"
+    And the project file should contain "#" at line 1
 
   Scenario: Listing projects before any projects exist
     Given a clean installation
@@ -178,7 +179,7 @@ Feature: Project Command manages a list of projects
     And the stdout should contain "tags: [ japanese, miniaturization, outdoors, patience ]"
     And the project file should contain "- patience"
     And the project file should contain "- japanese"
-@focus
+
   Scenario: Attempting to tag a project with a duplicate tag
     Given an existing project file
     When I successfully run `tempo project backyard bonsai -t outdoors`

@@ -39,7 +39,7 @@ module Tempo
             project = @projects.new({ title: request, tags: tags })
 
             if @projects.index.length == 1
-              @projects.current project
+              @projects.current = project
             end
 
             @projects.save_to_file
@@ -107,8 +107,11 @@ module Tempo
         end
 
         def active_only( options )
-          raise Views::no_file( :projects ) if @projects.index.empty?
-          puts Views::project_view @projects.current, options
+          if @projects.index.empty?
+            Views::no_items( :projects )
+          else
+            puts Views::project_view @projects.current, options
+          end
         end
       end #class << self
     end

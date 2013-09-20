@@ -114,6 +114,26 @@ def log_factory
   @log_6 = Tempo::Model::MessageLog.new({ message: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 12, 00 ) })
 end
 
+# For creating a file to load records from
+def log_record_factory
+  Tempo::Model::MessageLog.clear_all
+  test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
+  FileUtils.rm_r test_dir if File.exists?(test_dir)
+  Dir.mkdir(test_dir, 0700) unless File.exists?(test_dir)
+  file_lines = ["---", ":start_time: 2014-01-02 07:15:00.000000000 -05:00",
+                ":id: 1", ":message: day 2 pet the sheep",
+                "---", ":start_time: 2014-01-02 07:45:00.000000000 -05:00",
+                ":id: 2", ":message: day 2 drinking coffee, check on the mushrooms",
+                "---", ":start_time: 2014-01-02 17:00:00.000000000 -05:00",
+                ":id: 3", ":message: day 2 water the bonsai"]
+  test_file = File.join(test_dir, "20140102.yaml")
+  File.open( test_file,'a' ) do |f|
+    file_lines.each do |l|
+      f.puts l
+    end
+  end
+end
+
 def time_record_factory
   project_factory
   Tempo::Model::TimeRecord.clear_all

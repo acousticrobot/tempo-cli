@@ -27,4 +27,5 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency('turn', '~> 0.9.6')
   s.add_development_dependency('pry','~> 0.9.12.2')
   s.add_runtime_dependency('gli','2.6.1')
+  s.add_runtime_dependency "chronic", "~> 0.10.2"
 end

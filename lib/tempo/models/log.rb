@@ -89,9 +89,6 @@ module Tempo
       end
 
       def initialize( params={} )
-        # for time logs:
-        # @message, @project, and @end_time
-
         @start_time = params.fetch(:start_time, Time.now )
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
         self.class.load_days_record(@start_time)

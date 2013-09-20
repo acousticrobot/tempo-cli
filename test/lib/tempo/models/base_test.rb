@@ -110,6 +110,13 @@ describe Tempo do
       search.length.must_equal 5
     end
 
+    it "uses case insensitivity searches" do
+      frog_factory
+
+      search = Tempo::Model::Animal.find("species", "Versicolor" )
+      search.must_equal [ @gray_tree_frog ]
+    end
+
     it "should have a find_by_  method" do
       frog_factory
       search = Tempo::Model::Animal.find_by_id(2)

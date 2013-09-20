@@ -6,6 +6,7 @@ module Tempo
       # else returns an array of view lines
       def return_view( view, options={} )
         output = options.fetch( :output, true )
+
         if output
           if view.is_a? String
             puts view
@@ -122,12 +123,14 @@ module Tempo
         return_view "switched to #{item}: #{request}"
       end
 
-      def no_items( items )
+      def no_items( items, err=false )
+        raise "no #{items} exist" if err
         return_view "no #{items} exist"
       end
 
-      def no_match( items, request )
-        raise "no #{items} match the request: #{request}"
+      def no_match( items, request, plural=true )
+        match = plural ? "match" : "matches"
+        raise "no #{items} #{match} the request: #{request}"
       end
 
       def already_exists( item, request )
@@ -141,6 +144,24 @@ module Tempo
         view << "please refine your search or use --exact to match args exactly"
         return_view view, options
         raise "cannot #{command} multiple projects"
+      end
+
+      def project_assistance
+        view = []
+        view << "you need to set up a new project before running your command"
+        view << "run`tempo project --help` for more information"
+        return_view view
+        no_items :projects, true
+      end
+
+      def checkout_assistance( options={} )
+        view = []
+        view << "checkout command run with no arguments"
+        view << "perhaps you meant one of these?"
+        view << "  tempo checkout --add <new project name>"
+        view << "  tempo checkout <existing project>"
+        view << "run `tempo checkout --help` for more information"
+        return_view view
       end
     end
   end
