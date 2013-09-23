@@ -8,8 +8,6 @@ module Tempo
         def add_project( options, args )
           request = reassemble_the args, options[:add]
 
-          puts "attempting to add #{request}"
-
           if @projects.include? request
             Views::already_exists "project", request
 

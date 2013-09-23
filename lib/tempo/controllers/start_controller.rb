@@ -21,19 +21,16 @@ module Tempo
           params = { start_time: time_in }
           params[:description] = options[:description]
 
-          puts "options #{options}"
-          puts "args #{args}"
-          puts "time in: '#{time_in}'"
-
           if options[:end]
             time_out = Chronic.parse options[:end]
             Tempo::Views.no_match( "valid timeframe", request, false ) if not time_out
             params[:end_time] = time_out
-            puts "time out: '#{time_out}'"
           end
 
-          Tempo::Model::TimeRecord.new(params)
+          record = Tempo::Model::TimeRecord.new(params)
           Tempo::Model::TimeRecord.save_to_file
+
+          Tempo::Views.time_record_view( record, {new_record: true} )
 
         end
 

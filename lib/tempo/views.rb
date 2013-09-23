@@ -51,6 +51,17 @@ module Tempo
         view += tags
       end
 
+      # single time record view, build according to options
+      def time_record_view( record, options={} )
+        view = []
+        view << "time record started:" if options[:new_record]
+        view << "project: #{Tempo::Model::Project.find_by_id( record.project ).title}"
+        view << "description: #{record.description}"
+        view << "start time: #{record.start_time}"
+        view << "end time: #{record.end_time}"
+        return_view view, options
+      end
+
       # list of projects, build according to options
       #
       def projects_list_view( options={} )

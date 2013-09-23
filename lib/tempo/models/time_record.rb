@@ -20,12 +20,16 @@ module Tempo
       end
 
       def initialize(params={})
+        @project_title = nil
+        @description = params.fetch(:description, "" )
+        @start_time = nil
+        @end_time = params.fetch(:end_time, :running )
+
         super params
 
         project = params.fetch(:project, Tempo::Model::Project.current )
         @project = project.kind_of?( Integer ) ? project : project.id
-        @end_time = params.fetch(:end_time, :running )
-        @description = params.fetch(:description, "" )
+
         @tags = []
         tag params.fetch(:tags, [])
 

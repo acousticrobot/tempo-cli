@@ -96,7 +96,7 @@ module Tempo
               if value.kind_of? Regexp
                 matches << i if value.match stored_value
               else
-                matches << i if stored_value.include? value.to_s
+                matches << i if stored_value.downcase.include? value.to_s.downcase
               end
 
             elsif stored_value.kind_of? Integer
