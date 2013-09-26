@@ -42,6 +42,11 @@ module Tempo
           FileRecord::Record.log_dirname( self )
         end
 
+        def records
+          path = FileRecord::Record.log_dir( self )
+          Dir[path + "/*.yaml"]
+        end
+
         def save_to_file
           FileRecord::Record.save_log( self )
         end
@@ -60,6 +65,15 @@ module Tempo
           end
         end
 
+        def load_last_day
+          reg = /(\d+)\.yaml/
+          if records.last
+            d_id = reg.match(records.last)[1] if records.last
+            time = day_id_to_time d_id if d_id
+            load_days_record time
+          end
+        end
+
         def find_by_id id, time
           time = day_id time
           ids = find "id", id
@@ -74,8 +88,12 @@ module Tempo
           if time.kind_of? String
             return time if time =~ /^\d{8}$/
           end
-          raise ArgumentError if not time.kind_of? Time
+          raise ArgumentError, "Invalid Time" if not time.kind_of? Time
           time.strftime("%Y%m%d")
+        end
+
+        def day_id_to_time d_id
+          time = Time.new("#{d_id[1][0..3]}, #{d_id[1][4..5]}, #{d_id[1][6..7]}")
         end
 
         def delete instance

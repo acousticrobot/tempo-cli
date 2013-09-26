@@ -27,6 +27,17 @@ Given /^an existing project file$/ do
   end
 end
 
+Then /^the time record (.*?) should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
+  file = File.join( ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+  contents = []
+  File.open(file, "r") do |f|
+    f.readlines.each do |line|
+      contents << line.chomp
+    end
+  end
+  contents[arg3.to_i - 1].should include arg2
+end
+
 Then /^the (.*?) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
   file = File.join( ENV['HOME'], 'tempo', "tempo_#{arg1}s.yaml")
   contents = []

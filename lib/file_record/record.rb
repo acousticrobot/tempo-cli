@@ -39,6 +39,13 @@ module FileRecord
         dir = "tempo#{dir_name}s"
       end
 
+      def log_dir( model )
+        dir_name = log_dirname model
+        dir = File.join(Dir.home,'tempo', dir_name)
+        Dir.mkdir(dir, 0700) unless File.exists?(dir)
+        dir
+      end
+
       def log_filename( model, time )
         file = "#{model.day_id( time )}.yaml"
       end
@@ -63,9 +70,7 @@ module FileRecord
 
       # record a child of Tempo::Model::Log
       def save_log( model )
-        dir_name = log_dirname model
-        dir = File.join(Dir.home,'tempo', dir_name)
-        Dir.mkdir(dir, 0700) unless File.exists?(dir)
+        dir = log_dir model
 
         model.days_index.each do |day, days_logs|
           file = "#{day.to_s}.yaml"

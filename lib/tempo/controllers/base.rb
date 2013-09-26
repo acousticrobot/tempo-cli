@@ -47,6 +47,7 @@ module Tempo
 
         # TODO: escape regex characters ., (), etc.
         def match_to_regex( match, type=:fuzzy )
+          match.downcase!
           if type == :exact
             /^#{match}$/
           else
@@ -74,7 +75,7 @@ module Tempo
           matches.each do |m|
             reg = match_to_regex m, type
             contenders.each do |c|
-              results << c if reg.match c.instance_variable_get(attribute).to_s
+              results << c if reg.match c.instance_variable_get(attribute).to_s.downcase
             end
             contenders = results
             results = []

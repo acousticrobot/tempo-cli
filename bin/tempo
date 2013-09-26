@@ -231,17 +231,31 @@ end
 
 # COMMAND: START
 
-desc '@TODO Start a time entry'
-arg_name 'time in, defaults to now'
+desc 'Start a time entry'
+long_desc "Starts a new time entry, and closes out any running time entries.
+
+You can also add a description of the time entry.
+
+To start a time entry at a time other than the current, pass it in as an argument
+
+to the --at flag.  This will accept a number of human readable formats, but should multiple
+word timeframes should be enclosed in quotes
+
+examples:
+
+tempo start starting a new time entry --at 'yesterday at 5:00 in the evening'"
+
+
+arg_name 'description'
 command :start do |c|
 
   c.desc 'end the entry at a given time'
   c.arg_name 'end time'
   c.flag [:e, :end]
 
-  c.desc 'describe the current time entry'
-  c.arg_name 'description'
-  c.flag [:d, :description]
+  c.desc 'start'
+  c.arg_name 'start the time entry at the given time'
+  c.flag [:a, :at]
 
   c.action do |global_options,options,args|
     controller = Tempo::Controllers::Start

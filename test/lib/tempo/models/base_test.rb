@@ -112,7 +112,6 @@ describe Tempo do
 
     it "uses case insensitivity searches" do
       frog_factory
-
       search = Tempo::Model::Animal.find("species", "Versicolor" )
       search.must_equal [ @gray_tree_frog ]
     end
@@ -124,6 +123,13 @@ describe Tempo do
 
       search = Tempo::Model::Animal.find_by_species("h. versicolor")
       search.must_equal [ @gray_tree_frog ]
+
+      search = Tempo::Model::Animal.find_by_species("Versicolor")
+      search.must_equal [ @gray_tree_frog ]
+
+      # # test, does this work, and should it?
+      # search = Tempo::Model::Animal.find_by_species("h. color")
+      # search.must_equal [ @gray_tree_frog ]
 
       search = Tempo::Model::Animal.find_by_genious("hyla")
       search.length.must_equal 5
