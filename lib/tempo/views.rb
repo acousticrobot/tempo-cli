@@ -23,7 +23,9 @@ module Tempo
       end
 
       def tag_view( tags, title_length=40 )
-        view = " " * (40 - title_length)
+        # TODO: Manage the max title length
+        spacer = [0, 40 - title_length].max
+        view = " " * spacer
         return  view + "tags: none" if tags.length < 1
 
         view += "tags: [ "

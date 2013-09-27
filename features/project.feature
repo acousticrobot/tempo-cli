@@ -45,6 +45,16 @@ Feature: Project Command manages a list of projects
     And the stdout should contain "    backyard bonsai"
     And the stdout should contain "    basement mushrooms"
 
+  Scenario: Listing all Projects with --verbose
+    Given an existing project file
+    When I successfully run `tempo -v project -l`
+    Then the stdout should contain "[4]   aquaculture                       tags: [ cultivation ]"
+    And the stdout should contain "[5]     nano aquarium                   tags: [ miniaturization ]"
+    And the stdout should contain "[6]     reading aquaculture digest      tags: none"
+    And the stdout should contain "[1] * horticulture                      tags: [ cultivation ]"
+    And the stdout should contain "[2]     backyard bonsai                 tags: [ miniaturization, outdoors ]"
+    And the stdout should contain "[3]     basement mushrooms              tags: [ fungi, indoors ]"
+
   Scenario: Listing all Projects with Ids displayed
     Given an existing project file
     When I successfully run `tempo project -li`
