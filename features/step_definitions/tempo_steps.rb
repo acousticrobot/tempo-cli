@@ -4,13 +4,14 @@ When /^I get help for "([^""]*)"$/ do |app_name|
 end
 
 Given /^a clean installation$/ do
-    @testing_env = File.join( ENV['HOME'], 'tempo' )
-    FileUtils.rm_r( @testing_env ) if File.exists?( @testing_env )
+  @testing_env = File.join( ENV['HOME'], 'tempo' )
+  FileUtils.rm_r( @testing_env ) if File.exists?( @testing_env )
 end
 
 Given /^an existing project file$/ do
   @testing_env = File.join( ENV['HOME'], 'tempo' )
-  Dir.mkdir( @testing_env, 0700 ) unless File.exists?( @testing_env )
+  FileUtils.rm_r( @testing_env ) if File.exists?( @testing_env )
+  Dir.mkdir( @testing_env, 0700 )
   projects_file = File.join( @testing_env, 'tempo_projects.yaml' )
 
   File.open( projects_file,'w' ) do |f|

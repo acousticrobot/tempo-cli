@@ -49,10 +49,16 @@ Feature: Start Command starts a new time record
   Scenario: Adding a time record and closing out the previous day
     Given an existing project file
     When I run `tempo start --at "1-1-2014 7:00"`
-    And I run `tempo start --at "1-2-2014 7:00"`
+    And I run `tempo start --at "1-3-2014 10:00"`
     Then the stdout should contain "time record started"
-    And the time record 20140101 should contain ":end_time: 2014-01-01 08:00:00" at line 5
+    And the time record 20140101 should contain ":end_time: 2014-01-01 23:59" at line 5
 
+  Scenario: Adding an earlier time record should immediately close out
+    Given an existing project file
+    When I run `tempo start --at "1-5-2014 7:00"`
+    And I run `tempo start --at "1-1-2014 7:00"`
+    Then the stdout should contain "time record started"
+    And the time record 20140101 should contain ":end_time: 2014-01-01 23:59" at line 5
 
 
 

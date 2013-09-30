@@ -93,7 +93,7 @@ module Tempo
         end
 
         def day_id_to_time d_id
-          time = Time.new("#{d_id[1][0..3]}, #{d_id[1][4..5]}, #{d_id[1][6..7]}")
+          time = Time.new(d_id[0..3].to_i, d_id[4..5].to_i, d_id[6..7].to_i)
         end
 
         def delete instance

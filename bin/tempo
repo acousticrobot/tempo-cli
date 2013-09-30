@@ -237,13 +237,13 @@ long_desc "Starts a new time entry, and closes out any running time entries.
 You can also add a description of the time entry.
 
 To start a time entry at a time other than the current, pass it in as an argument
-
-to the --at flag.  This will accept a number of human readable formats, but should multiple
+to the --at flag.  This will accept a number of human readable formats, multiple
 word timeframes should be enclosed in quotes
 
 examples:
 
-tempo start starting a new time entry --at 'yesterday at 5:00 in the evening'"
+tempo start learning how to stop, drop, and roll --at 'yesterday at 5:00 in the evening'
+"
 
 
 arg_name 'description'
@@ -313,7 +313,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  puts exception.backtrace
+  #puts exception.backtrace
 
   true
 end
