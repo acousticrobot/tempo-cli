@@ -57,6 +57,7 @@ module Tempo
       def time_record_view( record, options={} )
         view = []
         view << "time record started:" if options[:new_record]
+        view << "time record ended:" if options[:close_record]
         view << "project: #{Tempo::Model::Project.find_by_id( record.project ).title}"
         view << "description: #{record.description}"
         view << "start time: #{record.start_time}"

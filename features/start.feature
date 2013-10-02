@@ -1,6 +1,7 @@
 Feature: Start Command starts a new time record
   The start command starts a time record referencing the current project
-  It records projects in log files by day
+  It records projects in log files by day. Only one time entry will be
+  running at any given time; new entries close out the last running time record.
 
   Scenario: Attempting to add time before any projects exist
     Given a clean installation
@@ -35,9 +36,11 @@ Feature: Start Command starts a new time record
     When I run `tempo start --end "15:00 today"`
     Then the stdout should contain "time record started"
     And the output should match /end time: \d{4}-\d{2}-\d{2} 15:00:00/
-
+@pending
   Scenario: Adding a time record with tags
     Given an existing project file
+@pending
+  Scenario: Attempting to add time that collides with an existing record
 
   Scenario: Adding a time record and closing out the last one
     Given an existing project file

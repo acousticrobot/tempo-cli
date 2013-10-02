@@ -27,7 +27,6 @@ module Tempo
             params[:end_time] = time_out
           end
 
-          # TODO: load second_to_last if last_day is today
           @time_records.load_last_day
           record = @time_records.new(params)
           @time_records.save_to_file
