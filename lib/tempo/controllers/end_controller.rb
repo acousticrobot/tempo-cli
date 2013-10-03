@@ -8,12 +8,16 @@ module Tempo
 
       class << self
 
-        def end_timer( options, args )
+        def end_timer options, args
 
           if not options[:at]
             time_out = Time.new()
           else
-            time_out = Chronic.parse options[:at]
+            begin
+              time_out = Chronic.parse options[:at]
+            rescue
+              time_out = nil
+            end
           end
 
           Tempo::Views.no_match( "valid timeframe", options[:at], false ) if not time_out
@@ -24,7 +28,7 @@ module Tempo
           @time_records.load_last_day
           record = @time_records.current
 
-          Tempo::Views.no_items( "running time records", err=true ) if ! record
+          Tempo::Views.no_items( "running time records", true ) if ! record
 
           record.end_time = time_out
           record.description = params[:description] if params[:description]

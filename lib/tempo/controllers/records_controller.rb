@@ -5,7 +5,7 @@ module Tempo
 
       class << self
 
-        def initialize_from_records( options, args )
+        def initialize_from_records options, args
           if File.exists?( File.join( ENV['HOME'], 'tempo' ))
 
             Tempo::Controllers::Projects.load

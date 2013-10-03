@@ -5,7 +5,7 @@ module Tempo
 
       class << self
 
-        def parse( options, args )
+        def parse options, args
 
           raise "arrange requires a colon (:) in the arguments" unless args.include? ":"
 
@@ -27,7 +27,7 @@ module Tempo
           end
         end
 
-        def match_project( options, args )
+        def match_project options, args
           if options[:id]
             match = @projects.find_by_id args[0]
             Views::no_items "projects", args if not match
@@ -40,7 +40,7 @@ module Tempo
           match
         end
 
-        def make_root_project( options, args)
+        def make_root_project options, args
           root = match_project( options, args)
           if root.parent == :root
             puts "#{root.title} is already a root project"
@@ -52,7 +52,7 @@ module Tempo
           puts "root project: #{root.title}"
         end
 
-        def make_child_project( options, parent_args, child_args )
+        def make_child_project options, parent_args, child_args
           parent = match_project( options, parent_args)
           child = match_project( options, child_args)
           parent << child

@@ -5,7 +5,7 @@ module Tempo
 
       class << self
 
-        def add_project( options, args )
+        def add_project options, args
           request = reassemble_the args, options[:add]
 
           if @projects.include? request
@@ -18,7 +18,7 @@ module Tempo
           end
         end
 
-        def existing_project( options, args )
+        def existing_project options, args
 
           if options[:id]
             match = @projects.find_by_id args[0]

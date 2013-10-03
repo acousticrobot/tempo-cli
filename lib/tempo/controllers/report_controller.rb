@@ -2,25 +2,16 @@ module Tempo
   module Controllers
     class Report < Tempo::Controllers::Base
       @projects = Model::Project
+      @time_records = Model::TimeRecord
 
       class << self
 
-        def add_project( options, args )
-          request = reassemble_the args, options[:add]
+        def report options, args
+          @time_records.load_last_day
+          Tempo::Views.no_items( "time records", err=true ) if @time_records.index.empty?
 
-          puts "attempting to add #{request}"
-
-          # TODO projects.include? :title, request
-          if @projects.list.include? request
-            raise "project '#{request}' already exists"
-
-          else
-            project = @projects.new({ title: request, current: true })
-            @projects.save_to_file
-            Views::switched_item "project", project.title
-          end
+          Tempo::Views.report_view
         end
-
       end #class << self
     end
   end

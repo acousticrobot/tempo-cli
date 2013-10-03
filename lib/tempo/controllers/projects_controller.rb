@@ -11,7 +11,7 @@ module Tempo
           end
         end
 
-        def index( options, args )
+        def index options, args
           request = reassemble_the args
 
           if args.empty?
@@ -29,7 +29,7 @@ module Tempo
           end
         end
 
-        def add( options, args, tags=nil )
+        def add options, args, tags=nil
           request = reassemble_the args
 
           if @projects.include? request
@@ -49,7 +49,7 @@ module Tempo
           end
         end
 
-        def delete( options, args )
+        def delete options, args
 
           if options[:id]
             match = @projects.find_by_id options[:delete]
@@ -76,7 +76,7 @@ module Tempo
           end
         end
 
-        def tag( options, args )
+        def tag options, args
 
           # TODO @projects_find_by_tag if args.empty?
 
@@ -106,7 +106,7 @@ module Tempo
           end
         end
 
-        def active_only( options )
+        def active_only options
           if @projects.index.empty?
             Views::no_items( :projects )
           else

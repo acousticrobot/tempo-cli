@@ -8,12 +8,16 @@ module Tempo
 
       class << self
 
-        def start_timer( options, args )
+        def start_timer options, args
 
           if not options[:at]
             time_in = Time.new()
           else
-            time_in = Chronic.parse options[:at]
+            begin
+              time_in = Chronic.parse options[:at]
+            rescue
+              time_in = nil
+            end
           end
 
           Tempo::Views.no_match( "valid timeframe", options[:at], false ) if not time_in
