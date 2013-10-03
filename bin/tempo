@@ -292,7 +292,10 @@ arg_name 'args'
 command :report do |c|
   c.action do |global_options,options,args|
     controller = Tempo::Controllers::Report
-    controller.report options args
+
+    return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
+
+    controller.report options, args
   end
 end
 
@@ -321,7 +324,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  # puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

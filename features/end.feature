@@ -1,5 +1,5 @@
 Feature: End Command ends the current time record
-  The end commands ends the currenly running time record. It can be passed a value
+  The end command ends the currenly running time record. It can be passed a value
   that will end the record at a given time
 
   Scenario: Attempting to add time before any projects exist
