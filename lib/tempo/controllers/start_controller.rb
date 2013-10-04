@@ -35,7 +35,7 @@ module Tempo
           record = @time_records.new(params)
           @time_records.save_to_file
 
-          Tempo::Views.time_record_view( record, {new_record: true} )
+          Tempo::Views.start_time_record_view record
 
         end
 

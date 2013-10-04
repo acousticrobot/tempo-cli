@@ -2,7 +2,7 @@ module Tempo
   module Views
     class << self
 
-      # single project list, build according to options
+      # returns single project string, build according to options
       #
       def project_view( project, options={})
 
@@ -39,7 +39,6 @@ module Tempo
               view << project_view( p, options )
               if not p.children.empty?
                 child_opts = options.clone
-                #child_opts[:projects] = projects
                 child_opts[:depth] = depth + 1
                 child_opts[:parent] = p.id
                 child_opts[:output] = false
@@ -61,16 +60,31 @@ module Tempo
         view = Tempo::Model::Project.sort_by_title projects do |projects|
           view = []
           projects.each do |p|
-            if options[:id]
-              view << "[#{p.id}]\t#{active_indicator p}#{p.title}"
-            else
-              view << "#{active_indicator p}#{p.title}"
-            end
+            view << project_view( p, options )
           end
           view
         end
 
         return_view view, options
+      end
+
+      def ambiguous_project( matches, command, options={} )
+        view = []
+        view << "The following projects matched your search:"
+
+        view.push *flat_projects_list_view({ projects: matches, output: false })
+        view << "please refine your search or use --exact to match args exactly"
+
+        return_view view, options
+        raise "cannot #{command} multiple projects"
+      end
+
+      def project_assistance
+        view = []
+        view << "you need to set up a new project before running your command"
+        view << "run`tempo project --help` for more information"
+        return_view view
+        no_items :projects, true
       end
     end
   end

@@ -67,23 +67,6 @@ module Tempo
         raise "#{item} '#{request}' already exists"
       end
 
-      def ambiguous_project( matches, command, options={} )
-        view = []
-        view << "The following projects matched your search:"
-        view.push *projects_list_view({ projects: matches, output: false })
-        view << "please refine your search or use --exact to match args exactly"
-        return_view view, options
-        raise "cannot #{command} multiple projects"
-      end
-
-      def project_assistance
-        view = []
-        view << "you need to set up a new project before running your command"
-        view << "run`tempo project --help` for more information"
-        return_view view
-        no_items :projects, true
-      end
-
       def checkout_assistance( options={} )
         view = []
         view << "checkout command run with no arguments"

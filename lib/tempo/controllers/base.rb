@@ -85,9 +85,10 @@ module Tempo
           contenders
         end
 
-        # verify on and only one match returned in match array
+        # verify one and only one match returned in match array
         # returns the single match
         def single_match matches, request, command
+
           if matches.length == 0
             Views::no_match "projects", request
 

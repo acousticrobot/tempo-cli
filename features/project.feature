@@ -166,6 +166,8 @@ Feature: Project Command manages a list of projects
     Given an existing project file
     When I run `tempo project -d aquaculture`
     Then the stdout should not contain "deleted project"
+    And the output should match /^  reading aquaculture digest$/
+    And the output should match /^  aquaculture$/
     And the stderr should contain "error: cannot delete multiple projects"
 
   Scenario: Tagging a project with a tag

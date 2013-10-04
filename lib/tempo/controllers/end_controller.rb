@@ -34,7 +34,7 @@ module Tempo
           record.description = params[:description] if params[:description]
           @time_records.save_to_file
 
-          Tempo::Views.time_record_view( record, {close_record: true} )
+          Tempo::Views.end_time_record_view record
 
         end
 
