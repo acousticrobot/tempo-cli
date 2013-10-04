@@ -20,7 +20,7 @@ module Tempo
           view << ""
 
           days_record.each do |record|
-            entry = report_record_listing record
+            entry = time_record_listing record
             view << entry
           end
 

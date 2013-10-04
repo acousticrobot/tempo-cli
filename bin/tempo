@@ -185,7 +185,7 @@ end
 
 # COMMAND: ARRANGE
 
-desc '@TODO Arrange project hierarchy'
+desc 'Arrange project hierarchy'
 long_desc "Arrange projects into a parent/child hierarchy
 
 New projects are added as root projects by default.
@@ -268,7 +268,25 @@ end
 
 # COMMAND: END
 
-desc '@Todo End a time entry'
+desc 'End a time entry'
+long_desc "Closes out any running time entries.
+
+You can optionally add a description of the time entry, which will overwrite the current description.
+
+To end a time entry at a time other than the current, pass it in as an argument
+to the --at flag.  This will accept a number of human readable formats, multiple
+word timeframes should be enclosed in quotes.
+
+examples:
+
+# creating an entry at 4:55pm
+$ tempo start --at 16:55 practicing the human torch trick
+
+# ending it 5 minutes later and changing the description
+$ tempo end learning how to stop, drop, and roll --at 'today at 5:00 in the evening'
+"
+
+
 arg_name 'time out, defaults to now'
 command [:end, :e] do |c|
 
@@ -287,7 +305,7 @@ end
 
 # COMMAND: REPORT
 
-desc '@Todo Report time entries'
+desc 'Report time entries'
 arg_name 'args'
 command :report do |c|
   c.action do |global_options,options,args|

@@ -1,8 +1,8 @@
 module Tempo
   module Model
     class TimeRecord < Tempo::Model::Log
-      attr_accessor :project, :start_time, :end_time, :description
-      attr_reader :tags
+      attr_accessor :project, :description
+      attr_reader :start_time, :end_time, :tags
 
       class << self
 
@@ -27,6 +27,10 @@ module Tempo
 
         super params
 
+        #TODO: verify both start time ( and end time if ! :running )
+        verify_open_time @start_time
+        verify_open_time @end_time if @end_time.kind_of? Time
+
         project = params.fetch(:project, Tempo::Model::Project.current )
         @project = project.kind_of?( Integer ) ? project : project.id
 
@@ -39,7 +43,7 @@ module Tempo
             self.class.current = self
           else
 
-            verify_open_time @start_time
+            # verify_open_time @start_time
 
             current = self.class.current
 
@@ -69,9 +73,18 @@ module Tempo
         end
       end
 
+      def end_time= time
+        #TODO verify end time before save
+        @end_time = time
+      end
+
+      def project_title
+        Project.find_by_id( @project ).title
+      end
+
       def freeze_dry
         record = super
-        record[:project_title] = Project.find_by_id( @project ).title
+        record[:project_title] = project_title
         record
       end
 
@@ -90,15 +103,25 @@ module Tempo
         end
       end
 
+      def to_s
+        "#{@start_time.strftime('%H:%M')} - #{@end_time.strftime('%H:%M')} #{project_title}: #{@description}"
+      end
+
       private
 
+      # check a time against all loaded instances, verify that it doesn't
+      # fall in the middle of any closed time records
+      #
       def verify_open_time time
         dsym = self.class.date_symbol time
         self.class.days_index[dsym].each do |record|
           if time > record.start_time
+
+            # ignore running entries for now
             next if record.end_time == :running or record == self.class.current
+
             if record.end_time - record.start_time > time - record.start_time
-              raise ArgumentError, "Time conflict with existing record"
+              raise ArgumentError, "Time conflict with existing record: \n  #{record.to_s}"
             end
           end
         end

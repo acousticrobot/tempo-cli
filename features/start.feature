@@ -18,7 +18,7 @@ Feature: Start Command starts a new time record
     Given an existing project file
     When I run `tempo start my new project`
     Then the stdout should contain "time record started"
-    And the stdout should contain "description: my new project"
+    And the stdout should contain "horticulture: my new project"
 
   Scenario: Attempting to add an invalid start time
     Given an existing project file
@@ -29,18 +29,24 @@ Feature: Start Command starts a new time record
     Given an existing project file
     When I run `tempo start --at "15:00 today"`
     Then the stdout should contain "time record started"
-    And the output should match /start time: \d{4}-\d{2}-\d{2} 15:00:00/
+    And the output should match /15:00 - \d{2}:\d{2}\*/
+
 
   Scenario: Adding a time record with an end time
     Given an existing project file
     When I run `tempo start --end "15:00 today"`
     Then the stdout should contain "time record started"
-    And the output should match /end time: \d{4}-\d{2}-\d{2} 15:00:00/
+    And the output should match /\d{2}:\d{2} - 15:00/
 @pending
   Scenario: Adding a time record with tags
     Given an existing project file
-@pending
+
   Scenario: Attempting to add time that collides with an existing record
+    Given an existing project file
+    When I run `tempo start --at "1-1-2014 7:00"`
+    And I run `tempo end --at "1-1-2014 10:00"`
+    And I run `tempo start --at "1-1-2014 8:00"`
+    Then the stderr should contain "error: Time conflict with existing record"
 
   Scenario: Adding a time record and closing out the last one
     Given an existing project file
@@ -62,7 +68,7 @@ Feature: Start Command starts a new time record
 
 # Adding a time record at the beginning of the day seems to close out at the last time record
 # check on and fix this bug.
-@focus @pending
+ @pending
   Scenario: Adding an earlier time record should immediately close out
     Given an existing project file
     When I run `tempo start --at "1-1-2014 9:00"`

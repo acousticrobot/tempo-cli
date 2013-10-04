@@ -18,7 +18,7 @@ Feature: End Command ends the current time record
     When I run `tempo start`
     And I run `tempo end`
     Then the stdout should contain "time record ended"
-    And the output should match /end time: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/
+    And the output should match /\d{2}:\d{2} - \d{2}:\d{2}[^\*]/
 
   Scenario: Ending the current time record and changing the description
     Given an existing project file
@@ -26,7 +26,7 @@ Feature: End Command ends the current time record
     And I run `tempo end new description`
     Then the stdout should contain "time record ended"
     And the output should contain "new description"
-    And the output should match /end time: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/
+    And the output should match /\d{2}:\d{2} - \d{2}:\d{2}[^\*]/
 
   Scenario: Attempting to add an invalid end time
     Given an existing project file
@@ -39,7 +39,7 @@ Feature: End Command ends the current time record
     When I run `tempo start --at "1-5-2014 7:00"`
     And I run `tempo end --at "1-5-2014 15:00"`
     Then the stdout should contain "time record ended"
-    And the output should match /end time: 2014-01-05 15:00:00/
+    And the output should match /7:00 - 15:00/
 @focus @pending
   Scenario: Attempting to end after the beginning time
     Given an existing project file

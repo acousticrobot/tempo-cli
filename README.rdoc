@@ -12,7 +12,7 @@ rakes default behavior is to run unit tests and cucumber features
 
 run `bundle exec rake test` to run unit tests only
 
-if tests fail, cleanup the testing directories with `bundle exec rake clean`
+if tests fail, you can cleanup the testing directories with `bundle exec rake clean`
 
 = Documentation
 
@@ -24,6 +24,12 @@ to generate rdoc, run
 
 = other command line time tracking apps:
 
+There are other Ruby time tracking command line apps available:
+
+A utility that saves to separate timesheets for each project, using SQLite:
+
 timetrap[https://github.com/samg/timetrap]
+
+Another one worth checking out:
 
 t_time_tracker[https://github.com/christiangenco/t_time_tracker]
