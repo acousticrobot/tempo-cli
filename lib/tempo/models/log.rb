@@ -51,13 +51,15 @@ module Tempo
           FileRecord::Record.save_log( self )
         end
 
+
         def read_from_file time
           dsym = date_symbol time
           @days_index[ dsym ] = [] if not days_index.has_key? dsym
           FileRecord::Record.read_log( self, time )
         end
 
-        def load_days_record time
+        # load all the records for a single day
+        def load_day_record time
           dsym = date_symbol time
           if not days_index.has_key? dsym
             @days_index[ dsym ] = []
@@ -65,12 +67,26 @@ module Tempo
           end
         end
 
+        # load the records for each day from time 1 to time 2
+        def load_days_records time_1, time_2
+          did_1 = day_id time_1
+          did_2 = day_id time_2
+
+          t1 = did_1.to_i
+          t2 = did_2.to_i
+
+          return if t2 - t1 < 0
+
+          (t2 - t1 + 1).times { |i| load_day_record( (t1 + i).to_s ) }
+        end
+
+        # load the records for the most recently recorded day
         def load_last_day
           reg = /(\d+)\.yaml/
           if records.last
             d_id = reg.match(records.last)[1] if records.last
             time = day_id_to_time d_id if d_id
-            load_days_record time
+            load_day_record time
           end
         end
 
@@ -111,7 +127,7 @@ module Tempo
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
         @start_time = @start_time.round
 
-        self.class.load_days_record(@start_time)
+        self.class.load_day_record(@start_time)
 
         id_candidate = params[:id]
         if !id_candidate

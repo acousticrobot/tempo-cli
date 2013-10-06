@@ -308,6 +308,15 @@ end
 desc 'Report time entries'
 arg_name 'args'
 command :report do |c|
+
+  c.desc 'from date'
+  c.arg_name 'begin time records on this date'
+  c.flag [:f, :from]
+
+  c.desc 'to date'
+  c.arg_name 'end time records on this date'
+  c.flag [:t, :to]
+
   c.action do |global_options,options,args|
     controller = Tempo::Controllers::Report
 

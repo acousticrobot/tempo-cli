@@ -28,6 +28,60 @@ Given /^an existing project file$/ do
   end
 end
 
+Given /^an existing time record file$/ do
+  @records_directory = File.join( ENV['HOME'], 'tempo/tempo_time_records' )
+  FileUtils.rm_r( @records_directory ) if File.exists?( @records_directory )
+  Dir.mkdir( @records_directory, 0700 )
+  projects_file = File.join( @records_directory, '20140101.yaml' )
+
+  File.open( projects_file,'w' ) do |f|
+    records = [ ":description: putting on overalls and straw hat",
+                ":start_time: 2014-01-01 05:00:00.000000000 -05:00",
+                ":end_time: 2014-01-01 05:15:00.000000000 -05:00",
+                ":id: 1",
+                ":project: 1",
+                ":tags: []",
+                "---",
+                ":project_title: backyard bonsai",
+                ":description: trimming the trees",
+                ":start_time: 2014-01-01 05:15:00.000000000 -05:00",
+                ":end_time: 2014-01-01 08:15:00.000000000 -05:00",
+                ":id: 2",
+                ":project: 2",
+                ":tags: []",
+                "---",
+                ":project_title: backyard bonsai",
+                ":description: mixing up a batch of potting soil",
+                ":start_time: 2014-01-01 08:15:00.000000000 -05:00",
+                ":end_time: 2014-01-01 10:38:00.000000000 -05:00",
+                ":id: 3",
+                ":project: 2",
+                ":tags: []",
+                "---",
+                ":project_title: aquaculture",
+                ":description: putting on the wetsuit",
+                ":start_time: 2014-01-01 12:52:00.000000000 -05:00",
+                ":end_time: 2014-01-01 13:26:00.000000000 -05:00",
+                ":id: 4",
+                ":project: 4",
+                ":tags: []",
+                "---",
+                ":project_title: nano aquarium",
+                ":description: trimming the coral",
+                ":start_time: 2014-01-01 13:32:00.000000000 -05:00",
+                ":end_time: 2014-01-01 16:46:00.000000000 -05:00",
+                ":id: 5",
+                ":project: 5",
+                ":tags: []" ]
+    records.each do |p|
+      f.puts p
+    end
+  end
+end
+
+
+
+
 Then /^the time record (.*?) should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
   file = File.join( ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
   contents = []

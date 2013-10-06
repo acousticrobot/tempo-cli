@@ -114,6 +114,7 @@ module Tempo
       #
       def verify_open_time time
         dsym = self.class.date_symbol time
+        return if not self.class.days_index[dsym]
         self.class.days_index[dsym].each do |record|
           if time > record.start_time
 

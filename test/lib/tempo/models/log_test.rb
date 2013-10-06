@@ -64,10 +64,44 @@ describe Tempo do
 
     it "should grant children ability to read from a file" do
       log_record_factory
-      time = Time.new(2014, 1, 2, 5, 30)
+      time = Time.new(2014, 1, 1)
       Tempo::Model::MessageLog.read_from_file time
       Tempo::Model::MessageLog.ids( time ).must_equal [1,2,3]
+      Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
+    end
+
+    it "should load the records for a given day" do
+      log_record_factory
+      time = Time.new(2014, 1, 1)
+      Tempo::Model::MessageLog.load_day_record time
+      Tempo::Model::MessageLog.ids( time ).must_equal [1,2,3]
+      Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
+    end
+
+    it "should load the records for a the most recent day" do
+      log_record_factory
+      Tempo::Model::MessageLog.load_last_day
+
+      time_1 = Time.new(2014, 1, 1) # should not load
+      time_2 = Time.new(2014, 1, 2) # should load
+      Tempo::Model::MessageLog.ids( time_1 ).must_equal []
+      Tempo::Model::MessageLog.ids( time_2 ).must_equal [1,2,3]
       Tempo::Model::MessageLog.index[0].message.must_equal "day 2 pet the sheep"
+    end
+
+    it "should load the records for a time frame" do
+      log_record_factory
+      time_1 = Time.new(2014, 1, 1)
+      time_2 = Time.new(2014, 1, 2)
+
+      Tempo::Model::MessageLog.load_days_records time_1, time_2
+
+      Tempo::Model::MessageLog.ids( time_1 ).must_equal [1,2,3]
+      Tempo::Model::MessageLog.ids( time_2 ).must_equal [1,2,3]
+      Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
+
+      # The index is still being sorted by id
+      Tempo::Model::MessageLog.index[1].message.must_equal "day 2 pet the sheep"
     end
 
     it "should load the days index before adding new" do
