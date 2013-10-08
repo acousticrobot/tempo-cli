@@ -23,7 +23,6 @@ module Tempo
             begin
               day = Chronic.parse time
             rescue Exception => e
-              binding.pry
               Tempo::Views.no_match "valid timeframe", time, false
             end
             @time_records.load_day_record day

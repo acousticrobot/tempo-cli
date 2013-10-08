@@ -69,15 +69,11 @@ module Tempo
 
         # load the records for each day from time 1 to time 2
         def load_days_records time_1, time_2
-          did_1 = day_id time_1
-          did_2 = day_id time_2
 
-          t1 = did_1.to_i
-          t2 = did_2.to_i
+          days = ( time_2.to_date - time_1.to_date ).to_i
+          return if days < 0
 
-          return if t2 - t1 < 0
-
-          (t2 - t1 + 1).times { |i| load_day_record( (t1 + i).to_s ) }
+          (days + 1).times { |i| load_day_record( time_1.add_days( i ))}
         end
 
         # load the records for the most recently recorded day
