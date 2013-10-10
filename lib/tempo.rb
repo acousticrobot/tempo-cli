@@ -12,6 +12,9 @@ Dir[File.dirname(__FILE__) + '/tempo/models/*.rb'].each {|file| require file }
 require 'tempo/controllers/base.rb'
 Dir[File.dirname(__FILE__) + '/tempo/controllers/*.rb'].each {|file| require file }
 
+Dir[File.dirname(__FILE__) + '/tempo/view_records/*.rb'].each {|file| require file }
+
+require 'tempo/views/base.rb'
 Dir[File.dirname(__FILE__) + '/tempo/views/*.rb'].each {|file| require file }
 
 require 'file_record/directory.rb'

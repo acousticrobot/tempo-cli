@@ -12,6 +12,8 @@ module Tempo
         end
         options[:active] = options.fetch( :active, true )
 
+        record = ViewRecords::Model.new project, options
+
         id = options[:id] ? "[#{project.id}] " : ""
         active = options[:active] ? active_indicator( project ) : ""
         depth = "  " * options[:depth] if options[:depth]

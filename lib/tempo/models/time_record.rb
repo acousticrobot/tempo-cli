@@ -21,9 +21,9 @@ module Tempo
 
       def initialize(params={})
         @project_title = nil
-        @description = params.fetch(:description, "" )
+        @description = params.fetch :description, ""
         @start_time = nil
-        @end_time = params.fetch(:end_time, :running )
+        @end_time = params.fetch :end_time, :running
 
         super params
 
@@ -31,14 +31,14 @@ module Tempo
         verify_open_time @start_time
         verify_open_time @end_time if @end_time.kind_of? Time
 
-        project = params.fetch(:project, Tempo::Model::Project.current )
-        @project = project.kind_of?( Integer ) ? project : project.id
+        project = params.fetch :project, Tempo::Model::Project.current
+        @project = project.kind_of?(Integer) ? project : project.id
 
         @tags = []
         tag params.fetch(:tags, [])
 
         # close out other time records if ! end_time
-        if @end_time == :running
+        if running?
           if not self.class.current
             self.class.current = self
           else
@@ -63,7 +63,6 @@ module Tempo
                 out = end_of_day current.start_time
                 self.class.current.end_time = out
                 self.class.current = self
-                # TODO new record onto the next day
               else
                 current.end_time = @start_time
                 self.class.current = self
@@ -80,6 +79,19 @@ module Tempo
 
       def project_title
         Project.find_by_id( @project ).title
+      end
+
+      def duration
+        if @end_time.kind_of? Time
+          end_time = @end_time
+        else
+          end_time = Time.now()
+        end
+        end_time.to_i - @start_time.to_i
+      end
+
+      def running?
+        @end_time == :running
       end
 
       def freeze_dry

@@ -27,9 +27,14 @@ describe Tempo do
       @record_1.project.must_equal Tempo::Model::Project.current.id
     end
 
-    it "has and accessible description" do
+    it "has an accessible description" do
       time_record_factory
       has_attr_accessor?( @record_1, :description ).must_equal true
+    end
+
+    it "has an accessible end time" do
+      time_record_factory
+      has_attr_accessor?( @record_1, :end_time ).must_equal true
     end
 
     it "has readable tags" do
@@ -53,6 +58,18 @@ describe Tempo do
       time_record_factory
       Tempo::Model::TimeRecord.current.must_equal @record_6
       @record_6.end_time.must_equal :running
+    end
+
+    it "has a running? method" do
+      time_record_factory
+      @record_1.running?.must_equal false
+      @record_6.running?.must_equal true
+    end
+
+    it "has a duration method returning seconds" do
+      time_record_factory
+      @record_1.duration.must_equal 1800
+      @record_6.duration.must_be_kind_of Integer
     end
 
     it "closes out the last current project on new" do
