@@ -14,8 +14,23 @@ module Tempo
   module Views
     module ViewRecords
 
+      class Message
+        attr_accessor :type, :message, :class
+
+        def initialize message, options={}
+          @message = message
+          @class = options.fetch( :class, :info )
+          @type = "message"
+        end
+
+        def format &block
+          block ||= lambda {|m| "#{m.message}"}
+          block.call self
+        end
+      end
+
       class Duration
-        attr_accessor :seconds
+        attr_accessor :type, :seconds
 
         def initialize seconds=0
           @type = "duration"

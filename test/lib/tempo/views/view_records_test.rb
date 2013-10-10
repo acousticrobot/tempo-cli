@@ -27,7 +27,30 @@ describe Tempo do
   describe "Views" do
     describe "ViewRecords" do
 
+      describe "Message" do
+
+        it "has a type, class,and message attribute" do
+          record = Tempo::Views::ViewRecords::Message.new "a default message type"
+          record.type.must_equal "message"
+          record.class.must_equal :info
+          record.message.must_equal "a default message type"
+
+          record = Tempo::Views::ViewRecords::Message.new "an error message", class: :error
+          record.class.must_equal :error
+        end
+
+        it "has a default format" do
+          record = Tempo::Views::ViewRecords::Message.new "a default message type"
+          record.format.must_equal "a default message type"
+        end
+      end
+
       describe "Duration" do
+
+        it "has a type of duration" do
+          record = Tempo::Views::ViewRecords::Duration.new
+          record.type.must_equal "duration"
+        end
 
         it "starts with given seconds or default to zero" do
           record = Tempo::Views::ViewRecords::Duration.new
