@@ -135,6 +135,7 @@ describe Tempo do
         before do
           time_record_factory
           @r1 = Tempo::Views::ViewRecords::TimeRecord.new @record_1
+          @r2 = Tempo::Views::ViewRecords::TimeRecord.new @record_2
           @r6 = Tempo::Views::ViewRecords::TimeRecord.new @record_6
         end
 
@@ -150,13 +151,47 @@ describe Tempo do
           @r1.duration.seconds.must_equal 1800
         end
 
+        it "has a class max description length" do
+          Tempo::Views::ViewRecords::TimeRecord.max_description_length.must_equal @record_2.description.length
+        end
+
+        it "has a class max project length" do
+          Tempo::Views::ViewRecords::TimeRecord.max_project_length.must_equal @record_2.project_title.length
+        end
+
         it "has a default format" do
           @r1.format.must_equal "07:00 - 07:30  [0:30] sheep herding: day 1 pet the sheep"
+
+          # check for the asterisk indicating a running project
+          @r6.format.must_match /\d{2}:\d{2} - \d{2}:\d{2}\* \[-*\d+:\d{2}\]/
         end
       end
 
       describe "Project" do
+        before do
+          project_factory
+          @p1 = Tempo::Views::ViewRecords::Project.new @project_1
+          @p2 = Tempo::Views::ViewRecords::Project.new @project_2
+          @p3 = Tempo::Views::ViewRecords::Project.new @project_3
+        end
 
+        it "has title and tag attributes" do
+          @p1.title.must_equal 'sheep herding'
+          @p2.tags.must_equal ["farming", "fungi"]
+        end
+
+        it "has a class max title length" do
+          Tempo::Views::ViewRecords::Project.max_title_length.must_equal @project_2.title.length
+        end
+
+        it "inherits a depth attribute" do
+          #@p2
+        end
+
+        it "has a default format" do
+          #@p3.format.must_equal "[3] "
+          #{}"id: #{id}, title: #{title}, tags: #{tags}"
+        end
       end
     end
   end

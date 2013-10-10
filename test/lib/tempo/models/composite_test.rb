@@ -65,5 +65,12 @@ describe Tempo do
       forest_array = Tempo::Model::Tree.report_trees
       forest_array.must_equal "[[1,[3,[7,8]]],[2,[4,5,[6]]]]"
     end
+
+    it "returns childern to root when deleted" do
+      tree_factory
+      Tempo::Model::Tree.delete @forest[0]
+      Tempo::Model::Tree.index.length.must_equal 7
+      @forest[2].parent.must_equal :root
+    end
   end
 end

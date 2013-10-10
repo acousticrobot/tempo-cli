@@ -39,7 +39,7 @@ describe Tempo do
 
     it "should come with freeze dry for free" do
       project_factory
-      @project_3.freeze_dry.must_equal({:id=>3, :parent=>:root, :children=>[],
+      @project_3.freeze_dry.must_equal({:id=>3, :parent=>4, :children=>[],
                                         :title=>"horticulture - backyard bonsai",
                                         :tags=>["farming", "miniaturization", "trees"]})
     end
@@ -49,13 +49,10 @@ describe Tempo do
       test_file = File.join(ENV['HOME'],'tempo','tempo_projects.yaml')
       Tempo::Model::Project.save_to_file
       contents = eval_file_as_array( test_file )
-      contents.must_equal [ "---", ":id: 1", ":parent: :root", ":children: []",
-                              ":title: sheep herding", ":tags: []",
-                            "---", ":id: 2", ":parent: :root", ":children: []",
-                              ":title: horticulture - basement mushrooms",
-                              ":tags:", "- farming", "- fungi", ":current: true",
-                            "---", ":id: 3", ":parent: :root", ":children: []", ":title: horticulture - backyard bonsai",
-                              ":tags:", "- farming", "- miniaturization", "- trees"]
+      contents.must_equal [ "---", ":id: 1", ":parent: :root", ":children: []", ":title: sheep herding", ":tags: []",
+                            "---", ":id: 2", ":parent: 4", ":children: []", ":title: horticulture - basement mushrooms", ":tags:", "- farming", "- fungi", ":current: true",
+                            "---", ":id: 3", ":parent: 4", ":children: []", ":title: horticulture - backyard bonsai", ":tags:", "- farming", "- miniaturization", "- trees",
+                            "---", ":id: 4", ":parent: :root", ":children:", "- 2", "- 3", ":title: gardening", ":tags: []"]
     end
 
     it "should return an boolean to the include? method" do
@@ -88,7 +85,7 @@ describe Tempo do
 
     it "should save current in freeze dry" do
       project_factory
-      @project_2.freeze_dry.must_equal({:id=>2, :parent=>:root, :children=>[],
+      @project_2.freeze_dry.must_equal({:id=>2, :parent=>4, :children=>[],
                                         :title=>"horticulture - basement mushrooms",
                                         :tags=>["farming", "fungi"], :current=>true})
     end

@@ -74,6 +74,18 @@ module Tempo
       class TimeRecord < ViewRecords::Log
         attr_accessor :description, :duration, :end_time, :project, :running
 
+        class << self
+          def max_description_length len=0
+            @max_description_length ||= 0
+            @max_description_length = @max_description_length > len ? @max_description_length : len
+          end
+
+          def max_project_length len=0
+            @max_project_length ||= 0
+            @max_project_length = @max_project_length > len ? @max_project_length : len
+          end
+        end
+
         def initialize model, params={}
           super model, params
           @description = model.description
@@ -81,6 +93,8 @@ module Tempo
           @end_time = model.end_time == :running ? Time.now() : model.end_time
           @project = model.project_title
           @running = model.running?
+          self.class.max_description_length @description.length
+          self.class.max_project_length @project.length
         end
 
         def format &block
@@ -119,8 +133,9 @@ module Tempo
         attr_accessor :title, :tags, :duration
 
         class << self
-          def max_title_length
+          def max_title_length len=0
             @max_title_length ||= 0
+            @max_title_length = @max_title_length > len ? @max_title_length : len
           end
         end
 
@@ -129,6 +144,7 @@ module Tempo
           @title = model.title
           @tags = model.tags
           @duration = Duration.new
+          self.class.max_title_length @title.length
         end
       end
     end

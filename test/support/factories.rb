@@ -101,6 +101,9 @@ def project_factory
   @project_1 = Tempo::Model::Project.new title: 'sheep herding'
   @project_2 = Tempo::Model::Project.new({ title: 'horticulture - basement mushrooms', tags: [ "fungi", "farming" ], current: true})
   @project_3 = Tempo::Model::Project.new({ title: 'horticulture - backyard bonsai', tags: [ "trees", "farming", "miniaturization" ]})
+  @project_4 = Tempo::Model::Project.new title: 'gardening'
+  @project_4 << @project_2
+  @project_4 << @project_3
 end
 
 def log_factory

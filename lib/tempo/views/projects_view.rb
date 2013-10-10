@@ -25,6 +25,9 @@ module Tempo
 
       # list of projects, build according to options
       #
+      # when passing in a subset of projects,
+      # remember that without the root, branches will not show up
+      #
       def projects_list_view( options={} )
 
         projects = options.fetch( :projects, Tempo::Model::Project.index )

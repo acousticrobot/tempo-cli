@@ -25,6 +25,14 @@ module Tempo
           end
           report_array += "]"
         end
+
+        def delete instance
+          instance.children.each do |child_id|
+            child = find_by_id child_id
+            instance.delete_child child
+          end
+          super instance
+        end
       end
 
       def initialize(params={})
