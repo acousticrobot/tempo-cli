@@ -118,14 +118,14 @@ module Tempo
         end
       end
 
-      def initialize( params={} )
-        @start_time = params.fetch(:start_time, Time.now )
+      def initialize( options={} )
+        @start_time = options.fetch(:start_time, Time.now )
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
         @start_time = @start_time.round
 
         self.class.load_day_record(@start_time)
 
-        id_candidate = params[:id]
+        id_candidate = options[:id]
         if !id_candidate
           @id = self.class.next_id @start_time
           @d_id = self.class.day_id @start_time

@@ -29,12 +29,12 @@ module Tempo
         end
       end
 
-      def initialize(params={})
-        super params
-        @title = params.fetch(:title, "new project")
+      def initialize(options={})
+        super options
+        @title = options.fetch(:title, "new project")
         @tags = []
-        tag params.fetch(:tags, [])
-        current = params.fetch(:current, false)
+        tag options.fetch(:tags, [])
+        current = options.fetch(:current, false)
         self.class.current = self if current
       end
 

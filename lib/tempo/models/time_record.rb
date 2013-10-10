@@ -19,23 +19,23 @@ module Tempo
         end
       end
 
-      def initialize(params={})
+      def initialize(options={})
         @project_title = nil
-        @description = params.fetch :description, ""
+        @description = options.fetch :description, ""
         @start_time = nil
-        @end_time = params.fetch :end_time, :running
+        @end_time = options.fetch :end_time, :running
 
-        super params
+        super options
 
         #TODO: verify both start time ( and end time if ! :running )
         verify_open_time @start_time
         verify_open_time @end_time if @end_time.kind_of? Time
 
-        project = params.fetch :project, Tempo::Model::Project.current
+        project = options.fetch :project, Tempo::Model::Project.current
         @project = project.kind_of?(Integer) ? project : project.id
 
         @tags = []
-        tag params.fetch(:tags, [])
+        tag options.fetch(:tags, [])
 
         # close out other time records if ! end_time
         if running?

@@ -58,7 +58,7 @@ module Tempo
       class Model
         attr_accessor :id, :type
 
-        def initialize model, params={}
+        def initialize model, options={}
           @id = model.id
 
           # example: Tempo::Model::Something => "something"
@@ -74,8 +74,8 @@ module Tempo
       class Log < ViewRecords::Model
         attr_accessor :start_time, :d_id
 
-        def initialize model, params={}
-          super model, params
+        def initialize model, options={}
+          super model, options
           @start_time = model.start_time
           @d_id = model.d_id
         end
@@ -101,8 +101,8 @@ module Tempo
           end
         end
 
-        def initialize model, params={}
-          super model, params
+        def initialize model, options={}
+          super model, options
           @description = model.description
           @duration = Duration.new model.duration
           @end_time = model.end_time == :running ? Time.now() : model.end_time
@@ -132,9 +132,9 @@ module Tempo
           end
         end
 
-        def initialize model, params={}
-          super model, params
-          @depth = params.fetch(:depth, 0)
+        def initialize model, options={}
+          super model, options
+          @depth = options.fetch(:depth, 0)
           self.class.max_depth @depth
         end
 
@@ -154,8 +154,8 @@ module Tempo
           end
         end
 
-        def initialize model, params={}
-          super model, params
+        def initialize model, options={}
+          super model, options
           @title = model.title
           @tags = model.tags
           @duration = Duration.new

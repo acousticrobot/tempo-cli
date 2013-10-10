@@ -4,8 +4,8 @@ module FileRecord
 
       # record text as a string, and all objects as yaml
       # don't write over an existing document unless :force = true
-      # @params file file path to record to
-      # @params record string or object to record
+      # @options file file path to record to
+      # @options record string or object to record
       # options
       #  - force: true, overwrite file
       #  - format: 'yaml', 'string'

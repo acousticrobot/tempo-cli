@@ -12,19 +12,19 @@ module Tempo
     class Animal < Tempo::Model::Base
       attr_accessor :genious, :species
 
-      def initialize( params={} )
-        super params
-        @genious = params[:genious]
-        @species = params.fetch(:species, @genious)
+      def initialize( options={} )
+        super options
+        @genious = options[:genious]
+        @species = options.fetch(:species, @genious)
       end
     end
 
     class Tree < Tempo::Model::Composite
       attr_accessor :position
 
-      def initialize( params={})
-        super params
-        @position = params[:position]
+      def initialize( options={})
+        super options
+        @position = options[:position]
       end
     end
 
@@ -41,9 +41,9 @@ module Tempo
     class MessageLog < Tempo::Model::Log
       attr_accessor :message
 
-      def initialize( params={} )
-        super params
-        @message = params[:message]
+      def initialize( options={} )
+        super options
+        @message = options[:message]
       end
     end
 

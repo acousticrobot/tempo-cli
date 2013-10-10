@@ -35,10 +35,10 @@ module Tempo
         end
       end
 
-      def initialize(params={})
-        super params
-        @parent = params.fetch(:parent, :root)
-        @children = params.fetch(:children, [])
+      def initialize(options={})
+        super options
+        @parent = options.fetch(:parent, :root)
+        @children = options.fetch(:children, [])
       end
 
       def << child

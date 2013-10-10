@@ -113,8 +113,8 @@ module Tempo
         end
       end
 
-      def initialize params={}
-        id_candidate = params[:id]
+      def initialize options={}
+        id_candidate = options[:id]
         if !id_candidate
           @id = self.class.next_id
         elsif self.class.ids.include? id_candidate

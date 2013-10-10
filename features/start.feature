@@ -31,7 +31,7 @@ Feature: Start Command starts a new time record
     Then the stdout should contain "time record started"
     And the output should match /15:00 - \d{2}:\d{2}\*/
 
-
+@focus
   Scenario: Adding a time record with an end time
     Given an existing project file
     When I run `tempo start --end "15:00 today"`
