@@ -18,7 +18,7 @@ Feature: Report Command formats and outputs time records
     And I run `tempo end`
     And I run `tempo report`
     Then the output should match /\d{2}:\d{2} - \d{2}:\d{2}  \[\d{1,2}:\d{2}\] horticulture: my new project/
-@focus
+
   Scenario: Reporting the time entries on a specific day
     Given an existing project file
     And an existing time record file
@@ -27,7 +27,7 @@ Feature: Report Command formats and outputs time records
     Then the output should contain "Records for 01/01/2014:"
         And the output should not contain "Records for 01/02/2014:"
     And the output should contain "horticulture: putting on overalls and straw hat"
-@focus
+
   Scenario: Reporting the time entries for multipe days
     Given an existing project file
     And an existing time record file
@@ -38,7 +38,7 @@ Feature: Report Command formats and outputs time records
     And the output should contain "Records for 01/02/2014:"
     And the output should contain "Records for 01/03/2014:"
 
-@focus @pending
+@pending
   Scenario: Reporting the time entries for multipe days
     Given an existing project file
     And an existing time record file

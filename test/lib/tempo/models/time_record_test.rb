@@ -60,6 +60,12 @@ describe Tempo do
       @record_6.end_time.must_equal :running
     end
 
+    it "closes current when adding an end time to current" do
+      time_record_factory
+      @record_6.end_time = Time.new(2014, 1, 2, 19, 00 )
+      Tempo::Model::TimeRecord.current.must_equal nil
+    end
+
     it "has a running? method" do
       time_record_factory
       @record_1.running?.must_equal false
@@ -93,6 +99,15 @@ describe Tempo do
       @record_1 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
       Tempo::Model::TimeRecord.current.must_equal @record_2
       @record_1.end_time.must_equal @record_2.start_time
+    end
+
+    it "closes out all projects when init with an end time" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record_1 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
+      @record_2 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 10 ) })
+      @record_1.end_time.must_equal @record_2.start_time
+      Tempo::Model::TimeRecord.current.must_equal nil
     end
 
     it "errors when new time collides with existing" do

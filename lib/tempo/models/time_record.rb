@@ -7,7 +7,8 @@ module Tempo
       class << self
 
         def current
-          @current
+          return @current if @current && @current.end_time == :running
+          @current = nil
         end
 
         def current=( instance )
@@ -43,8 +44,6 @@ module Tempo
             self.class.current = self
           else
 
-            # verify_open_time @start_time
-
             current = self.class.current
 
             # more recent entries exist, need to close out immediately
@@ -68,6 +67,14 @@ module Tempo
                 self.class.current = self
               end
             end
+          end
+
+        # close out any earlier running timerecords
+        else
+          if self.class.current
+             if self.class.current.start_time < @start_time
+               self.class.current.end_time = @start_time
+             end
           end
         end
       end

@@ -40,7 +40,7 @@ Feature: End Command ends the current time record
     And I run `tempo end --at "1-5-2014 15:00"`
     Then the stdout should contain "time record ended"
     And the output should match /7:00 - 15:00/
-@focus @pending
+@pending
   Scenario: Attempting to end after the beginning time
     Given an existing project file
     When I run `tempo start --at "1-5-2014 17:00"`
@@ -50,7 +50,7 @@ Feature: End Command ends the current time record
 @pending
   Scenario: Ending a time record with tags
     Given an existing project file
-@focus @pending
+@pending
   Scenario: Ending a time record on a previous day
     Given an existing project file
     When I run `tempo start --at "1-1-2014 7:00"`
