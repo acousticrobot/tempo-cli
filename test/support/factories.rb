@@ -1,6 +1,5 @@
 module Tempo
   module Model
-
     class Base
       def self.clear_all()
         @ids = []
@@ -162,4 +161,13 @@ def time_record_factory
   @record_4 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 2 pet the sheep", start_time: Time.new(2014, 1, 2, 7, 15 ) })
   @record_5 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 2 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 2, 7, 45 ) })
   @record_6 = Tempo::Model::TimeRecord.new({ project: @project_3, description: "day 2 water the bonsai", start_time: Time.new(2014, 1, 2, 17, 00 ) })
+end
+
+def view_records_factory
+  time_record_factory
+  @message = Tempo::Views::ViewRecords::Message.new "All The Things I Did", class: :title
+  @error = Tempo::Views::ViewRecords::Message.new "raising an error", category: :error
+  @project = Tempo::Views::ViewRecords::Project.new @project_1
+  @time_record = Tempo::Views::ViewRecords::TimeRecord.new @record_1
+  @records = [@message, @project, @time_record]
 end

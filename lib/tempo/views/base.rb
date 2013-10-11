@@ -2,6 +2,13 @@ module Tempo
   module Views
     class << self
 
+      def return_message message, options={}
+        view = ViewRecords::Message.new "a new message"
+        formatter = Views::Formatters::Base.new
+        formatter.add view
+        formatter.print
+      end
+
       # puts each line if output=true
       # else returns an array of view lines
       def return_view( view, options={} )
@@ -42,11 +49,11 @@ module Tempo
       end
 
       def added_item( item, request )
-        return_view "added #{item}: #{request}"
+        return_message "added #{item}: #{request}", options
       end
 
       def deleted_item( item, request )
-        return_view "deleted #{item}: #{request}"
+        return_message "deleted #{item}: #{request}", options
       end
 
       def switched_item( item, request )

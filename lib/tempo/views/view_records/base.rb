@@ -15,11 +15,11 @@ module Tempo
     module ViewRecords
 
       class Message
-        attr_accessor :type, :message, :class
+        attr_accessor :type, :message, :category
 
         def initialize message, options={}
           @message = message
-          @class = options.fetch( :class, :info )
+          @category = options.fetch( :category, :info )
           @type = "message"
         end
 
