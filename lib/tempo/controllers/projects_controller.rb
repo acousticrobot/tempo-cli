@@ -12,6 +12,7 @@ module Tempo
         end
 
         def index options, args
+
           request = reassemble_the args
 
           if args.empty?
@@ -45,7 +46,8 @@ module Tempo
             @projects.save_to_file
 
             options[:active] = false
-            Views::added_item "project", Views::project_view( project, options )
+# added item should be passed the singular project
+            Views::added_item "project", request, options
           end
         end
 
@@ -69,7 +71,7 @@ module Tempo
             match.delete
             @projects.save_to_file
             if !options[:list]
-              Views::deleted_item "project", match.title
+              Views::deleted_item "project", match.title, options
             else
               Views::projects_list_view
             end

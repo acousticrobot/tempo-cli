@@ -1,51 +1,31 @@
+# Tempo View Formatters are triggered by the View Reporter.
+# The View Reporter sends it's stored view messages to each
+# of it's formatters. It calls the method process records and
+# passes in the view records.  If the formatter has a class method
+# that handles the type of block passed in, it will process
+# that view record. These class methods take the name "<record type>_block"
+# where record type can be any child class of ViewRecord::Base
+# see the screen formatter for an example of proc blocks.
+
 module Tempo
   module Views
     module Formatters
 
       class Base
-        attr_reader :view
 
-        class << self
-
-          def message_block record, options={}
-            record.format do |m|
-              # TODO: raise this now, or pass multiple records through first?
-              raise m.message if m.category == :error
-              "#{m.message}"
-            end
-          end
-        end
-
+        # TODO: should options and global options be held within the formatter?
         def initialize options={}
           @options = options.clone
-          @records = options.fetch( :records, [] )
-          @view = []
         end
 
-        def print
-          @view.each {|view| puts view }
-        end
-
-        def add records
-          if records.kind_of? Array
-            @records.push *records
-
-          elsif /Views::ViewRecords/.match records.class.name
-            @records << records
-          end
-          process_view
-        end
-
-        def process_view
-          @view = []
-          @records.each do |record|
+        # Here we check if our class methods include a proc block to handle the particular
+        # record type.  See View Records for all possible record types.  See screen formatter
+        # for examples of proc blocks.
+        #
+        def format_records records
+          records.each do |record|
             class_block = "#{record.type}_block"
-            if self.class.respond_to? class_block
-              line = self.class.send( class_block, record, @options )
-            else
-              line = record.format
-            end
-            @view << line
+            send( class_block, record, @options ) if respond_to? class_block
           end
         end
       end

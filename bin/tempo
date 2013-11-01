@@ -331,11 +331,15 @@ pre do |global,command,options,args|
   # chosen command
   # Use skips_pre before a command to skip this block
   # on that command only
+
   if global[:v]
     Tempo::Views::options_report global, options, args
   end
 
   Tempo::Controllers::Records.initialize_from_records options, args
+
+  # TODO: send formats in through global options, and then:
+  # Tempo::Views::Reporter.add_formats
 
   true
 end
@@ -344,6 +348,9 @@ post do |global,command,options,args|
   # Post logic here
   # Use skips_post before a command to skip this
   # block on that command only
+
+  #Tempo::Views::Reporter.report
+
 end
 
 on_error do |exception|
