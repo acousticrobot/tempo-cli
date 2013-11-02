@@ -165,7 +165,8 @@ end
 
 def view_records_factory
   time_record_factory
-  @message = Tempo::Views::ViewRecords::Message.new "All The Things I Did", class: :title
+  @message_1 = Tempo::Views::ViewRecords::Message.new "All The Things I Did", class: :title
+  @message_2 = Tempo::Views::ViewRecords::Message.new "on a busy busy day", class: :title
   @error = Tempo::Views::ViewRecords::Message.new "raising an error", category: :error
   @project = Tempo::Views::ViewRecords::Project.new @project_1
   @time_record = Tempo::Views::ViewRecords::TimeRecord.new @record_1

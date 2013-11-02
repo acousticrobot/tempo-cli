@@ -38,3 +38,22 @@ def inherits_attr_read_only?( obj, attribute)
   inherits_attr_reader?(obj, attribute) && !inherits_attr_writer?(obj, attribute)
 end
 
+# Test output resulting from any puts method
+# Used to test the view formatter output.
+#
+# http://thinkingdigitally.com/archive/capturing-output-from-puts-in-ruby/
+#
+require 'stringio'
+
+module Kernel
+
+  def capture_stdout
+    out = StringIO.new
+    $stdout = out
+    yield
+    return out
+  ensure
+    $stdout = STDOUT
+  end
+end
+

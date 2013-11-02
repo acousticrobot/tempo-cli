@@ -1,12 +1,12 @@
-= tempo
+# tempo
 
 A command Line interface for time tracking.  Record projects to track time to, and report time based time periods and also by project.
 
-= running in development
+## running in development
 
 You need to use `bundle exec bin/tempo` to run in development
 
-= testing
+### testing
 
 rakes default behavior is to run unit tests and cucumber features
 
@@ -14,19 +14,11 @@ run `bundle exec rake test` to run unit tests only
 
 if tests fail, you can cleanup the testing directories with `bundle exec rake clean`
 
-= Documentation
+### other command line time tracking apps:
 
-to generate rdoc, run
+This is a very opinionated time tracking app, you may find others that suit your working method better:
 
-    bundle exec rake rdoc
-
-:include:tempo.rdoc
-
-= other command line time tracking apps:
-
-There are other Ruby time tracking command line apps available:
-
-A utility that saves to separate timesheets for each project, using SQLite:
+A utility that saves to separate time sheets for each project, using SQLite:
 
 timetrap[https://github.com/samg/timetrap]
 

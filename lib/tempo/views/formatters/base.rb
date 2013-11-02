@@ -5,7 +5,7 @@
 # that handles the type of block passed in, it will process
 # that view record. These class methods take the name "<record type>_block"
 # where record type can be any child class of ViewRecord::Base
-# see the screen formatter for an example of proc blocks.
+# see the screen formatter for an example of processing blocks.
 
 module Tempo
   module Views

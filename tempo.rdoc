@@ -1,5 +1,0 @@
-= tempo
-
-Generate this with
-    tempo rdoc
-After you have described your command line interface

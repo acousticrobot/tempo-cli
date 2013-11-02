@@ -11,7 +11,7 @@ module Tempo
   module Views
     module Formatters
 
-      class ErrorMessages < Tempo::Views::Formatters::Base
+      class Screen < Tempo::Views::Formatters::Base
 
         def message_block record, options={}
           record.format do |m|
@@ -21,7 +21,9 @@ module Tempo
             when :info
               puts m.message
             end
+            m.message
           end
+
         end
       end
     end
