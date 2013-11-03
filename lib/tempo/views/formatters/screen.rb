@@ -23,7 +23,12 @@ module Tempo
             end
             m.message
           end
+        end
 
+        def duration_block record, options={}
+          record.format do |d|
+            puts "#{ d.hours.to_s }:#{ d.minutes.to_s.rjust(2, '0') }"
+          end
         end
       end
     end

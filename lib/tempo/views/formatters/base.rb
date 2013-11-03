@@ -15,7 +15,7 @@ module Tempo
 
         # TODO: should options and global options be held within the formatter?
         def initialize options={}
-          @options = options.clone
+          @options = options
         end
 
         # Here we check if our class methods include a proc block to handle the particular
