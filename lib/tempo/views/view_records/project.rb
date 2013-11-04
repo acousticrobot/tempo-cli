@@ -6,6 +6,8 @@ module Tempo
       # duration to the composite model.  It also keeps track of the
       # maximum title length of all Project views.
       #
+      # :depth is inhereted from Composite
+      #
       class Project < ViewRecords::Composite
         attr_accessor :title, :tags, :current, :duration
 

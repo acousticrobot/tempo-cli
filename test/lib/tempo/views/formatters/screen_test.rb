@@ -60,8 +60,9 @@ describe Tempo do
           end
 
           it "indents projects to proper depth" do
+            @project_1.depth = 3
             records = [@project_1]
-            @formatter.add_options depth: 3
+            @formatter.add_options depth: true
             out = capture_stdout { @formatter.format_records records }
 
             assert_equal "      sheep herding\n", out.string

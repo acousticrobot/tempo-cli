@@ -59,13 +59,17 @@ module Tempo
 
             id = @options[:id] ? "[#{p.id}] " : ""
             active = @options[:active] ? active_indicator( p ) : ""
-            depth = @options[:depth] ? "  " * @options[:depth] : ""
+            depth = @options[:depth] ? "  " * p.depth : ""
             title = p.title
             view = "#{id}#{active}#{depth}#{title}"
             tags = @options[:tags] ? tag_view( p.tags, view.length ) : ""
             view += tags
             puts view
           end
+        end
+
+        def time_record_block record
+
         end
       end
     end

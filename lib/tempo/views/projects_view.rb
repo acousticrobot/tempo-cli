@@ -2,6 +2,7 @@ module Tempo
   module Views
     class << self
 
+      # DEPRECATE: Use screen formatter to build this view
       # returns single project string, build according to options
       #
       def project_view( project, options={})
@@ -23,6 +24,8 @@ module Tempo
         view += tags
       end
 
+      # TODO: Create Project View Records, add to reporter
+      #
       # list of projects, build according to options
       #
       # when passing in a subset of projects,
