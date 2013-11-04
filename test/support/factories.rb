@@ -169,7 +169,8 @@ def view_records_factory
   @message_2 = Tempo::Views::ViewRecords::Message.new "on a busy busy day", class: :title
   @error = Tempo::Views::ViewRecords::Message.new "raising an error", category: :error
   @duration = Tempo::Views::ViewRecords::Duration.new 9600 # 2 hours and 40 minutes
-  @project = Tempo::Views::ViewRecords::Project.new @project_1
+  @project_1 = Tempo::Views::ViewRecords::Project.new @project_1
+  @project_2 = Tempo::Views::ViewRecords::Project.new @project_2
   @time_record = Tempo::Views::ViewRecords::TimeRecord.new @record_1
   @records = [@message, @project, @time_record]
 end

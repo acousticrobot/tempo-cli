@@ -13,7 +13,7 @@ module Tempo
 
       class Screen < Tempo::Views::Formatters::Base
 
-        def message_block record, options={}
+        def message_block record
           record.format do |m|
             case m.category
             when :error
@@ -25,9 +25,46 @@ module Tempo
           end
         end
 
-        def duration_block record, options={}
+        def duration_block record
           record.format do |d|
             puts "#{ d.hours.to_s }:#{ d.minutes.to_s.rjust(2, '0') }"
+          end
+        end
+
+        # spacer for project titles, active project marked with *
+        def active_indicator( project )
+          indicator = project.current ? "* " : "  "
+        end
+
+        def tag_view( tags, title_length=40 )
+          # TODO: Manage the max title length
+          spacer = [0, 40 - title_length].max
+          view = " " * spacer
+          return  view + "tags: none" if tags.length < 1
+
+          view += "tags: ["
+          tags.each { |t| view += "#{t}, "}
+          view[0..-3] + "]"
+        end
+
+        def project_block record
+          record.format do |p|
+            if @options[:verbose]
+              @options[:id] = true
+              @options[:tags] = true
+            end
+            @options[:active] = @options.fetch( :active, false )
+
+            record = p.title
+
+            id = @options[:id] ? "[#{p.id}] " : ""
+            active = @options[:active] ? active_indicator( p ) : ""
+            depth = @options[:depth] ? "  " * @options[:depth] : ""
+            title = p.title
+            view = "#{id}#{active}#{depth}#{title}"
+            tags = @options[:tags] ? tag_view( p.tags, view.length ) : ""
+            view += tags
+            puts view
           end
         end
       end

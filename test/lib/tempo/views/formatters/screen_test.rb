@@ -14,10 +14,7 @@ describe Tempo do
 
           it "outputs the message" do
             records = [@message_1, @message_2]
-
-            out = capture_stdout do
-              @formatter.format_records records
-            end
+            out = capture_stdout { @formatter.format_records records }
 
             assert_equal "All The Things I Did\non a busy busy day\n", out.string
           end
@@ -31,10 +28,8 @@ describe Tempo do
 
           it "outputs the duration" do
             records = [@duration]
+            out = capture_stdout { @formatter.format_records records }
 
-            out = capture_stdout do
-              @formatter.format_records records
-            end
             assert_equal "2:40\n", out.string
           end
         end
@@ -42,12 +37,46 @@ describe Tempo do
         describe "Project View Records" do
 
           it "outputs the project title" do
-            records = [@project]
+            records = [@project_1]
+            out = capture_stdout { @formatter.format_records records }
+
+            assert_equal "sheep herding\n", out.string
+          end
+
+          it "accepts option to include tags" do
+            records = [@project_2]
+            @formatter.add_options tags: true
+            out = capture_stdout { @formatter.format_records records }
+
+            assert_equal "horticulture - basement mushrooms       tags: [farming, fungi]\n", out.string
+          end
+
+          it "accepts option to include id" do
+            records = [@project_2]
+            @formatter.add_options id: true
+            out = capture_stdout { @formatter.format_records records }
+
+            assert_equal "[2] horticulture - basement mushrooms\n", out.string
+          end
+
+          it "indents projects to proper depth" do
+            records = [@project_1]
+            @formatter.add_options depth: 3
+            out = capture_stdout { @formatter.format_records records }
+
+            assert_equal "      sheep herding\n", out.string
+          end
+
+          it "indicates active project" do
+            records = [@project_1, @project_2]
+            @formatter.add_options active: true
+            out = capture_stdout { @formatter.format_records records }
+            assert_equal "  sheep herding\n* horticulture - basement mushrooms\n", out.string
           end
 
         end
 
-        describe "Time Record View Records" do
+        describe "TimeRecord View Records" do
 
         end
       end

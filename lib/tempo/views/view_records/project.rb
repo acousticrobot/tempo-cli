@@ -7,7 +7,7 @@ module Tempo
       # maximum title length of all Project views.
       #
       class Project < ViewRecords::Composite
-        attr_accessor :title, :tags, :duration
+        attr_accessor :title, :tags, :current, :duration
 
         class << self
           def max_title_length len=0
@@ -20,6 +20,7 @@ module Tempo
           super model, options
           @title = model.title
           @tags = model.tags
+          @current = model.current?
           @duration = Duration.new
           self.class.max_title_length @title.length
         end

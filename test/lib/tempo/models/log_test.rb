@@ -14,14 +14,14 @@ describe Tempo do
 
   describe "Model::Log" do
 
-    it "should inherit the freeze-dry method" do
+    it "inherits the freeze-dry method" do
       log_factory
       frozen = @log_4.freeze_dry
       frozen.must_equal({ :start_time=>Time.new(2014, 01, 02, 07, 15),
                           :id=>1, :message=>"day 2 pet the sheep"})
     end
 
-    it "should inherit the same indexing method" do
+    it "inherits the same indexing method" do
       log_factory
       Tempo::Model::MessageLog.index.length.must_equal 6
     end
@@ -33,13 +33,13 @@ describe Tempo do
       Tempo::Model::MessageLog.days_index[:"20140102"].length.must_equal 3
     end
 
-    it "should create a file name to save to" do
+    it "creates a file name to save to" do
       log_factory
       date = Time.new(2014,1,1)
       Tempo::Model::MessageLog.file(date).must_equal "20140101.yaml"
     end
 
-    it "should grant children the ability to write to a file" do
+    it "grants children the ability to write to a file" do
       log_factory
       test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
       # FileUtils.rm_r test_dir if File.exists?(test_dir)
@@ -62,7 +62,7 @@ describe Tempo do
                             ":id: 3", ":message: day 2 water the bonsai"]
      end
 
-    it "should grant children ability to read from a file" do
+    it "grants children ability to read from a file" do
       log_record_factory
       time = Time.new(2014, 1, 1)
       Tempo::Model::MessageLog.read_from_file time
@@ -70,7 +70,7 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
-    it "should load the records for a given day" do
+    it "loads the records for a given day" do
       log_record_factory
       time = Time.new(2014, 1, 1)
       Tempo::Model::MessageLog.load_day_record time
@@ -78,7 +78,7 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
-    it "should load the records for a the most recent day" do
+    it "loads the records for a the most recent day" do
       log_record_factory
       Tempo::Model::MessageLog.load_last_day
 
@@ -89,7 +89,7 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 2 pet the sheep"
     end
 
-    it "should load the records for a time frame" do
+    it "loads the records for a time frame" do
       log_record_factory
       time_1 = Time.new(2014, 1, 1)
       time_2 = Time.new(2014, 1, 2)
@@ -104,19 +104,19 @@ describe Tempo do
       Tempo::Model::MessageLog.index[1].message.must_equal "day 2 pet the sheep"
     end
 
-    it "should load the days index before adding new" do
+    it "loads the days index before adding new" do
       log_record_factory
       new_record = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep",
                                                   start_time: Time.new(2014, 1, 2, 7 ) })
       new_record.id.must_equal 4
     end
 
-    it "should give id as a readable attribute" do
+    it "gives id as a readable attribute" do
       log_factory
       @log_6.id.must_equal 3
     end
 
-    it "should raise an error on duplicate id" do
+    it "raises an error on duplicate id" do
       log_factory
       args = {  message: "duplicate id",
                 start_time: Time.new(2014, 1, 1, 3 ),
@@ -125,18 +125,18 @@ describe Tempo do
       proc { Tempo::Model::MessageLog.new( args ) }.must_raise Tempo::Model::IdentityConflictError
     end
 
-    it "should find logs by id" do
+    it "finds logs by id" do
       log_factory
       search = Tempo::Model::MessageLog.find("id", 2 )
       search.must_equal [ @log_2, @log_5 ]
     end
 
-    it "should have a day_id method" do
+    it "has a day_id method" do
       day_id = Tempo::Model::MessageLog.day_id Time.new(2014, 1, 1)
       day_id.must_equal "20140101"
     end
 
-    it "should have a find_by_id using day_id method" do
+    it "has a find_by_id using day_id method" do
       log_factory
       search = Tempo::Model::MessageLog.find_by_id( 2, "20140101" )
       search.must_equal [ @log_2 ]
@@ -145,7 +145,7 @@ describe Tempo do
       search.must_equal [ @log_5 ]
     end
 
-    it "should have a find_by_id using time method" do
+    it "has a find_by_id using time method" do
       log_factory
       search = Tempo::Model::MessageLog.find_by_id( 2, Time.new(2014, 1, 1))
       search.must_equal  [ @log_2 ]
@@ -153,12 +153,12 @@ describe Tempo do
       search.must_equal [ @log_5 ]
     end
 
-    it "should have a sort_by_start_time method" do
+    it "has a sort_by_start_time method" do
       list = Tempo::Model::MessageLog.sort_by_start_time [ @log_5, @log_1, @log_3 ]
       list.must_equal [ @log_1, @log_3, @log_5 ]
     end
 
-    it "should have a delete instance method" do
+    it "has a delete instance method" do
       log_factory
       @log_1.delete
       Tempo::Model::MessageLog.ids(Time.new(2014,1,1)).must_equal [2,3]

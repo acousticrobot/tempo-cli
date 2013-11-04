@@ -38,6 +38,10 @@ module Tempo
         self.class.current = self if current
       end
 
+      def current?
+        self.class.current == self
+      end
+
       def freeze_dry
         record = super
         if self.class.current == self

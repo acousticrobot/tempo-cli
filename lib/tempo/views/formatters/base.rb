@@ -1,6 +1,6 @@
 # Tempo View Formatters are triggered by the View Reporter.
 # The View Reporter sends it's stored view messages to each
-# of it's formatters. It calls the method process records and
+# of it's formatters. It calls the method format_records and
 # passes in the view records.  If the formatter has a class method
 # that handles the type of block passed in, it will process
 # that view record. These class methods take the name "<record type>_block"
@@ -12,10 +12,16 @@ module Tempo
     module Formatters
 
       class Base
+        attr_accessor :options
 
-        # TODO: should options and global options be held within the formatter?
+        # options can be passed on init, or added later. Adding will override
+        # existing values for the options passed in.
         def initialize options={}
           @options = options
+        end
+
+        def add_options options
+          @options.merge! options
         end
 
         # Here we check if our class methods include a proc block to handle the particular
@@ -25,7 +31,7 @@ module Tempo
         def format_records records
           records.each do |record|
             class_block = "#{record.type}_block"
-            send( class_block, record, @options ) if respond_to? class_block
+            send( class_block, record ) if respond_to? class_block
           end
         end
       end
