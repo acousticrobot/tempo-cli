@@ -43,12 +43,13 @@ describe Tempo do
             assert_equal "sheep herding\n", out.string
           end
 
-          it "accepts option to include tags" do
-            records = [@project_2]
+          it "accepts option to include tags with spacing" do
+            records = [@project_1, @project_2]
             @formatter.add_options tags: true
             out = capture_stdout { @formatter.format_records records }
 
-            assert_equal "horticulture - basement mushrooms       tags: [farming, fungi]\n", out.string
+            assert_equal "sheep herding                      tags: none\n" +
+                         "horticulture - basement mushrooms  tags: [farming, fungi]\n", out.string
           end
 
           it "accepts option to include id" do
@@ -59,7 +60,7 @@ describe Tempo do
             assert_equal "[2] horticulture - basement mushrooms\n", out.string
           end
 
-          it "indents projects to proper depth" do
+          it "accepts option to indent projects to proper depth" do
             @project_1.depth = 3
             records = [@project_1]
             @formatter.add_options depth: true
@@ -78,7 +79,19 @@ describe Tempo do
         end
 
         describe "TimeRecord View Records" do
+          it "has start/end time, duration, project and description" do
+            records = [@time_record_1]
+            out = capture_stdout { @formatter.format_records records }
 
+            assert_equal "07:00 - 07:30  [0:30] sheep herding: day 1 pet the sheep\n", out.string
+          end
+
+          it "outputs a running indicator" do
+            records = [@time_record_6]
+            out = capture_stdout { @formatter.format_records records }
+
+            assert_match /17:00 - \d{2}:\d{2}\*/, out.string
+          end
         end
       end
     end

@@ -36,10 +36,9 @@ module Tempo
           indicator = project.current ? "* " : "  "
         end
 
-        def tag_view( tags, title_length=40 )
-          # TODO: Manage the max title length
-          spacer = [0, 40 - title_length].max
-          view = " " * spacer
+        def tag_view tags, title_length
+          spacer = [0, ViewRecords::Project.max_title_length - title_length].max
+          view = "  " + ( " " * spacer )
           return  view + "tags: none" if tags.length < 1
 
           view += "tags: ["
@@ -48,28 +47,33 @@ module Tempo
         end
 
         def project_block record
-          record.format do |p|
+          record.format do |r|
             if @options[:verbose]
               @options[:id] = true
               @options[:tags] = true
             end
             @options[:active] = @options.fetch( :active, false )
 
-            record = p.title
+            record = r.title
 
-            id = @options[:id] ? "[#{p.id}] " : ""
-            active = @options[:active] ? active_indicator( p ) : ""
-            depth = @options[:depth] ? "  " * p.depth : ""
-            title = p.title
+            id = @options[:id] ? "[#{r.id}] " : ""
+            active = @options[:active] ? active_indicator( r ) : ""
+            depth = @options[:depth] ? "  " * r.depth : ""
+            title = r.title
             view = "#{id}#{active}#{depth}#{title}"
-            tags = @options[:tags] ? tag_view( p.tags, view.length ) : ""
+            tags = @options[:tags] ? tag_view( r.tags, view.length ) : ""
             view += tags
             puts view
           end
         end
 
-        def time_record_block record
-
+        def timerecord_block record
+          record.format do |r|
+            running = r.running ? "*" : " "
+            description = r.description.empty? ? "#{r.project}" : "#{r.project}: #{r.description}"
+            view =  "#{r.start_time.strftime('%H:%M')} - #{r.end_time.strftime('%H:%M')}#{running} [#{r.duration.format}] #{description}"
+            puts view
+          end
         end
       end
     end

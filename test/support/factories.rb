@@ -171,6 +171,7 @@ def view_records_factory
   @duration = Tempo::Views::ViewRecords::Duration.new 9600 # 2 hours and 40 minutes
   @project_1 = Tempo::Views::ViewRecords::Project.new @project_1
   @project_2 = Tempo::Views::ViewRecords::Project.new @project_2
-  @time_record = Tempo::Views::ViewRecords::TimeRecord.new @record_1
-  @records = [@message, @project, @time_record]
+  @time_record_1 = Tempo::Views::ViewRecords::TimeRecord.new @record_1
+  @time_record_6 = Tempo::Views::ViewRecords::TimeRecord.new @record_6
+  #@records = [@message, @project, @time_record]
 end
