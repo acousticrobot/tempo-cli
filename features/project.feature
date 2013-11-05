@@ -225,12 +225,12 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "backyard bonsai"
     And the stdout should contain "tags: [ outdoors, shrubs ]"
     And the project file should contain "- shrubs"
-
+@focus
   Scenario: Adding a new project with tags
     Given an existing project file
     When I successfully run `tempo project -a fly fishing -t 'patience fish'`
-    Then the stdout should contain "added project:\nfly fishing"
-    And the stdout should contain "tags: [ fish, patience ]"
+    Then the stdout should contain "added project:"
+    And the stdout should contain "fly fishing,  tags: [fish, patience]"
     And the project file should contain "- patience"
     And the project file should contain "- fish"
 

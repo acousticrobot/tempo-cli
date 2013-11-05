@@ -45,8 +45,7 @@ describe Tempo do
 
           it "accepts option to include tags with spacing" do
             records = [@project_1, @project_2]
-            @formatter.add_options tags: true
-            out = capture_stdout { @formatter.format_records records }
+            out = capture_stdout { @formatter.format_records records, { tags: true }}
 
             assert_equal "sheep herding                      tags: none\n" +
                          "horticulture - basement mushrooms  tags: [farming, fungi]\n", out.string
@@ -54,8 +53,7 @@ describe Tempo do
 
           it "accepts option to include id" do
             records = [@project_2]
-            @formatter.add_options id: true
-            out = capture_stdout { @formatter.format_records records }
+            out = capture_stdout { @formatter.format_records records, { id: true }}
 
             assert_equal "[2] horticulture - basement mushrooms\n", out.string
           end
@@ -63,16 +61,14 @@ describe Tempo do
           it "accepts option to indent projects to proper depth" do
             @project_1.depth = 3
             records = [@project_1]
-            @formatter.add_options depth: true
-            out = capture_stdout { @formatter.format_records records }
+            out = capture_stdout { @formatter.format_records records, { depth: true }}
 
             assert_equal "      sheep herding\n", out.string
           end
 
           it "indicates active project" do
             records = [@project_1, @project_2]
-            @formatter.add_options active: true
-            out = capture_stdout { @formatter.format_records records }
+            out = capture_stdout { @formatter.format_records records, {active: true}}
             assert_equal "  sheep herding\n* horticulture - basement mushrooms\n", out.string
           end
         end

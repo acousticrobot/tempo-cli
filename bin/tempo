@@ -102,6 +102,7 @@ command [:project, :p] do |c|
     # tag a project
     #
     if options[:tag]
+      Tempo::Views::Reporter.add_option( tags: true )
       controller.tag options, args
 
     # untag a project

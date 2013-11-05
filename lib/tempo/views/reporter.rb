@@ -22,6 +22,7 @@ module Tempo
     class Reporter
       @@formats
       @@view_records
+      @@options
 
       class << self
         attr_accessor :view_records
@@ -33,6 +34,15 @@ module Tempo
 
         def formats
           @@formats ||= []
+        end
+
+        def options
+          @@options ||= {}
+        end
+
+        def add_options options
+          @@options ||= {}
+          @@options.merge! options
         end
 
         def add_view_record record
@@ -52,7 +62,7 @@ module Tempo
         def report
           # TODO send records to added formatters
           screen_formatter = Formatters::Screen.new
-          screen_formatter.format_records view_records
+          screen_formatter.format_records view_records, options
         end
       end
     end

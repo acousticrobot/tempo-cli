@@ -39,6 +39,12 @@ describe Tempo do
         out = capture_stdout { Tempo::Views::Reporter.report }
         assert_equal "a message to report\n", out.string
       end
+
+      it "has a mutable collection of options" do
+        assert_equal Tempo::Views::Reporter.options, {}
+        Tempo::Views::Reporter.add_options({ tags: true, depth: 3, color: "red" })
+        assert_equal Tempo::Views::Reporter.options, { :tags=>true, :depth=>3, :color=>"red" }
+      end
     end
   end
 end

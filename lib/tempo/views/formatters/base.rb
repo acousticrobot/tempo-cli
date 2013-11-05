@@ -12,23 +12,13 @@ module Tempo
     module Formatters
 
       class Base
-        attr_accessor :options
-
-        # options can be passed on init, or added later. Adding will override
-        # existing values for the options passed in.
-        def initialize options={}
-          @options = options
-        end
-
-        def add_options options
-          @options.merge! options
-        end
 
         # Here we check if our class methods include a proc block to handle the particular
         # record type.  See View Records for all possible record types.  See screen formatter
         # for examples of proc blocks.
         #
-        def format_records records
+        def format_records records, options={}
+          @options = options
           records.each do |record|
             class_block = "#{record.type}_block"
             send( class_block, record ) if respond_to? class_block
