@@ -2,7 +2,18 @@ module Tempo
   module Views
     class << self
 
+      def project_added project
+        ViewRecords::Message.new "added project:"
+        ViewRecords::Project.new project
+      end
+
+      def project_deleted project
+        ViewRecords::Message.new "deleted project:"
+        ViewRecords::Project.new project
+      end
+
       # DEPRECATE: Use screen formatter to build this view
+      #
       # returns single project string, build according to options
       #
       def project_view( project, options={})
@@ -13,7 +24,7 @@ module Tempo
         end
         options[:active] = options.fetch( :active, true )
 
-        record = ViewRecords::Model.new project, options
+        # record = ViewRecords::Project.new project, options
 
         id = options[:id] ? "[#{project.id}] " : ""
         active = options[:active] ? active_indicator( project ) : ""

@@ -7,18 +7,24 @@ describe Tempo do
       describe "Message" do
 
         it "has a type, category,and message attribute" do
-          record = Tempo::Views::ViewRecords::Message.new "a default message type"
+          record = Tempo::Views::ViewRecords::Message.new "a message view record"
           record.type.must_equal "message"
           record.category.must_equal :info
-          record.message.must_equal "a default message type"
+          record.message.must_equal "a message view record"
 
           record = Tempo::Views::ViewRecords::Message.new "an error message", category: :error
           record.category.must_equal :error
         end
 
         it "has a default format" do
-          record = Tempo::Views::ViewRecords::Message.new "a default message type"
-          record.format.must_equal "a default message type"
+          record = Tempo::Views::ViewRecords::Message.new "a message view record"
+          record.format.must_equal "a message view record"
+        end
+
+        it "adds itself to the Reporter" do
+          length_before = Tempo::Views::Reporter.view_records.length
+          record = Tempo::Views::ViewRecords::Message.new "a message view record"
+          Tempo::Views::Reporter.view_records.length.must_equal length_before + 1
         end
       end
 

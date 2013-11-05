@@ -53,7 +53,6 @@ module Tempo
               @options[:tags] = true
             end
             @options[:active] = @options.fetch( :active, false )
-
             record = r.title
 
             id = @options[:id] ? "[#{r.id}] " : ""

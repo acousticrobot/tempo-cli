@@ -75,7 +75,6 @@ describe Tempo do
             out = capture_stdout { @formatter.format_records records }
             assert_equal "  sheep herding\n* horticulture - basement mushrooms\n", out.string
           end
-
         end
 
         describe "TimeRecord View Records" do

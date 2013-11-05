@@ -336,6 +336,7 @@ pre do |global,command,options,args|
     Tempo::Views::options_report global, options, args
   end
 
+  # Load the stored records
   Tempo::Controllers::Records.initialize_from_records options, args
 
   # TODO: send formats in through global options, and then:
@@ -349,7 +350,7 @@ post do |global,command,options,args|
   # Use skips_post before a command to skip this
   # block on that command only
 
-  #Tempo::Views::Reporter.report
+  Tempo::Views::Reporter.report
 
 end
 

@@ -10,7 +10,8 @@ module Tempo
         formatter.print
       end
 
-      # DEPRACATE!
+      # DEPRACATE- View is returned in post
+      #
       # puts each line if output=true
       # else returns an array of view lines
       def return_view( view, options={} )
@@ -50,13 +51,14 @@ module Tempo
         return_view view, options
       end
 
-      def added_item( item, request, options )
-        return_message "added #{item}: #{request}", options
-      end
+      # def added_item( item, request, options )
+      #   ViewRecords::Message.new "added #{item}: #{request}"
 
-      def deleted_item( item, request, options )
-        return_message "deleted #{item}: #{request}", options
-      end
+      # end
+
+      # def deleted_item( item, request, options )
+      #   return_message "deleted #{item}: #{request}", options
+      # end
 
       def switched_item( item, request )
         return_view "switched to #{item}: #{request}"

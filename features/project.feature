@@ -93,13 +93,13 @@ Feature: Project Command manages a list of projects
   Scenario: Adding a project
     Given an existing project file
     When I successfully run `tempo project "hang gliding"`
-    Then the stdout should contain "added project: hang gliding"
+    Then the stdout should contain "added project:\nhang gliding"
     And the project file should contain ":title: hang gliding"
 
   Scenario: Adding a project without quotation marks
     Given an existing project file
     When I successfully run `tempo project hang gliding`
-    Then the stdout should contain "added project: hang gliding"
+    Then the stdout should contain "added project:\nhang gliding\n"
     And the project file should contain ":title: hang gliding"
 
   Scenario: Attempting to add an existing project
@@ -110,19 +110,19 @@ Feature: Project Command manages a list of projects
   Scenario: Deleting a project by full match
     Given an existing project file
     When I successfully run `tempo project -d "backyard bonsai"`
-    Then the stdout should contain "deleted project: backyard bonsai"
+    Then the stdout should contain "deleted project:\nbackyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project by partial match
     Given an existing project file
     When I successfully run `tempo project -d "bonsai"`
-    Then the stdout should contain "deleted project: backyard bonsai"
+    Then the stdout should contain "deleted project:\nbackyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project without quotation marks
     Given an existing project file
     When I successfully run `tempo project -d backyard bonsai`
-    Then the stdout should contain "deleted project: backyard bonsai"
+    Then the stdout should contain "deleted project:\nbackyard bonsai"
     And the project file should not contain ":title: backyard bonsai"
 
   Scenario: Deleting a project with list flag works even without quotes around a partial match
@@ -148,7 +148,7 @@ Feature: Project Command manages a list of projects
   Scenario: Deleting a project by Id
     Given an existing project file
     When I successfully run `tempo project -id 3`
-    Then the stdout should contain "deleted project: basement mushrooms"
+    Then the stdout should contain "deleted project:\nbasement mushrooms"
     And the project file should not contain ":title: basement mushrooms"
 
   Scenario: Attempting to delete a non-existing project Fails
@@ -229,7 +229,7 @@ Feature: Project Command manages a list of projects
   Scenario: Adding a new project with tags
     Given an existing project file
     When I successfully run `tempo project -a fly fishing -t 'patience fish'`
-    Then the stdout should contain "added project: fly fishing"
+    Then the stdout should contain "added project:\nfly fishing"
     And the stdout should contain "tags: [ fish, patience ]"
     And the project file should contain "- patience"
     And the project file should contain "- fish"

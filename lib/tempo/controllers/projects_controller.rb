@@ -45,9 +45,7 @@ module Tempo
 
             @projects.save_to_file
 
-            options[:active] = false
-# added item should be passed the singular project
-            Views::added_item "project", request, options
+            Views::project_added project
           end
         end
 
@@ -71,7 +69,7 @@ module Tempo
             match.delete
             @projects.save_to_file
             if !options[:list]
-              Views::deleted_item "project", match.title, options
+              Views::project_deleted match
             else
               Views::projects_list_view
             end

@@ -9,6 +9,9 @@
 # ViewRecords can be nested, for instance the Time ViewRecords contain
 # a Duration ViewRecord.
 #
+# View records should add themselves to the Reporter on init, with the exception of
+# partials (such as duration), which are managed within other view records
+#
 # They have no logic, and so it is up
 # to the creation method to make sure they are a correct copy of the information
 # they are representing.
@@ -34,6 +37,7 @@ module Tempo
           @message = message
           @category = options.fetch( :category, :info )
           @type = "message"
+          Reporter.add_view_record self
         end
 
         def format &block
@@ -100,6 +104,7 @@ module Tempo
 
           # example: Tempo::Model::Something => "something"
           @type = /Tempo::Model::(.*)$/.match( model.class.to_s )[1].downcase
+          Reporter.add_view_record self
         end
 
         def format &block

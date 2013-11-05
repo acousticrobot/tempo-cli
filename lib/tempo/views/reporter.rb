@@ -35,22 +35,24 @@ module Tempo
           @@formats ||= []
         end
 
-        # records can be added as an array of view_records,
-        # or a single record.  They will be added to the end
-        # of the current record array
-        def add_view_record *records
+        def add_view_record record
           @@view_records ||= []
-          records.each do |record|
-            if /Views::ViewRecords/.match record.class.name
-              @@view_records << record
-            else
-              raise InvalidViewRecordError
-            end
+
+          if /Views::ViewRecords/.match record.class.name
+            @@view_records << record
+          else
+            raise InvalidViewRecordError
           end
         end
 
         def view_records
           @@view_records ||= []
+        end
+
+        def report
+          # TODO send records to added formatters
+          screen_formatter = Formatters::Screen.new
+          screen_formatter.format_records view_records
         end
       end
     end
