@@ -3,18 +3,28 @@ require "test_helper"
 describe Tempo do
   describe "Views" do
 
+    before do
+      project_factory
+      Tempo::Views::Reporter.clear_records
+    end
+
     describe "project list view" do
-      it "should return all formatted projects by default" do
-        project_factory
-        view = Tempo::Views::projects_list_view({ output: false })
-        view.must_equal [ "  gardening", "    horticulture - backyard bonsai", "*   horticulture - basement mushrooms", "  sheep herding" ]
+
+      it "adds projects to reporter by default" do
+        Tempo::Views::projects_list_view
+
+        view = []
+        Tempo::Views::Reporter.view_records.each {|r| view << r.title}
+        view.must_equal [ "gardening", "horticulture - backyard bonsai", "horticulture - basement mushrooms", "sheep herding" ]
       end
 
       it "should be able to return a subset of projects" do
-        project_factory
         subset = Tempo::Model::Project.index[1..3]
-        view = Tempo::Views::projects_list_view({ projects: subset, output: false })
-        view.must_equal [ "  gardening", "    horticulture - backyard bonsai", "*   horticulture - basement mushrooms" ]
+        Tempo::Views::projects_list_view subset
+
+        view = []
+        Tempo::Views::Reporter.view_records.each {|r| view << r.title}
+        view.must_equal [ "gardening", "horticulture - backyard bonsai", "horticulture - basement mushrooms" ]
       end
     end
   end

@@ -93,16 +93,13 @@ command [:project, :p] do |c|
   c.arg_name 'tagword'
   c.flag [:u, :untag]
 
-  c.action do |global_options,options,args|
+  c.action do |global_options, options, args|
 
     controller = Tempo::Controllers::Projects
-
-    options[:verbose] = global_options[:verbose]
 
     # tag a project
     #
     if options[:tag]
-      Tempo::Views::Reporter.add_option( tags: true )
       controller.tag options, args
 
     # untag a project
@@ -121,7 +118,7 @@ command [:project, :p] do |c|
       controller.add options, args
 
     elsif !options[:list] && args.empty?
-      controller.active_only options
+      controller.show_active
 
     # list projects, fiter by args
     #
@@ -222,7 +219,7 @@ command [:arrange, :a ] do |c|
   c.desc 'checkout by project id'
   c.switch [:i, :id]
 
-  c.action do |global_options,options,args|
+  c.action do |global_options, options, args|
     controller = Tempo::Controllers::Arrange
     controller.parse options, args
   end
@@ -258,7 +255,7 @@ command [:start, :s] do |c|
   c.arg_name 'start the time entry at the given time'
   c.flag [:a, :at]
 
-  c.action do |global_options,options,args|
+  c.action do |global_options, options, args|
     controller = Tempo::Controllers::Start
 
     return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
@@ -295,7 +292,7 @@ command [:end, :e] do |c|
   c.arg_name 'end the current time entry at the given time'
   c.flag [:a, :at]
 
-  c.action do |global_options,options,args|
+  c.action do |global_options, options, args|
     controller = Tempo::Controllers::End
 
     return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
@@ -318,7 +315,7 @@ command :report do |c|
   c.arg_name 'end time records on this date'
   c.flag [:t, :to]
 
-  c.action do |global_options,options,args|
+  c.action do |global_options, options, args|
     controller = Tempo::Controllers::Report
 
     return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
@@ -336,6 +333,8 @@ pre do |global,command,options,args|
   if global[:v]
     Tempo::Views::options_report global, options, args
   end
+
+  Tempo::Views::initialize_view_options command.name, global, options
 
   # Load the stored records
   Tempo::Controllers::Records.initialize_from_records options, args
@@ -360,7 +359,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  puts exception.backtrace
+  #puts exception.backtrace
 
   true
 end

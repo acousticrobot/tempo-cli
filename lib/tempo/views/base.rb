@@ -2,6 +2,29 @@ module Tempo
   module Views
     class << self
 
+      # called in the pre block, pushes relavent options to the reporter
+      def initialize_view_options command, global_options, options
+        view_opts = {}
+        view_opts[:verbose] = global_options[:verbose]
+        case command
+        when :project
+          if global_options[:verbose]
+            view_opts[:id] = true
+            view_opts[:tags] = true
+            view_opts[:active] = true
+            view_opts[:depth] = true
+          else
+            if options[:list]
+              view_opts[:depth] = true
+              view_opts[:active] = true
+            end
+            view_opts[:tags] = options[:tag] || options[:untag] ? true : false
+            view_opts[:id] = options[:id] ? true : false
+          end
+        end
+        Tempo::Views::Reporter.add_options view_opts
+      end
+
       # return message.
       def return_message message, options={}
         view = ViewRecords::Message.new message

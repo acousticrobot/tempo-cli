@@ -16,7 +16,7 @@ module Tempo
           request = reassemble_the args
 
           if args.empty?
-            Views::projects_list_view options
+            Views::projects_list_view
 
           else
             matches = filter_projects_by_title options, args
@@ -25,8 +25,17 @@ module Tempo
               Views::no_match "projects", request
 
             else
-              Views::projects_list_view({ projects: matches })
+              Views::projects_list_view matches
             end
+          end
+        end
+
+        def show_active
+          if @projects.index.empty?
+            Views::no_items( :projects )
+          else
+            Tempo::Views::Reporter.add_options active: true
+            Views::project_view @projects.current
           end
         end
 
@@ -99,20 +108,15 @@ module Tempo
               match = single_match matches, request, command
             end
 
-            match.tag tags
-            match.untag untags
-            @projects.save_to_file
-            puts Views::project_view match, options
+            if match
+              match.tag tags
+              match.untag untags
+              @projects.save_to_file
+              Views::project_tags match
+            end
           end
         end
 
-        def active_only options
-          if @projects.index.empty?
-            Views::no_items( :projects )
-          else
-            puts Views::project_view @projects.current, options
-          end
-        end
       end #class << self
     end
   end

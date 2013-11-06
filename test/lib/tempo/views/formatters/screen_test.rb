@@ -55,7 +55,7 @@ describe Tempo do
             records = [@project_2]
             out = capture_stdout { @formatter.format_records records, { id: true }}
 
-            assert_equal "[2] horticulture - basement mushrooms\n", out.string
+            assert_equal "  [2] horticulture - basement mushrooms\n", out.string
           end
 
           it "accepts option to indent projects to proper depth" do

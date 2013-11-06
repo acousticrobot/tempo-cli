@@ -37,7 +37,11 @@ module Tempo
         end
 
         def tag_view tags, title_length
-          spacer = [0, ViewRecords::Project.max_title_length - title_length].max
+          max_length = ViewRecords::Project.max_title_length
+          max_length += ViewRecords::Project.max_depth * 2 if @options[:depth]
+          max_length += 6 if @options[:id]
+          max_length += 2 if @options[:active]
+          spacer = [0, max_length - title_length].max
           view = "  " + ( " " * spacer )
           return  view + "tags: none" if tags.length < 1
 
@@ -47,15 +51,12 @@ module Tempo
         end
 
         def project_block record
+
           record.format do |r|
-            if @options[:verbose]
-              @options[:id] = true
-              @options[:tags] = true
-            end
             @options[:active] = @options.fetch( :active, false )
             record = r.title
 
-            id = @options[:id] ? "[#{r.id}] " : ""
+            id = @options[:id] ? "[#{r.id}] ".rjust(6, ' ') : ""
             active = @options[:active] ? active_indicator( r ) : ""
             depth = @options[:depth] ? "  " * r.depth : ""
             title = r.title

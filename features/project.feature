@@ -48,12 +48,12 @@ Feature: Project Command manages a list of projects
   Scenario: Listing all Projects with --verbose
     Given an existing project file
     When I successfully run `tempo -v project -l`
-    Then the stdout should contain "[4]   aquaculture                       tags: [ cultivation ]"
-    And the stdout should contain "[5]     nano aquarium                   tags: [ miniaturization ]"
-    And the stdout should contain "[6]     reading aquaculture digest      tags: none"
-    And the stdout should contain "[1] * horticulture                      tags: [ cultivation ]"
-    And the stdout should contain "[2]     backyard bonsai                 tags: [ miniaturization, outdoors ]"
-    And the stdout should contain "[3]     basement mushrooms              tags: [ fungi, indoors ]"
+    Then the stdout should contain "  [4]   aquaculture                   tags: [cultivation]"
+    And the stdout should contain "  [5]     nano aquarium               tags: [miniaturization]"
+    And the stdout should contain "  [6]     reading aquaculture digest  tags: none"
+    And the stdout should contain "  [1] * horticulture                  tags: [cultivation]"
+    And the stdout should contain "  [2]     backyard bonsai             tags: [miniaturization, outdoors]"
+    And the stdout should contain "  [3]     basement mushrooms          tags: [fungi, indoors]"
 
   Scenario: Listing all Projects with Ids displayed
     Given an existing project file
@@ -144,11 +144,10 @@ Feature: Project Command manages a list of projects
     And the stdout should contain "* horticulture"
     And the stdout should not contain "    backyard bonsai"
     And the stdout should contain "    basement mushrooms"
-
   Scenario: Deleting a project by Id
     Given an existing project file
     When I successfully run `tempo project -id 3`
-    Then the stdout should contain "deleted project:\nbasement mushrooms"
+    Then the stdout should contain "deleted project:\n  [3] basement mushrooms"
     And the project file should not contain ":title: basement mushrooms"
 
   Scenario: Attempting to delete a non-existing project Fails
@@ -174,21 +173,21 @@ Feature: Project Command manages a list of projects
     Given an existing project file
     When I successfully run `tempo project backyard bonsai -t patience`
     Then the stdout should contain "backyard bonsai"
-    And the stdout should contain "tags: [ miniaturization, outdoors, patience ]"
+    And the stdout should contain "tags: [miniaturization, outdoors, patience]"
     And the project file should contain "- patience"
 
   Scenario: Tagging a project by Id with a tag
     Given an existing project file
     When I successfully run `tempo project -i 3 -t patience`
     Then the stdout should contain "basement mushrooms"
-    And the stdout should contain "tags: [ fungi, indoors, patience ]"
+    And the stdout should contain "tags: [fungi, indoors, patience]"
     And the project file should contain "- patience"
 
   Scenario: Tagging a project with tags
     Given an existing project file
     When I successfully run `tempo project backyard bonsai -t 'patience japanese'`
     Then the stdout should contain "backyard bonsai"
-    And the stdout should contain "tags: [ japanese, miniaturization, outdoors, patience ]"
+    And the stdout should contain "tags: [japanese, miniaturization, outdoors, patience]"
     And the project file should contain "- patience"
     And the project file should contain "- japanese"
 
@@ -196,20 +195,20 @@ Feature: Project Command manages a list of projects
     Given an existing project file
     When I successfully run `tempo project backyard bonsai -t outdoors`
     Then the stdout should contain "backyard bonsai"
-    And the stdout should contain "tags: [ miniaturization, outdoors ]"
+    And the stdout should contain "tags: [miniaturization, outdoors]"
 
   Scenario: Untagging a project with a tag
     Given an existing project file
     When I successfully run `tempo project mushrooms -u fungi`
     Then the stdout should contain "basement mushrooms"
-    And the stdout should contain "tags: [ indoors ]"
+    And the stdout should contain "tags: [indoors]"
     And the project file should not contain "- fungi"
 
   Scenario: Untagging a project by Id
     Given an existing project file
     When I successfully run `tempo project -i 3 -u fungi`
     Then the stdout should contain "basement mushrooms"
-    And the stdout should contain "tags: [ indoors ]"
+    And the stdout should contain "tags: [indoors]"
     And the project file should not contain "- fungi"
 
   Scenario: Untagging a project with tags
@@ -223,14 +222,14 @@ Feature: Project Command manages a list of projects
     Given an existing project file
     When I successfully run `tempo project backyard bonsai -u miniaturization -t shrubs`
     Then the stdout should contain "backyard bonsai"
-    And the stdout should contain "tags: [ outdoors, shrubs ]"
+    And the stdout should contain "tags: [outdoors, shrubs]"
     And the project file should contain "- shrubs"
-@focus
+
   Scenario: Adding a new project with tags
     Given an existing project file
     When I successfully run `tempo project -a fly fishing -t 'patience fish'`
     Then the stdout should contain "added project:"
-    And the stdout should contain "fly fishing,  tags: [fish, patience]"
+    And the stdout should contain "fly fishing  tags: [fish, patience]"
     And the project file should contain "- patience"
     And the project file should contain "- fish"
 

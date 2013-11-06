@@ -57,3 +57,13 @@ module Kernel
   end
 end
 
+# Alter reporter to clear cash from previous tests
+module Tempo
+  module Views
+    class Reporter
+      def self.clear_records
+        @@view_records = []
+      end
+    end
+  end
+end

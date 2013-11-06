@@ -35,8 +35,8 @@ Feature: Checkout Command manages the active project
     Given an existing project file
     And I run `tempo checkout aquaculture`
     Then the stdout should contain "The following projects matched your search:"
-    And the stdout should contain "  aquaculture"
-    And the stdout should contain "  reading aquaculture digest"
+    And the stdout should contain "aquaculture"
+    And the stdout should contain "reading aquaculture digest"
     And the stderr should contain "error: cannot checkout multiple projects"
 
   Scenario: Attempting to Checkout the current project

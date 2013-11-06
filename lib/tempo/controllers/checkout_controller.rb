@@ -31,13 +31,14 @@ module Tempo
             match = single_match matches, request, :checkout
           end
 
-          # TODO project.current?
-          if @projects.current == match
-            puts "already on project: #{match.title}"
-          else
-            @projects.current = match
-            @projects.save_to_file
-            Views::switched_item "project", match.title
+          if match
+            if @projects.current == match
+              puts "already on project: #{match.title}"
+            else
+              @projects.current = match
+              @projects.save_to_file
+              Views::switched_item "project", match.title
+            end
           end
         end
 

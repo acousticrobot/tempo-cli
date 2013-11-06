@@ -91,10 +91,10 @@ module Tempo
 
           if matches.length == 0
             Views::no_match "projects", request
-
+            return false
           elsif matches.length > 1
             Views::ambiguous_project matches, command
-
+            return false
           else
             match = matches[0]
           end

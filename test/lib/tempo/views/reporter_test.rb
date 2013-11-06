@@ -1,15 +1,5 @@
 require "test_helper"
 
-module Tempo
-  module Views
-    class Reporter
-      def self.clear_records
-        @@view_records = []
-      end
-    end
-  end
-end
-
 describe Tempo do
   describe "Views" do
     describe "Reporter" do

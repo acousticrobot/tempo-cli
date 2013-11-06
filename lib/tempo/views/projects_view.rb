@@ -12,90 +12,54 @@ module Tempo
         ViewRecords::Project.new project
       end
 
-      # DEPRECATE: Use screen formatter to build this view
-      #
-      # returns single project string, build according to options
-      #
-      def project_view( project, options={})
-
-        if options[:verbose]
-          options[:id] = true
-          options[:tag] = true
-        end
-        options[:active] = options.fetch( :active, true )
-
-        # record = ViewRecords::Project.new project, options
-
-        id = options[:id] ? "[#{project.id}] " : ""
-        active = options[:active] ? active_indicator( project ) : ""
-        depth = "  " * options[:depth] if options[:depth]
-        title = project.title
-        view = "#{id}#{active}#{depth}#{title}"
-        tags = options[:tag] || options[:untag] ? tag_view( project.tags, view.length ) : ""
-        view += tags
+      def project_tags project
+        ViewRecords::Message.new "altered project tags:"
+        ViewRecords::Project.new project
       end
 
-      # TODO: Create Project View Records, add to reporter
-      #
-      # list of projects, build according to options
-      #
-      # when passing in a subset of projects,
-      # remember that without the root, branches will not show up
-      #
-      def projects_list_view( options={} )
+      def project_view project, depth=0
+        ViewRecords::Project.new project, depth: depth
+      end
 
-        projects = options.fetch( :projects, Tempo::Model::Project.index )
+      def projects_list_view projects=Tempo::Model::Project.index, parent=:root, depth=0
         return no_items( "projects" ) if projects.empty?
 
-        output = options.fetch( :output, true )
-        depth = options.fetch( :depth, 0 )
-        parent = options.fetch( :parent, :root )
-
-        view = Tempo::Model::Project.sort_by_title projects do |projects|
-          view = []
+        Tempo::Model::Project.sort_by_title projects do |projects|
           projects.each do |p|
+
             if p.parent == parent
-              view << project_view( p, options )
+              ViewRecords::Project.new p, depth: depth
+
               if not p.children.empty?
-                child_opts = options.clone
-                child_opts[:depth] = depth + 1
-                child_opts[:parent] = p.id
-                child_opts[:output] = false
-                child_array = projects_list_view child_opts
-                view.push *child_array
+                next_depth = depth + 1
+                next_parent = p.id
+                child_array = projects_list_view projects, next_parent, next_depth
               end
             end
           end
-          view
         end
-
-        return_view view, options
       end
 
       # list of sorted projects, no hierarchy
-      def flat_projects_list_view( options={} )
-        projects = options.fetch( :projects, Tempo::Model::Project.index )
+      def projects_flat_list_view projects=Tempo::Model::Project.index
 
-        view = Tempo::Model::Project.sort_by_title projects do |projects|
-          view = []
+        Tempo::Model::Project.sort_by_title projects do |projects|
           projects.each do |p|
-            view << project_view( p, options )
+            ViewRecords::Project.new p
           end
-          view
         end
-
-        return_view view, options
       end
 
-      def ambiguous_project( matches, command, options={} )
-        view = []
-        view << "The following projects matched your search:"
+      def ambiguous_project( matches, command )
 
-        view.push *flat_projects_list_view({ projects: matches, output: false })
-        view << "please refine your search or use --exact to match args exactly"
+        ViewRecords::Message.new "The following projects matched your search:"
 
-        return_view view, options
-        raise "cannot #{command} multiple projects"
+        Tempo::Views::Reporter.add_options active: true
+        projects_flat_list_view matches
+
+        ViewRecords::Message.new "please refine your search or use --exact to match args exactly"
+
+        ViewRecords::Message.new "cannot #{command} multiple projects", category: :error
       end
 
       def project_assistance
