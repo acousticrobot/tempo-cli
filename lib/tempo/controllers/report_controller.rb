@@ -8,6 +8,8 @@ module Tempo
 
         def report options, args
 
+          return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
+
           if options[:from]
             options[:to] = options.fetch :to, "today"
             from = Chronic.parse options[:from]
@@ -23,14 +25,14 @@ module Tempo
             begin
               day = Chronic.parse time
             rescue Exception => e
-              Tempo::Views.no_match "valid timeframe", time, false
+              Views.no_match "valid timeframe", time, false
             end
             @time_records.load_day_record day
           end
 
-          Tempo::Views.no_items( "time records", err=true ) if @time_records.index.empty?
+          Views.no_items( "time records", :error ) if @time_records.index.empty?
 
-          Tempo::Views.report_view
+          Views.report_view
         end
       end #class << self
     end

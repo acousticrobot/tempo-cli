@@ -10,6 +10,8 @@ module Tempo
 
         def end_timer options, args
 
+          return Views.project_assistance if Model::Project.index.empty?
+
           if not options[:at]
             time_out = Time.new()
           else
@@ -20,7 +22,7 @@ module Tempo
             end
           end
 
-          Tempo::Views.no_match( "valid timeframe", options[:at], false ) if not time_out
+          Views.no_match( "valid timeframe", options[:at], false ) if not time_out
 
           options = { end_time: time_out }
           options[:description] = reassemble_the args
@@ -28,13 +30,13 @@ module Tempo
           @time_records.load_last_day
           record = @time_records.current
 
-          Tempo::Views.no_items( "running time records", true ) if ! record
+          return Views.no_items( "running time records", :error ) if ! record
 
           record.end_time = time_out
           record.description = options[:description] if options[:description]
           @time_records.save_to_file
 
-          Tempo::Views.end_time_record_view record
+          Views.end_time_record_view record
 
         end
 

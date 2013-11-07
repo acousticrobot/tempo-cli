@@ -32,9 +32,9 @@ module Tempo
 
         def show_active
           if @projects.index.empty?
-            Views::no_items( :projects )
+            Views::no_items "projects"
           else
-            Tempo::Views::Reporter.add_options active: true
+            Views::Reporter.add_options active: true
             Views::project_view @projects.current
           end
         end
@@ -99,7 +99,7 @@ module Tempo
           else
             if options[:id]
               match = @projects.find_by_id args[0]
-              Views::no_items "projects", options[:id] if not match
+              Views::no_items "projects" if not match
             else
               request = reassemble_the args
               matches = filter_projects_by_title options, args

@@ -10,6 +10,8 @@ module Tempo
 
         def start_timer options, args
 
+          return Views.project_assistance if Model::Project.index.empty?
+
           if not options[:at]
             time_in = Time.new()
           else
@@ -20,14 +22,14 @@ module Tempo
             end
           end
 
-          Tempo::Views.no_match( "valid timeframe", options[:at], false ) if not time_in
+          Views.no_match( "valid timeframe", options[:at], false ) if not time_in
 
           opts = { start_time: time_in }
           opts[:description] = reassemble_the args
 
           if options[:end]
             time_out = Chronic.parse options[:end]
-            Tempo::Views.no_match( "valid timeframe", options[:end], false ) if not time_out
+            Views.no_match( "valid timeframe", options[:end], false ) if not time_out
             opts[:end_time] = time_out
           end
 
@@ -35,7 +37,7 @@ module Tempo
           record = @time_records.new(opts)
           @time_records.save_to_file
 
-          Tempo::Views.start_time_record_view record
+          Views.start_time_record_view record
 
         end
 

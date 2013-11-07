@@ -87,9 +87,9 @@ module Tempo
         return_view "switched to #{item}: #{request}"
       end
 
-      def no_items( items, err=false )
-        raise "no #{items} exist" if err
-        return_view "no #{items} exist"
+      # DON'T DEPRICATE
+      def no_items( items, category=:info )
+        ViewRecords::Message.new "no #{items} exist", category: category
       end
 
       def no_match( items, request, plural=true )

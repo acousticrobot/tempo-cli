@@ -2,21 +2,6 @@ module Tempo
   module Views
     class << self
 
-      def project_added project
-        ViewRecords::Message.new "added project:"
-        ViewRecords::Project.new project
-      end
-
-      def project_deleted project
-        ViewRecords::Message.new "deleted project:"
-        ViewRecords::Project.new project
-      end
-
-      def project_tags project
-        ViewRecords::Message.new "altered project tags:"
-        ViewRecords::Project.new project
-      end
-
       def project_view project, depth=0
         ViewRecords::Project.new project, depth: depth
       end
@@ -28,7 +13,7 @@ module Tempo
           projects.each do |p|
 
             if p.parent == parent
-              ViewRecords::Project.new p, depth: depth
+              project_view p, depth
 
               if not p.children.empty?
                 next_depth = depth + 1
@@ -45,9 +30,24 @@ module Tempo
 
         Tempo::Model::Project.sort_by_title projects do |projects|
           projects.each do |p|
-            ViewRecords::Project.new p
+            project_view p
           end
         end
+      end
+
+      def project_added project
+        ViewRecords::Message.new "added project:"
+        project_view project
+      end
+
+      def project_deleted project
+        ViewRecords::Message.new "deleted project:"
+        project_view project
+      end
+
+      def project_tags project
+        ViewRecords::Message.new "altered project tags:"
+        project_view project
       end
 
       def ambiguous_project( matches, command )
@@ -63,11 +63,9 @@ module Tempo
       end
 
       def project_assistance
-        view = []
-        view << "you need to set up a new project before running your command"
-        view << "run`tempo project --help` for more information"
-        return_view view
-        no_items :projects, true
+        ViewRecords::Message.new "you need to set up a new project before running your command"
+        ViewRecords::Message.new "run`tempo project --help` for more information"
+        no_items "projects", :error
       end
     end
   end
