@@ -5,31 +5,31 @@ Feature: Checkout Command manages the active project
   Scenario: Checkout an existing project with checkout
     Given an existing project file
     When I successfully run `tempo checkout "backyard bonsai"`
-    Then the stdout should contain "switched to project: backyard bonsai"
+    Then the stdout should contain "switched to project:\nbackyard bonsai"
     And the project file should contain ":current: true" at line 18
 
   Scenario: Checkout an exising project with c
     Given an existing project file
     When I successfully run `tempo c "backyard bonsai"`
-    Then the stdout should contain "switched to project: backyard bonsai"
+    Then the stdout should contain "switched to project:\nbackyard bonsai"
     And the project file should contain ":current: true" at line 18
 
   Scenario: Checkout an existing project by partial match
     Given an existing project file
     When I successfully run `tempo checkout "bonsai"`
-    Then the stdout should contain "switched to project: backyard bonsai"
+    Then the stdout should contain "switched to project:\nbackyard bonsai"
     And the project file should contain ":current: true" at line 18
 
   Scenario: Checkout a project by id
     Given an existing project file
     When I successfully run `tempo checkout -i 3`
-    Then the stdout should contain "switched to project: basement mushrooms"
+    Then the stdout should contain "switched to project:\nbasement mushrooms"
 
   Scenario: Checkout a project by exact match
     Given an existing project file
     And I successfully run `tempo checkout -e aquaculture`
-    Then the stdout should contain "switched to project: aquaculture"
-    And the stdout should not contain "switched to project: reading aquaculture digest"
+    Then the stdout should contain "switched to project:\naquaculture"
+    And the stdout should not contain "switched to project:\nreading aquaculture digest"
 
   Scenario: Attempting to Checkout an existing project by partial match with multiple possibilities
     Given an existing project file
@@ -42,7 +42,7 @@ Feature: Checkout Command manages the active project
   Scenario: Attempting to Checkout the current project
     Given an existing project file
     When I successfully run `tempo checkout "horticulture"`
-    Then the stdout should contain "already on project: horticulture"
+    Then the stdout should contain "already on project:\nhorticulture"
 
   Scenario: Attempting to checkout a non-existant project
     Given an existing project file
@@ -53,7 +53,7 @@ Feature: Checkout Command manages the active project
   Scenario: Adding and checking out a new project
     Given an existing project file
     When I successfully run `tempo checkout --add "bathtup scuba diving"`
-    Then the stdout should contain "switched to new project: bathtup scuba diving"
+    Then the stdout should contain "switched to project:\nbathtup scuba diving"
     And the project file should contain ":title: bathtup scuba diving"
     And the project file should contain ":current: true"
 

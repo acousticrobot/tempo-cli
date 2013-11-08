@@ -18,7 +18,7 @@ module Tempo
             case m.category
             when :error
               raise m.message
-            when :info
+            when :info, :debug
               puts m.message
             end
             m.message

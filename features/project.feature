@@ -197,6 +197,11 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "backyard bonsai"
     And the stdout should contain "tags: [miniaturization, outdoors]"
 
+  Scenario: Attemting to tag a project by non-existing id
+    Given an existing project file
+    When I run `tempo project -i 30 -t patience`
+    Then the stderr should contain "no projects match the request: id=30"
+
   Scenario: Untagging a project with a tag
     Given an existing project file
     When I successfully run `tempo project mushrooms -u fungi`

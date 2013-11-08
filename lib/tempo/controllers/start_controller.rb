@@ -22,14 +22,14 @@ module Tempo
             end
           end
 
-          Views.no_match( "valid timeframe", options[:at], false ) if not time_in
+          return Views.no_match( "valid timeframe", options[:at], false ) if not time_in
 
           opts = { start_time: time_in }
           opts[:description] = reassemble_the args
 
           if options[:end]
             time_out = Chronic.parse options[:end]
-            Views.no_match( "valid timeframe", options[:end], false ) if not time_out
+            return Views.no_match( "valid timeframe", options[:end], false ) if not time_out
             opts[:end_time] = time_out
           end
 

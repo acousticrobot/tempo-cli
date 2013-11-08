@@ -14,7 +14,7 @@ module Tempo
           else
             project = @projects.new({ title: request, current: true })
             @projects.save_to_file
-            Views::switched_item "new project", project.title
+            Views::project_checkout project
           end
         end
 
@@ -33,11 +33,11 @@ module Tempo
 
           if match
             if @projects.current == match
-              puts "already on project: #{match.title}"
+              Views::project_already_current match
             else
               @projects.current = match
               @projects.save_to_file
-              Views::switched_item "project", match.title
+              Views::project_checkout match
             end
           end
         end

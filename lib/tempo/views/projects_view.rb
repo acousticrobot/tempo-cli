@@ -45,6 +45,16 @@ module Tempo
         project_view project
       end
 
+      def project_checkout project
+        ViewRecords::Message.new "switched to project:"
+        project_view project
+      end
+
+      def project_already_current project
+        ViewRecords::Message.new "already on project:"
+        project_view project
+      end
+
       def project_tags project
         ViewRecords::Message.new "altered project tags:"
         project_view project

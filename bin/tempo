@@ -325,7 +325,7 @@ pre do |global,command,options,args|
   # on that command only
 
   if global[:v]
-    Tempo::Views::options_report global, options, args
+    Tempo::Views::options_report command.name, global, options, args
   end
 
   Tempo::Views::initialize_view_options command.name, global, options

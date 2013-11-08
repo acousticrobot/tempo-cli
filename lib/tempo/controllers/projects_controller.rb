@@ -85,6 +85,7 @@ module Tempo
           end
         end
 
+        # add a project with tags, or tag or untag an existing project
         def tag options, args
 
           # TODO @projects_find_by_tag if args.empty?
@@ -92,14 +93,16 @@ module Tempo
           tags = options[:tag].split if options[:tag]
           untags = options[:untag].split if options[:untag]
 
+          # add a new project
           if options[:add]
             add options, args, tags
-            Views::tag_view tags
 
           else
             if options[:id]
               match = @projects.find_by_id args[0]
-              Views::no_items "projects" if not match
+
+              return Views::no_match( "projects", "id=#{args[0]}" ) if not match
+
             else
               request = reassemble_the args
               matches = filter_projects_by_title options, args

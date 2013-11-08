@@ -25,14 +25,6 @@ module Tempo
         Tempo::Views::Reporter.add_options view_opts
       end
 
-      # return message.
-      def return_message message, options={}
-        view = ViewRecords::Message.new message
-        formatter = Views::Formatters::Base.new
-        formatter.add view
-        formatter.print
-      end
-
       # DEPRACATE- View is returned in post
       #
       # puts each line if output=true
@@ -50,51 +42,43 @@ module Tempo
         view
       end
 
-      # spacer for project titles, active project marked with *
-      def active_indicator( project )
-        indicator = project == Tempo::Model::Project.current ? "* " : "  "
-      end
-
-      def tag_view( tags, title_length=40 )
-        # TODO: Manage the max title length
-        spacer = [0, 40 - title_length].max
-        view = " " * spacer
-        return  view + "tags: none" if tags.length < 1
-
-        view += "tags: [ "
-        tags.each { |t| view += "#{t}, "}
-        view[0..-3] + " ]"
-      end
-
-      def options_report( global_options, options, args )
-        view = []
-        view << "global_options: #{global_options}"
-        view << "options: #{options}"
-        view << "args: #{args}"
-        return_view view, options
-      end
-
-      # def added_item( item, request, options )
-      #   ViewRecords::Message.new "added #{item}: #{request}"
-
+      # # spacer for project titles, active project marked with *
+      # def active_indicator( project )
+      #   indicator = project == Tempo::Model::Project.current ? "* " : "  "
       # end
 
-      # def deleted_item( item, request, options )
-      #   return_message "deleted #{item}: #{request}", options
+      # def tag_view( tags, title_length=40 )
+      #   # TODO: Manage the max title length
+      #   spacer = [0, 40 - title_length].max
+      #   view = " " * spacer
+      #   return  view + "tags: none" if tags.length < 1
+
+      #   view += "tags: [ "
+      #   tags.each { |t| view += "#{t}, "}
+      #   view[0..-3] + " ]"
       # end
 
-      def switched_item( item, request )
-        return_view "switched to #{item}: #{request}"
+      def options_report( command, global_options, options, args )
+        globals_list = "global options: "
+        global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }
+        ViewRecords::Message.new globals_list[0..-2], category: :debug
+
+        options_list = "command options: "
+        options.each {|k,v| options_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1  and !v.nil? }
+        ViewRecords::Message.new options_list[0..-2], category: :debug
+
+
+        ViewRecords::Message.new "command: #{command}", category: :debug
+        ViewRecords::Message.new "args: #{args}", category: :debug
       end
 
-      # DON'T DEPRICATE
       def no_items( items, category=:info )
         ViewRecords::Message.new "no #{items} exist", category: category
       end
 
       def no_match( items, request, plural=true )
         match = plural ? "match" : "matches"
-        raise "no #{items} #{match} the request: #{request}"
+        ViewRecords::Message.new "no #{items} #{match} the request: #{request}", category: :error
       end
 
       def already_exists( item, request )
