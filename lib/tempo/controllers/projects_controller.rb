@@ -71,11 +71,8 @@ module Tempo
             if @projects.index.include?(match)
               match.delete
               @projects.save_to_file
-              if !options[:list]
-                Views::project_deleted match
-              else
-                Views::projects_list_view
-              end
+              Views::projects_list_view if options[:list]
+              Views::project_deleted match
             end
           end
         end
@@ -93,7 +90,6 @@ module Tempo
             add options, args, tags
 
           else
-
             command = options[:tag] ? "tag" : "untag"
             match = match_project command, options, args
 

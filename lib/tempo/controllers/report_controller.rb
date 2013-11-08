@@ -11,7 +11,7 @@ module Tempo
           return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
 
           if options[:from]
-            options[:to] = options.fetch :to, "today"
+            options[:to] = "today" if options[:to].nil?
             from = Chronic.parse options[:from]
             to = Chronic.parse options[:to]
             @time_records.load_days_records from, to
@@ -30,7 +30,7 @@ module Tempo
             @time_records.load_day_record day
           end
 
-          Views.no_items( "time records", :error ) if @time_records.index.empty?
+          return Views.no_items( "time records", :error ) if @time_records.index.empty?
 
           Views.report_view
         end

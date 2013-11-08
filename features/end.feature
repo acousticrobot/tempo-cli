@@ -12,7 +12,7 @@ Feature: End Command ends the current time record
     Given an existing project file
     When I run `tempo end`
     Then the stderr should contain "no running time records exist"
-
+@focus
   Scenario: Ending the current time record
     Given an existing project file
     When I run `tempo start`

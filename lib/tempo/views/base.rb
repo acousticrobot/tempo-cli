@@ -42,22 +42,6 @@ module Tempo
         view
       end
 
-      # # spacer for project titles, active project marked with *
-      # def active_indicator( project )
-      #   indicator = project == Tempo::Model::Project.current ? "* " : "  "
-      # end
-
-      # def tag_view( tags, title_length=40 )
-      #   # TODO: Manage the max title length
-      #   spacer = [0, 40 - title_length].max
-      #   view = " " * spacer
-      #   return  view + "tags: none" if tags.length < 1
-
-      #   view += "tags: [ "
-      #   tags.each { |t| view += "#{t}, "}
-      #   view[0..-3] + " ]"
-      # end
-
       def options_report( command, global_options, options, args )
         globals_list = "global options: "
         global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }
@@ -86,13 +70,11 @@ module Tempo
       end
 
       def checkout_assistance( options={} )
-        view = []
-        view << "checkout command run with no arguments"
-        view << "perhaps you meant one of these?"
-        view << "  tempo checkout --add <new project name>"
-        view << "  tempo checkout <existing project>"
-        view << "run `tempo checkout --help` for more information"
-        return_view view
+        ViewRecords::Message.new "checkout command run with no arguments"
+        ViewRecords::Message.new "perhaps you meant one of these?"
+        ViewRecords::Message.new "  tempo checkout --add <new project name>"
+        ViewRecords::Message.new "  tempo checkout <existing project>"
+        ViewRecords::Message.new "run `tempo checkout --help` for more information"
       end
     end
   end

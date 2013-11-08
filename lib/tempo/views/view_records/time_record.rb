@@ -25,6 +25,7 @@ module Tempo
         def initialize model, options={}
           super model, options
           @description = model.description
+          @description ||= ""
           @duration = Duration.new model.duration
           @end_time = model.end_time == :running ? Time.now() : model.end_time
           @project = model.project_title
