@@ -22,7 +22,7 @@ module Tempo
             matches = filter_projects_by_title options, args
 
             if matches.empty?
-              Views::no_match "projects", request
+              Views::no_match_error "projects", request
 
             else
               Views::projects_list_view matches
@@ -43,7 +43,7 @@ module Tempo
           request = reassemble_the args
 
           if @projects.include? request
-            Views::already_exists "project", request
+            Views::already_exists_error "project", request
 
           else
             project = @projects.new({ title: request, tags: tags })
@@ -60,27 +60,22 @@ module Tempo
 
         def delete options, args
 
-          if options[:id]
-            match = @projects.find_by_id options[:delete]
-            Views::no_items "projects", options[:id] if not match
-          else
-            # first arg without quotes from GLI will be the value of delete
-            request = reassemble_the args, options[:delete]
-            matches = filter_projects_by_title options, args
+          reassemble_the args, options[:delete]
+          match = match_project :delete, options, args
 
-            match = single_match matches, request, :delete
-          end
-          if match == @projects.current
-            raise "cannot delete the active project"
-          end
+          if match
+            if match == @projects.current
+              raise "cannot delete the active project"
+            end
 
-          if @projects.index.include?(match)
-            match.delete
-            @projects.save_to_file
-            if !options[:list]
-              Views::project_deleted match
-            else
-              Views::projects_list_view
+            if @projects.index.include?(match)
+              match.delete
+              @projects.save_to_file
+              if !options[:list]
+                Views::project_deleted match
+              else
+                Views::projects_list_view
+              end
             end
           end
         end
@@ -98,18 +93,9 @@ module Tempo
             add options, args, tags
 
           else
-            if options[:id]
-              match = @projects.find_by_id args[0]
 
-              return Views::no_match( "projects", "id=#{args[0]}" ) if not match
-
-            else
-              request = reassemble_the args
-              matches = filter_projects_by_title options, args
-
-              command = options[:tag] ? "tag" : "untag"
-              match = single_match matches, request, command
-            end
+            command = options[:tag] ? "tag" : "untag"
+            match = match_project command, options, args
 
             if match
               match.tag tags
@@ -119,7 +105,6 @@ module Tempo
             end
           end
         end
-
       end #class << self
     end
   end

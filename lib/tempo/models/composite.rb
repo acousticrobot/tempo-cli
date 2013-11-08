@@ -29,7 +29,7 @@ module Tempo
         def delete instance
           instance.children.each do |child_id|
             child = find_by_id child_id
-            instance.delete_child child
+            instance.remove_child child
           end
           super instance
         end
@@ -47,7 +47,7 @@ module Tempo
         child.parent = self.id
       end
 
-      def delete_child( child )
+      def remove_child( child )
         @children.delete child.id
         child.parent = :root
       end

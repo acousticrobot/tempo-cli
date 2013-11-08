@@ -76,13 +76,13 @@ module Tempo
         ViewRecords::Message.new "no #{items} exist", category: category
       end
 
-      def no_match( items, request, plural=true )
+      def no_match_error( items, request, plural=true )
         match = plural ? "match" : "matches"
         ViewRecords::Message.new "no #{items} #{match} the request: #{request}", category: :error
       end
 
-      def already_exists( item, request )
-        raise "#{item} '#{request}' already exists"
+      def already_exists_error( item, request )
+        ViewRecords::Message.new "#{item} '#{request}' already exists", category: :error
       end
 
       def checkout_assistance( options={} )

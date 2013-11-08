@@ -9,7 +9,7 @@ module Tempo
           request = reassemble_the args, options[:add]
 
           if @projects.include? request
-            Views::already_exists "project", request
+            Views::already_exists_error "project", request
 
           else
             project = @projects.new({ title: request, current: true })
@@ -20,16 +20,7 @@ module Tempo
 
         def existing_project options, args
 
-          if options[:id]
-            match = @projects.find_by_id args[0]
-            Views::no_items "projects", options[:id] if not match
-
-          else
-            matches = filter_projects_by_title options, args
-
-            request = reassemble_the args
-            match = single_match matches, request, :checkout
-          end
+          match = match_project :checkout, options, args
 
           if match
             if @projects.current == match

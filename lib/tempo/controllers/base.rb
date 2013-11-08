@@ -85,12 +85,24 @@ module Tempo
           contenders
         end
 
+        def match_project command, options, args
+          if options[:id]
+            match = @projects.find_by_id args[0]
+            Views::no_match_error( "projects", "id=#{args[0]}" ) if not match
+          else
+            matches = filter_projects_by_title options, args
+            request = reassemble_the args
+            match = single_match matches, request, command
+          end
+          match
+        end
+
         # verify one and only one match returned in match array
         # returns the single match
         def single_match matches, request, command
 
           if matches.length == 0
-            Views::no_match "projects", request
+            Views::no_match_error "projects", request
             return false
           elsif matches.length > 1
             Views::ambiguous_project matches, command

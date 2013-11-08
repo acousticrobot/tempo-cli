@@ -25,7 +25,7 @@ module Tempo
             begin
               day = Chronic.parse time
             rescue Exception => e
-              return Views.no_match "valid timeframe", time, false
+              return Views.no_match_error "valid timeframe", time, false
             end
             @time_records.load_day_record day
           end

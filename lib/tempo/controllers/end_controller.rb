@@ -22,7 +22,7 @@ module Tempo
             end
           end
 
-          return Views.no_match( "valid timeframe", options[:at], false ) if not time_out
+          return Views.no_match_error( "valid timeframe", options[:at], false ) if not time_out
 
           options = { end_time: time_out }
           options[:description] = reassemble_the args
