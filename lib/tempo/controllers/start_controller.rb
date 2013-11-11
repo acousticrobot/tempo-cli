@@ -15,21 +15,17 @@ module Tempo
           if not options[:at]
             time_in = Time.new()
           else
-            begin
-              time_in = Chronic.parse options[:at]
-            rescue
-              time_in = nil
-            end
+            time_in = Time.parse options[:at]
           end
 
-          return Views.no_match_error( "valid timeframe", options[:at], false ) if not time_in
+          return Views.no_match_error( "valid timeframe", options[:at], false ) if time_in.nil?
 
           opts = { start_time: time_in }
           opts[:description] = reassemble_the args
 
           if options[:end]
-            time_out = Chronic.parse options[:end]
-            return Views.no_match_error( "valid timeframe", options[:end], false ) if not time_out
+            time_out = Time.parse options[:end]
+            return Views.no_match_error( "valid timeframe", options[:end], false ) if time_out.nil?
             opts[:end_time] = time_out
           end
 

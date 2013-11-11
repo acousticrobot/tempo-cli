@@ -2,7 +2,7 @@ module Tempo
   module Views
     class << self
 
-      def report_view options={}
+      def report_records_view options={}
 
         projects = options.fetch( :projects, Tempo::Model::Project.index )
         return no_items( "projects" ) if projects.empty?
@@ -13,7 +13,7 @@ module Tempo
         time_records.each do |d_id, days_record|
 
           day = Tempo::Model::TimeRecord.day_id_to_time d_id
-          ViewRecords::Message.new "======================="
+          ViewRecords::Message.new ""
           ViewRecords::Message.new day.strftime("Records for %m/%d/%Y:")
 
           days_record.each do |time_record|

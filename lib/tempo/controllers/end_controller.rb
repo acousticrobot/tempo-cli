@@ -15,11 +15,7 @@ module Tempo
           if not options[:at]
             time_out = Time.new()
           else
-            begin
-              time_out = Chronic.parse options[:at]
-            rescue
-              time_out = nil
-            end
+            time_out = Time.parse options[:at]
           end
 
           return Views.no_match_error( "valid timeframe", options[:at], false ) if not time_out

@@ -14,8 +14,8 @@ Feature: Report Command formats and outputs time records
 
   Scenario: Reporting the time entries on the current day
     Given an existing project file
-    When I run `tempo start my new project`
-    And I run `tempo end`
+    When I run `tempo start -a 7 my new project`
+    And I run `tempo end -a 8`
     And I run `tempo report`
     Then the output should match /\d{2}:\d{2} - \d{2}:\d{2}  \[\d{1,2}:\d{2}\] horticulture: my new project/
 

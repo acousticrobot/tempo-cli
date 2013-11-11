@@ -10,29 +10,44 @@ module Tempo
 
           return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
 
-          if options[:from]
-            options[:to] = "today" if options[:to].nil?
-            from = Chronic.parse options[:from]
-            to = Chronic.parse options[:to]
+          # A from flag has been supplied by the user
+          # and possible a to flag as well,
+          # so we return a period of day records
+          #
+          if options[:from] != "last record"
+            from = Time.parse options[:from]
+            return Views.no_match_error( "valid timeframe", time, false ) if from.nil?
+
+            to = Time.parse options[:to]
+            return Views.no_match_error( "valid timeframe", time, false ) if to.nil?
+
             @time_records.load_days_records from, to
 
+            error_timeframe = " from #{from.strftime('%m/%d/%Y')} to #{to.strftime('%m/%d/%Y')}"
+
+          # no arguments or flags have been supplied, so we return the
+          # current day record
+          #
           elsif args.empty?
             @time_records.load_last_day
 
+          # arguments have been supplied,
+          # so we return the records for a single day
+          #
           else
             time = reassemble_the args
 
-            begin
-              day = Chronic.parse time
-            rescue Exception => e
-              return Views.no_match_error "valid timeframe", time, false
-            end
+            day = Time.parse time
+            return Views.no_match_error( "valid timeframe", time, false ) if day.nil?
+
             @time_records.load_day_record day
+
+            error_timeframe = " on #{day.strftime('%m/%d/%Y')}"
           end
 
-          return Views.no_items( "time records", :error ) if @time_records.index.empty?
+          return Views.no_items( "time records#{error_timeframe}", :error ) if @time_records.index.empty?
 
-          Views.report_view
+          Views.report_records_view
         end
       end #class << self
     end

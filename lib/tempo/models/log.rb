@@ -70,6 +70,8 @@ module Tempo
         # load the records for each day from time 1 to time 2
         def load_days_records time_1, time_2
 
+          return if time_1.nil? || time_2.nil?
+
           days = ( time_2.to_date - time_1.to_date ).to_i
           return if days < 0
 

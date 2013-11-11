@@ -1,8 +1,9 @@
-# Add requires for other files you add to your project here, so
-# you just need to require this one file in your bin file
-require 'tempo/version.rb'
+# All files required for Tempo to run:
 
-require 'tempo/time_utilities.rb'
+# Additional functionality to the time class, requires Chronic:
+require 'time_utilities.rb'
+
+require 'tempo/version.rb'
 
 require 'tempo/models/base.rb'
 require 'tempo/models/composite.rb'

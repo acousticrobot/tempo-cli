@@ -300,15 +300,39 @@ end
 # COMMAND: REPORT
 
 desc 'Report time entries'
-arg_name 'args'
+long_desc "Reports time entries for a day or a period of days.
+
+By default, lists the last recorded day's entries.
+
+To list a different day, supply a day as the args
+
+To list a series of records, include a --from and --to value
+
+examples:
+
+# report current day's entries
+$ tempo report
+
+# report a different day
+$ tempo report 11/24/14
+
+# report the past week
+$ tempo report -f 'a week ago'
+
+# report a time period
+$ tempo report -f 'last monday' -t 'last friday'"
+
+arg_name '[day]'
 command :report do |c|
 
   c.desc 'from date'
   c.arg_name 'begin time records on this date'
+  c.default_value 'last record'
   c.flag [:f, :from]
 
   c.desc 'to date'
   c.arg_name 'end time records on this date'
+  c.default_value 'today'
   c.flag [:t, :to]
 
   c.action do |global_options, options, args|
