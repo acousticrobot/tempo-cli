@@ -16,10 +16,10 @@ module Tempo
           #
           if options[:from] != "last record"
             from = Time.parse options[:from]
-            return Views.no_match_error( "valid timeframe", time, false ) if from.nil?
+            return Views.no_match_error( "valid timeframe", options[:from], false ) if from.nil?
 
             to = Time.parse options[:to]
-            return Views.no_match_error( "valid timeframe", time, false ) if to.nil?
+            return Views.no_match_error( "valid timeframe", options[:to], false ) if to.nil?
 
             @time_records.load_days_records from, to
 
