@@ -6,6 +6,7 @@ module Tempo
       def initialize_view_options command, global_options, options
         view_opts = {}
         view_opts[:verbose] = global_options[:verbose]
+        view_opts[:id] = global_options[:id]
         case command
         when :project
           if global_options[:verbose]
@@ -19,7 +20,7 @@ module Tempo
               view_opts[:active] = true
             end
             view_opts[:tags] = options[:tag] || options[:untag] ? true : false
-            view_opts[:id] = options[:id] ? true : false
+            view_opts[:id] = global_options[:id] || options[:id] ? true : false
           end
         end
         Tempo::Views::Reporter.add_options view_opts

@@ -22,10 +22,10 @@ Feature: Report Command formats and outputs time records
   Scenario: Reporting the time entries on a specific day
     Given an existing project file
     And an existing time record file
-    When I run `tempo start --at "2014-01-02" this will add a newer record file`
+    When I run `tempo start --at "2014-01-02" this will add a new record file`
     And I run `tempo report "2014-01-01"`
     Then the output should contain "Records for 01/01/2014:"
-        And the output should not contain "Records for 01/02/2014:"
+    And the output should not contain "Records for 01/02/2014:"
     And the output should contain "horticulture: putting on overalls and straw hat"
 
   Scenario: Reporting the time entries for multipe days
@@ -39,7 +39,7 @@ Feature: Report Command formats and outputs time records
     And the output should contain "Records for 01/03/2014:"
 
 @pending
-  Scenario: Reporting the time entries for multipe days
+  Scenario: Reporting the time entries for multipe days using d_ids
     Given an existing project file
     And an existing time record file
     When I run `tempo start --at "2014-01-02" this will add a newer record file`
@@ -48,3 +48,15 @@ Feature: Report Command formats and outputs time records
     Then the output should contain "Records for 01/01/2014:"
     And the output should contain "Records for 01/2/2014:"
     And the output should contain "Records for 01/03/2014:"
+
+  Scenario: Reporting the time entries with ids
+  Given an existing project file
+  And an existing time record file
+  And I run `tempo -i report "2014-01-01"`
+  And the output should contain "[1] 05:00 - 05:15  [0:15] horticulture: putting on overalls and straw hat"
+  And the output should contain "[2] 05:15 - 08:15  [3:00] backyard bonsai: trimming the trees"
+  And the output should contain "[3] 08:15 - 10:38  [2:23] backyard bonsai: mixing up a batch of potting soil"
+  And the output should contain "[4] 12:52 - 13:26  [0:34] aquaculture: putting on the wetsuit"
+  And the output should contain "[5] 13:32 - 16:46  [3:14] nano aquarium: trimming the coral"
+
+

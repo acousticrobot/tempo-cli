@@ -36,7 +36,7 @@ module Tempo
           indicator = project.current ? "* " : "  "
         end
 
-        def tag_view tags, title_length
+        def tag_partial tags, title_length
           max_length = ViewRecords::Project.max_title_length
           max_length += ViewRecords::Project.max_depth * 2 if @options[:depth]
           max_length += 6 if @options[:id]
@@ -50,18 +50,22 @@ module Tempo
           view[0..-3] + "]"
         end
 
+        def id_partial id
+          @options[:id] ? "[#{id}] ".rjust(6, ' ') : ""
+        end
+
         def project_block record
 
           record.format do |r|
             @options[:active] = @options.fetch( :active, false )
             record = r.title
 
-            id = @options[:id] ? "[#{r.id}] ".rjust(6, ' ') : ""
+            id = id_partial r.id
             active = @options[:active] ? active_indicator( r ) : ""
             depth = @options[:depth] ? "  " * r.depth : ""
             title = r.title
             view = "#{id}#{active}#{depth}#{title}"
-            tags = @options[:tags] ? tag_view( r.tags, view.length ) : ""
+            tags = @options[:tags] ? tag_partial( r.tags, view.length ) : ""
             view += tags
             puts view
           end
@@ -69,9 +73,10 @@ module Tempo
 
         def timerecord_block record
           record.format do |r|
+            id = id_partial r.id
             running = r.running ? "*" : " "
             description = r.description.empty? ? "#{r.project}" : "#{r.project}: #{r.description}"
-            view =  "#{r.start_time.strftime('%H:%M')} - #{r.end_time.strftime('%H:%M')}#{running} [#{r.duration.format}] #{description}"
+            view =  "#{id}#{r.start_time.strftime('%H:%M')} - #{r.end_time.strftime('%H:%M')}#{running} [#{r.duration.format}] #{description}"
             puts view
           end
         end

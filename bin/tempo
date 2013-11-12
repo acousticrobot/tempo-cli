@@ -15,8 +15,12 @@ version Tempo::VERSION
 # == GLOBAL OPTIONS ==
 
 desc 'verbose output'
-long_desc 'include variable reporting in the command output'
-switch [:v,:verbose]
+long_desc 'include verbose reporting in the command output'
+switch [:v, :verbose]
+
+desc 'output id'
+long_desc 'include id reporting in the command output'
+switch [:i, :id]
 
 # desc 'Describe some flag here'
 # default_value 'the default'
@@ -342,12 +346,62 @@ command :report do |c|
   end
 end
 
+# COMMAND: EDIT
+
+desc 'Edit a time entry'
+long_desc "Edit the project, start time, or end time for a time
+entry.
+
+Defaults to the current time entry, or most recently completed time entry
+if none are running.  Optionally, you can supply an id for a time entry on the current
+day, or a day and id to edit previous time entries.
+
+The description, if passed in, will be used to replace the existing description.  You can
+also change the start or end time, or delete the entire time entry."
+
+arg_name 'description'
+command :edit do |c|
+
+  c.desc 'id'
+  c.arg_name 'select a time record by id'
+  c.flag [:i, :id]
+
+  c.desc 'on date'
+  c.arg_name 'select a time record on given day'
+  c.default_value 'today'
+  c.flag [:o, :on]
+
+  c.desc 'project'
+  c.arg_name 'change the project associated with the time entry'
+  c.flag [:p, :project]
+
+  c.desc 'start time'
+  c.arg_name 'change start time to the given time'
+  c.flag [:s, :start]
+
+  c.desc 'end time'
+  c.arg_name 'change end time to the given time'
+  c.flag [:e, :end]
+
+  c.desc 'delete'
+  c.arg_name 'delete the given time entry'
+  c.switch [:d, :delete]
+
+
+  c.action do |global_options, options, args|
+    controller = Tempo::Controllers::Report
+
+    controller.report options, args
+  end
+end
+
 pre do |global,command,options,args|
   # Return true to proceed; false to abort and not call the
   # chosen command
   # Use skips_pre before a command to skip this block
   # on that command only
 
+  # add reporting of all arguments
   if global[:v]
     Tempo::Views::options_report command.name, global, options, args
   end
