@@ -12,8 +12,9 @@ module Tempo
 
         # Maintain arrays of unique ids for each day.
         # days are represented as symbols in the hash,
-        # for example Jan 1, 2013 would be  :"130101" => 4
-        # and counter
+        # for example Jan 1, 2013 would be  :"130101"
+        # id counter is managed through the private methods
+        # increase_id_counter and next_id below
         def id_counter time
           dsym = date_symbol time
           @id_counter = {} unless @id_counter.kind_of? Hash
@@ -26,8 +27,8 @@ module Tempo
           @ids[dsym] ||= []
         end
 
-        # all instances are saved in the index inherited from base
-        # additionally, the days index organizes all instances into
+        # all instances are saved in the index inherited from base.
+        # Additionally, the days index organizes all instances into
         # arrays by day.  This is used for saving to file.
         def days_index
           @days_index = {} unless @days_index.kind_of? Hash
@@ -85,14 +86,21 @@ module Tempo
             d_id = reg.match(records.last)[1] if records.last
             time = day_id_to_time d_id if d_id
             load_day_record time
+            return time
           end
         end
 
+        # takes and integer, and time or day_id
+        # and returns the instance that matches both
+        # the id and d_id
         def find_by_id id, time
           time = day_id time
           ids = find "id", id
           d_ids = find "d_id", time
-          ids & d_ids
+
+          #return the first and only match in the union
+          #of the arrays
+          (ids & d_ids)[0]
         end
 
         # day_ids can be run through without change
@@ -114,9 +122,9 @@ module Tempo
           id = instance.id
           dsym = date_symbol instance.d_id
 
-          index.delete( instance )
+          index.delete instance
+          days_index[dsym].delete instance
           @ids[dsym].delete id
-          # ids( instance.start_time ) delete id
         end
       end
 
@@ -126,11 +134,11 @@ module Tempo
         @start_time = @start_time.round
 
         self.class.load_day_record(@start_time)
+        @d_id = self.class.day_id @start_time
 
         id_candidate = options[:id]
         if !id_candidate
           @id = self.class.next_id @start_time
-          @d_id = self.class.day_id @start_time
         elsif self.class.ids( @start_time ).include? id_candidate
           raise IdentityConflictError, "Id #{id_candidate} already exists"
         else

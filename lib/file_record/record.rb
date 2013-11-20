@@ -77,6 +77,9 @@ module FileRecord
           file_path = File.join(dir, file)
           File.delete( file_path ) if File.exists?( file_path )
 
+          # don't write to an empty file
+          next if days_logs.empty?
+
           File.open( file_path,'a' ) do |f|
             days_logs.each do |log|
               f.puts YAML::dump( log.freeze_dry )

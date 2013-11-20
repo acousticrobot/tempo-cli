@@ -51,23 +51,31 @@ will use fuzzy matching unless you:
 examples:
 
 # list current project
+
 $ tempo project
 
 # list all projects
+
 $ tempo project --list
 
 # adding a new project titled 'star gazing'
+
 $ tempo project star gazing
 
-# adding a new project tagged 'stellar'
-$ tempo project --add star gazing --tag stellar"
+# adding a new project with a tag
+
+$ tempo project --add star gazing --tag cellar
+
+# untagging and tagging an existing project
+
+$ tempo project star gazing --untag cellar --tag stellar"
 
 arg_name '"name of the project"'
-command [:project, :p] do |c|
+command [:p, :project] do |c|
 
   c.desc 'Add a Project'
   c.long_desc "Add a Project (default command behavior). When used with --tag adds a new project with the given tag"
-  c.switch [:a, :add]
+  c.switch [:a, :add], negatable: false
 
   c.desc 'List Projects'
   c.long_desc "Lists all projects that match the supplied argument"
@@ -79,7 +87,7 @@ command [:project, :p] do |c|
 
   c.desc 'list by or perfom command by project id'
   c.long_desc 'show IDs in output or perform command by matching to id'
-  c.switch [:i, :id]
+  c.switch [:i, :id], negatable: false
 
   c.desc 'Delete a Project'
   c.default_value nil
@@ -152,7 +160,7 @@ $ tempo checkout star gazing
 $ tempo checkout -a star gazing"
 
 arg_name '"name of the project"'
-command [:checkout, :c] do |c|
+command [:c, :checkout] do |c|
 
   c.desc 'Add and Checkout a new project'
   c.arg_name 'project title'
@@ -162,7 +170,7 @@ command [:checkout, :c] do |c|
   c.switch [:e, :exact]
 
   c.desc 'checkout by project id'
-  c.switch [:i, :id]
+  c.switch [:i, :id], negatable: false
 
   c.action do |global_options,options,args|
 
@@ -205,17 +213,21 @@ Arguments supplied will use fuzzy matching unless you:
 examples:
 
 # Add a new project as a child of the current project
+
 $ tempo checkout aquascaping
+
 $ tempo project --child mow the seagrass
 
 # Arrange an existing project as a root project
+
 $ tempo arrange << aquascaping
 
 # Arrange an existing project as a child project
+
 $ tempo arrange aquascaping << coral pruning"
 
 arg_name '[parent project] : child project'
-command [:arrange, :a ] do |c|
+command [:a, :arrange] do |c|
 
   c.desc 'use an exact match for project title'
   c.switch [:e, :exact]
@@ -244,12 +256,12 @@ word timeframes should be enclosed in quotes
 
 examples:
 
-tempo start learning how to stop, drop, and roll --at 'yesterday at 5:00 in the evening'
+tempo start learning how to do the Hustle --at 'yesterday at 10:00 in the evening'
 "
 
 
 arg_name 'description'
-command [:start, :s] do |c|
+command [:s, :start] do |c|
 
   c.desc 'end the entry at a given time'
   c.arg_name 'end time'
@@ -280,15 +292,17 @@ word timeframes should be enclosed in quotes.
 examples:
 
 # creating an entry at 4:55pm
+
 $ tempo start --at 16:55 practicing the human torch trick
 
 # ending it 5 minutes later and changing the description
+
 $ tempo end learning how to stop, drop, and roll --at 'today at 5:00 in the evening'
 "
 
 
 arg_name 'time out, defaults to now'
-command [:end, :e] do |c|
+command [:e, :end] do |c|
 
   c.desc 'end time'
   c.arg_name 'end the current time entry at the given time'
@@ -315,19 +329,23 @@ To list a series of records, include a --from and --to value
 examples:
 
 # report current day's entries
+
 $ tempo report
 
 # report a different day
+
 $ tempo report 11/24/14
 
 # report the past week
+
 $ tempo report -f 'a week ago'
 
 # report a time period
+
 $ tempo report -f 'last monday' -t 'last friday'"
 
 arg_name '[day]'
-command :report do |c|
+command [:r, :report] do |c|
 
   c.desc 'from date'
   c.arg_name 'begin time records on this date'
@@ -346,52 +364,68 @@ command :report do |c|
   end
 end
 
-# COMMAND: EDIT
+# COMMAND: UPDATE
 
-desc 'Edit a time entry'
-long_desc "Edit the project, start time, or end time for a time
+desc 'update a time entry'
+long_desc "update the project, start time, or end time for a time
 entry.
 
 Defaults to the current time entry, or most recently completed time entry
 if none are running.  Optionally, you can supply an id for a time entry on the current
-day, or a day and id to edit previous time entries.
+day, or a day and id to update previous time entries. The description, if passed in, will be used to replace the existing description. You can
+also change the start or end time, or delete the entire time entry.
 
-The description, if passed in, will be used to replace the existing description.  You can
-also change the start or end time, or delete the entire time entry."
+examples:
 
-arg_name 'description'
-command :edit do |c|
+# update description for the last time entry
 
-  c.desc 'id'
-  c.arg_name 'select a time record by id'
+$ tempo update practicing banjo
+
+# update the description for yesterday's entry with id of 2
+
+$ tempo update --id 2 --on 'yesterday' practicing banjo
+
+# update the start time
+
+$ tempo update --start 7:00
+
+# update the end time and description
+
+$ tempo update --end '8:00pm' practicing banjo
+
+# delete the last time entry
+
+$ tempo update --delete"
+
+arg_name '[description]'
+command [:u, :update] do |c|
+
+  c.desc 'Select by Id'
+  c.arg_name 'number'
   c.flag [:i, :id]
 
-  c.desc 'on date'
-  c.arg_name 'select a time record on given day'
-  c.default_value 'today'
+  c.desc 'Select On Date'
+  c.arg_name 'date'
   c.flag [:o, :on]
 
-  c.desc 'project'
-  c.arg_name 'change the project associated with the time entry'
-  c.flag [:p, :project]
+  c.desc 'Update Project for the Time Entry to the current project'
+  c.switch [:p, :project]
 
-  c.desc 'start time'
-  c.arg_name 'change start time to the given time'
+  c.desc 'Update the Start Time'
+  c.arg_name 'time'
   c.flag [:s, :start]
 
-  c.desc 'end time'
-  c.arg_name 'change end time to the given time'
+  c.desc 'Update the End Time'
+  c.arg_name 'time'
   c.flag [:e, :end]
 
-  c.desc 'delete'
-  c.arg_name 'delete the given time entry'
-  c.switch [:d, :delete]
-
+  c.desc 'Delete a Time Entry'
+  c.switch [:d, :delete], negatable: false
 
   c.action do |global_options, options, args|
-    controller = Tempo::Controllers::Report
+    controller = Tempo::Controllers::Update
 
-    controller.report options, args
+    controller.parse options, args
   end
 end
 

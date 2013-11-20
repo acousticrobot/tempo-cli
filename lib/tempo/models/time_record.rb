@@ -123,7 +123,7 @@ module Tempo
       end
 
       def to_s
-        "#{@start_time.strftime('%H:%M')} - #{@end_time.strftime('%H:%M')} #{project_title}: #{@description}"
+        "#{@start_time} - #{@end_time}, #{project_title}: #{@description}"
       end
 
       private

@@ -78,15 +78,16 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
-    it "loads the records for a the most recent day" do
+    it "loads the records for a the most recent day and return day" do
       log_record_factory
-      Tempo::Model::MessageLog.load_last_day
+      last_day = Tempo::Model::MessageLog.load_last_day
 
       time_1 = Time.new(2014, 1, 1) # should not load
       time_2 = Time.new(2014, 1, 2) # should load
       Tempo::Model::MessageLog.ids( time_1 ).must_equal []
       Tempo::Model::MessageLog.ids( time_2 ).must_equal [1,2,3]
       Tempo::Model::MessageLog.index[0].message.must_equal "day 2 pet the sheep"
+      last_day.must_equal Time.new(2014, 1, 2)
     end
 
     it "loads the records for a time frame" do
@@ -139,18 +140,18 @@ describe Tempo do
     it "has a find_by_id using day_id method" do
       log_factory
       search = Tempo::Model::MessageLog.find_by_id( 2, "20140101" )
-      search.must_equal [ @log_2 ]
+      search.must_equal @log_2
 
       search = Tempo::Model::MessageLog.find_by_id( 2, "20140102" )
-      search.must_equal [ @log_5 ]
+      search.must_equal @log_5
     end
 
     it "has a find_by_id using time method" do
       log_factory
       search = Tempo::Model::MessageLog.find_by_id( 2, Time.new(2014, 1, 1))
-      search.must_equal  [ @log_2 ]
+      search.must_equal @log_2
       search = Tempo::Model::MessageLog.find_by_id( 2, Time.new(2014, 1, 2))
-      search.must_equal [ @log_5 ]
+      search.must_equal @log_5
     end
 
     it "has a sort_by_start_time method" do
@@ -163,6 +164,8 @@ describe Tempo do
       @log_1.delete
       Tempo::Model::MessageLog.ids(Time.new(2014,1,1)).must_equal [2,3]
       Tempo::Model::MessageLog.index.must_equal [ @log_4, @log_2, @log_5, @log_3, @log_6 ]
+      Tempo::Model::MessageLog.days_index[:"20140101"].length.must_equal 2
+      Tempo::Model::MessageLog.days_index[:"20140102"].length.must_equal 3
     end
   end
 end
