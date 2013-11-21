@@ -21,16 +21,19 @@ module Tempo
       end
 
       def initialize(options={})
+
+        # declare these first for model organization when sent to YAML
         @project_title = nil
         @description = options.fetch :description, ""
         @start_time = nil
+
+        # verify both start time and end time before sending to super
+        options[:start_time] ||= Time.now
+        verify_start_time options[:start_time]
         @end_time = options.fetch :end_time, :running
+        verify_end_time options[:start_time], @end_time
 
         super options
-
-        #TODO: verify both start time ( and end time if ! :running )
-        verify_open_time @start_time
-        verify_open_time @end_time if @end_time.kind_of? Time
 
         project = options.fetch :project, Tempo::Model::Project.current
         @project = project.kind_of?(Integer) ? project : project.id
@@ -85,7 +88,7 @@ module Tempo
       end
 
       def project_title
-        Project.find_by_id( @project ).title
+        Project.find_by_id( @project ).title if @project
       end
 
       def duration
@@ -131,23 +134,54 @@ module Tempo
       # check a time against all loaded instances, verify that it doesn't
       # fall in the middle of any closed time records
       #
-      def verify_open_time time
+      def verify_start_time time
+
+        # Check that there are currently
+        # records on the day to iterate through
         dsym = self.class.date_symbol time
         return if not self.class.days_index[dsym]
+
         self.class.days_index[dsym].each do |record|
-          if time > record.start_time
 
-            # ignore running entries for now
-            next if record.end_time == :running or record == self.class.current
+          next if record.end_time == :running
 
-            if record.end_time - record.start_time > time - record.start_time
-              raise ArgumentError, "Time conflict with existing record: \n  #{record.to_s}"
-            end
+          if time < record.end_time
+            raise ArgumentError, "Time conflict with existing record" if time_in_record? time, record
           end
         end
         true
       end
 
+      def verify_end_time start_time, end_time
+
+        # TODO: better check for :running conditions
+        return true if end_time == :running
+
+        raise ArgumentError, "End time earlier than start time" if end_time < start_time
+
+        # Check that there are currently
+        # records on the day to iterate through
+        # necessary if self is not yet added to index
+        dsym = self.class.date_symbol end_time
+        return if not self.class.days_index[dsym]
+
+        self.class.days_index[dsym].each do |record|
+
+          if end_time > record.start_time
+
+            # don't allow time to fall between existing start and end time
+            raise ArgumentError, "Time conflict with existing record:" if time_in_record? end_time, record
+          end
+        end
+        true
+      end
+
+      def time_in_record? time, record
+        return false if record.end_time == :running
+        time >= record.start_time && time <= record.end_time
+      end
+
+      # returns the last minute of the day
       def end_of_day time
         Time.new(time.year, time.month, time.day, 23, 59)
       end

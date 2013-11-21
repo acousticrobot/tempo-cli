@@ -32,9 +32,9 @@ describe Tempo do
       has_attr_accessor?( @record_1, :description ).must_equal true
     end
 
-    it "has an accessible end time" do
+    it "has a readable end time" do
       time_record_factory
-      has_attr_accessor?( @record_1, :end_time ).must_equal true
+      has_attr_reader?( @record_1, :end_time ).must_equal true
     end
 
     it "has readable tags" do
@@ -110,9 +110,19 @@ describe Tempo do
       Tempo::Model::TimeRecord.current.must_equal nil
     end
 
-    it "errors when new time collides with existing" do
+    it "errors when start time inside existing" do
       time_record_factory
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+    end
+
+    it "errors when start time same as existing" do
+      time_record_factory
+      proc { Tempo::Model::TimeRecord.new({ start_time: @record_1.start_time }) }.must_raise ArgumentError
+    end
+
+    it "errors when end time is before start time" do
+      Tempo::Model::TimeRecord.clear_all
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 10 ) }) }.must_raise ArgumentError
     end
 
     it "comes with freeze dry for free" do
