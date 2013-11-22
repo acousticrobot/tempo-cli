@@ -8,7 +8,7 @@ module Tempo
         view_opts[:verbose] = global_options[:verbose]
         view_opts[:id] = global_options[:id]
         case command
-        when :project
+        when :project, :p
           if global_options[:verbose]
             view_opts[:id] = true
             view_opts[:tags] = true
