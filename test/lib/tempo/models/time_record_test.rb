@@ -110,12 +110,12 @@ describe Tempo do
       Tempo::Model::TimeRecord.current.must_equal nil
     end
 
-    it "errors when start time inside existing" do
+    it "errors when start time inside existing record" do
       time_record_factory
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
     end
 
-    it "errors when start time same as existing" do
+    it "errors when start time same as existing record" do
       time_record_factory
       proc { Tempo::Model::TimeRecord.new({ start_time: @record_1.start_time }) }.must_raise ArgumentError
     end
@@ -123,6 +123,41 @@ describe Tempo do
     it "errors when end time is before start time" do
       Tempo::Model::TimeRecord.clear_all
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 10 ) }) }.must_raise ArgumentError
+    end
+
+    it "errors when end time is equal to start time" do
+      Tempo::Model::TimeRecord.clear_all
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+    end
+
+    it "end time can equal a previous start time" do
+      Tempo::Model::TimeRecord.clear_all
+      r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 1, 12 ) })
+      r2 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 10 ) })
+      r1.start_time.must_equal r2.end_time
+    end
+
+    it "errors when end time is on a different day" do
+      Tempo::Model::TimeRecord.clear_all
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 2, 12 ) }) }.must_raise ArgumentError
+    end
+
+    it "errors when end time in existing record" do
+      Tempo::Model::TimeRecord.clear_all
+      r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 1, 12 ) })
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 11 ) }) }.must_raise ArgumentError
+    end
+
+    it "errors when record spans an existing record" do
+      Tempo::Model::TimeRecord.clear_all
+      r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 1, 11 ) })
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+    end
+
+    it "errors when record spans a running record" do
+      Tempo::Model::TimeRecord.clear_all
+      r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ) })
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
     end
 
     it "comes with freeze dry for free" do
@@ -150,7 +185,15 @@ describe Tempo do
                             ":id: 3", ":project: 3", ":tags:", "- horticulture", "- trees"]
       contents = eval_file_as_array( test_file_2 )
       # TODO: test this one too when stable
-      # contents.must_equal []
+      contents.must_equal ["---", ":project_title: sheep herding", ":description: day 2 pet the sheep",
+                           ":start_time: 2014-01-02 07:15:00.000000000 -05:00", ":end_time: 2014-01-02 07:45:00.000000000 -05:00",
+                           ":id: 1", ":project: 1", ":tags: []",
+                           "---", ":project_title: horticulture - basement mushrooms", ":description: day 2 drinking coffee, check on the mushrooms",
+                           ":start_time: 2014-01-02 07:45:00.000000000 -05:00", ":end_time: 2014-01-02 17:00:00.000000000 -05:00",
+                           ":id: 2", ":project: 2", ":tags: []",
+                           "---", ":project_title: horticulture - backyard bonsai", ":description: day 2 water the bonsai",
+                           ":start_time: 2014-01-02 17:00:00.000000000 -05:00", ":end_time: :running",
+                           ":id: 3", ":project: 3", ":tags: []"]
     end
   end
 end

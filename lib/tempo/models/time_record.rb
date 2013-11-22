@@ -154,31 +154,50 @@ module Tempo
 
       def verify_end_time start_time, end_time
 
-        # TODO: better check for :running conditions
+        # TODO: a better check for :running conditions
         return true if end_time == :running
 
-        raise ArgumentError, "End time earlier than start time" if end_time < start_time
+        raise ArgumentError, "End time must be greater than start time" if end_time <= start_time
 
-        # Check that there are currently
-        # records on the day to iterate through
-        # necessary if self is not yet added to index
         dsym = self.class.date_symbol end_time
+        start_dsym = self.class.date_symbol start_time
+        raise ArgumentError, "End time must be on the same day as start time" if dsym != start_dsym
+
+        # this is necessary if this is the first record
+        # for the day and self is not yet added to index
         return if not self.class.days_index[dsym]
 
         self.class.days_index[dsym].each do |record|
 
-          if end_time > record.start_time
-
-            # don't allow time to fall between existing start and end time
-            raise ArgumentError, "Time conflict with existing record:" if time_in_record? end_time, record
-          end
+          raise ArgumentError, "Time conflict with existing record:" if time_span_intersects_record? start_time, end_time, record
         end
         true
       end
 
+      # this is used for both start time and end times,
+      # so it will return true if the time is :running
+      # or if it is exactly the record start or end time
+      # these conditions need to be checked separately
       def time_in_record? time, record
         return false if record.end_time == :running
         time >= record.start_time && time <= record.end_time
+      end
+
+      # All true conditions should be used to raise errors.
+      # Returns false is when sharing a single end and start point (a valid state).
+      # It does not invalidate a time span earlier than the record with a :running end time,
+      # this condition must be accounted for separately.
+      # It assumes a valid start and end time.
+      def time_span_intersects_record? start_time, end_time, record
+        if record.end_time == :running
+          return true if start_time <= record.start_time && end_time > record.start_time
+          return false
+        end
+        return false if start_time >= record.end_time
+        return true if start_time >= record.start_time && start_time < record.end_time
+        return false if record.end_time == :running
+        return true if end_time > record.start_time
+        return false
       end
 
       # returns the last minute of the day
