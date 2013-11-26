@@ -39,7 +39,7 @@ module Tempo
           else
             if options[:start]
               start_time = Time.parse options[:start]
-              return Views.no_match_error( "valid timeframe", options[:at], false ) if time_in.nil?
+              return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
               # TODO: verify time on same day as 'on', or try to make it so
 
               puts "verifying no confilict..."

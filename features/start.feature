@@ -39,14 +39,12 @@ Feature: Start Command starts a new time record
 @pending
   Scenario: Adding a time record with tags
     Given an existing project file
-@focus
+
   Scenario: Attempting to add time that collides with an existing record
     Given an existing project file
     When I run `tempo start --at "1-1-2014 7:00"`
     And I run `tempo end --at "1-1-2014 10:00"`
     And I run `tempo start --at "1-1-2014 8:00"`
-    Then the stdout should contain "start time conflicts with existing time record:"
-    And the stdout should contain  "<standard time record>"
     Then the stderr should contain "error: Time conflict with existing record"
 
   Scenario: Adding a time record and closing out the last one

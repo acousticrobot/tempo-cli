@@ -144,7 +144,6 @@ module Tempo
         self.class.days_index[dsym].each do |record|
 
           next if record.end_time == :running
-
           if time < record.end_time
             raise ArgumentError, "Time conflict with existing record" if time_in_record? time, record
           end
