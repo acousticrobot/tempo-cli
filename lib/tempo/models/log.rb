@@ -1,6 +1,4 @@
-require "pry"
-
-# find by id will need to include a date object ( find_by_date_and_id )
+require "time_utilities"
 
 module Tempo
   module Model
@@ -131,7 +129,6 @@ module Tempo
       def initialize( options={} )
         @start_time = options.fetch(:start_time, Time.now )
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
-        @start_time = @start_time.round
 
         self.class.load_day_record(@start_time)
         @d_id = self.class.day_id @start_time

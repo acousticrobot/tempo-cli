@@ -32,7 +32,6 @@ module Tempo
         verify_start_time options[:start_time]
         @end_time = options.fetch :end_time, :running
         verify_end_time options[:start_time], @end_time
-
         super options
 
         project = options.fetch :project, Tempo::Model::Project.current
@@ -41,7 +40,7 @@ module Tempo
         @tags = []
         tag options.fetch(:tags, [])
 
-        # close out other time records if ! end_time
+        # close out the running time record
         if running?
           if not self.class.current
             self.class.current = self
@@ -52,7 +51,7 @@ module Tempo
             # more recent entries exist, need to close out immediately
             if current.start_time > @start_time
               if current.start_time.day > @start_time.day
-                out = end_of_day @start_time
+                out = self.class.end_of_day @start_time
                 @end_time = out
                 # TODO add a new record onto the next day
               else
@@ -61,14 +60,8 @@ module Tempo
 
             # close out the last current record
             else
-              if @start_time.day > current.start_time.day
-                out = end_of_day current.start_time
-                self.class.current.end_time = out
-                self.class.current = self
-              else
-                current.end_time = @start_time
-                self.class.current = self
-              end
+              self.class.close_current @start_time
+              self.class.current = self
             end
           end
 
@@ -76,15 +69,36 @@ module Tempo
         else
           if self.class.current
              if self.class.current.start_time < @start_time
-               self.class.current.end_time = @start_time
+               self.class.close_current @start_time
              end
           end
         end
       end
 
+      def start_time= time
+        @start_time = time if verify_start_time time
+      end
+
       def end_time= time
-        #TODO verify end time before save
-        @end_time = time
+        @end_time = time if verify_end_time self.start_time, time
+      end
+
+      def valid_start_time? time
+        begin
+          verify_start_time time
+        rescue ArgumentError => e
+          return false
+        end
+        true
+      end
+
+      def valid_end_time? time
+        begin
+          verify_end_time self.start_time, time
+        rescue ArgumentError => e
+          return false
+        end
+        true
       end
 
       def project_title
@@ -131,6 +145,18 @@ module Tempo
 
       private
 
+      #close current at the end time, or on the last minute
+      # of the day if end time is another day
+      #
+      def self.close_current end_time
+        if end_time.day > current.start_time.day
+          out = end_of_day current.start_time
+          current.end_time = out
+        else
+          current.end_time = end_time
+        end
+      end
+
       # check a time against all loaded instances, verify that it doesn't
       # fall in the middle of any closed time records
       #
@@ -139,11 +165,12 @@ module Tempo
         # Check that there are currently
         # records on the day to iterate through
         dsym = self.class.date_symbol time
-        return if not self.class.days_index[dsym]
+        return true if not self.class.days_index[dsym]
 
         self.class.days_index[dsym].each do |record|
 
           next if record.end_time == :running
+          next if record == self
           if time < record.end_time
             raise ArgumentError, "Time conflict with existing record" if time_in_record? time, record
           end
@@ -156,18 +183,18 @@ module Tempo
         # TODO: a better check for :running conditions
         return true if end_time == :running
 
-        raise ArgumentError, "End time must be greater than start time" if end_time <= start_time
+        raise ArgumentError, "End time must be greater than start time" if end_time < start_time
 
         dsym = self.class.date_symbol end_time
         start_dsym = self.class.date_symbol start_time
-        raise ArgumentError, "End time must be on the same day as start time" if dsym != start_dsym
+        raise ArgumentError, "End time must be on the same day as start time: #{start_time} : #{end_time}" if dsym != start_dsym
 
         # this is necessary if this is the first record
         # for the day and self is not yet added to index
         return if not self.class.days_index[dsym]
 
         self.class.days_index[dsym].each do |record|
-
+          next if record == self
           raise ArgumentError, "Time conflict with existing record:" if time_span_intersects_record? start_time, end_time, record
         end
         true
@@ -200,7 +227,7 @@ module Tempo
       end
 
       # returns the last minute of the day
-      def end_of_day time
+      def self.end_of_day time
         Time.new(time.year, time.month, time.day, 23, 59)
       end
     end

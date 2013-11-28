@@ -125,9 +125,10 @@ describe Tempo do
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 10 ) }) }.must_raise ArgumentError
     end
 
-    it "errors when end time is equal to start time" do
+    it "accepts and end time equal to start time" do
       Tempo::Model::TimeRecord.clear_all
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+      record = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 12 ) })
+      record.end_time.must_equal record.start_time
     end
 
     it "end time can equal a previous start time" do
@@ -158,6 +159,18 @@ describe Tempo do
       Tempo::Model::TimeRecord.clear_all
       r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ) })
       proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+    end
+
+    it "has a valid start time check for existing record" do
+      time_record_factory
+      @record_2.valid_start_time?(@record_2.start_time).must_equal true
+      @record_2.valid_start_time?(@record_1.start_time).must_equal false
+    end
+
+    it "has a valid end time check for existing record" do
+      time_record_factory
+      @record_2.valid_end_time?(@record_2.end_time).must_equal true
+      @record_2.valid_end_time?(@record_3.end_time).must_equal false
     end
 
     it "comes with freeze dry for free" do

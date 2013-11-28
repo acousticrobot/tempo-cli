@@ -10,7 +10,8 @@ class Time
       # it throws an error, on 't' and a few other string, so we
       # capture these here an assure that nil is returned
       begin
-        day = Chronic.parse time
+        chron = Chronic.parse time
+        chron.round
       rescue Exception => e
         return nil
       end

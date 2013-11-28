@@ -40,20 +40,29 @@ module Tempo
             if options[:start]
               start_time = Time.parse options[:start]
               return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
-              # TODO: verify time on same day as 'on', or try to make it so
 
-              puts "verifying no confilict..."
-              puts "Changing start time to #{options[:start]}"
+              # TODO: add "today " to start time and try again if not valid
+              if record.valid_start_time? start_time
+                record.start_time = start_time
+              else
+                return Views::ViewRecords::Message.new "cannot change start time to #{start_time.strftime('%H:%M')}", category: :error
+              end
             end
 
             if options[:end]
-              puts "verifying valid time..."
-              puts "verifying no confilict..."
-              puts "Changing end time to #{options[:end]}"
+              end_time = Time.parse options[:end]
+              return Views.no_match_error( "valid timeframe", options[:at], false ) if end_time.nil?
+
+              # TODO: add "today " to end time and try again if not valid
+              if record.valid_end_time? end_time
+                record.end_time = end_time
+              else
+                return Views::ViewRecords::Message.new "cannot change end time to #{end_time.strftime('%H:%M')}", category: :error
+              end
             end
 
             if options[:project]
-              puts "changing project to #{@projects.current}"
+              record.project = @projects.current.id
             end
 
             options[:description] = reassemble_the args

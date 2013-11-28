@@ -65,7 +65,7 @@ module Tempo
 
           if match
             if match == @projects.current
-              raise "cannot delete the active project"
+              return Views::ViewRecords::Message.new "cannot delete the active project", category: :error
             end
 
             if @projects.index.include?(match)

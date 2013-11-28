@@ -33,9 +33,9 @@ Feature: Start Command starts a new time record
 
   Scenario: Adding a time record with an end time
     Given an existing project file
-    When I run `tempo start --end "15:00 today"`
+    When I run `tempo start --end "1 hour from now"`
     Then the stdout should contain "time record started"
-    And the output should match /\d{2}:\d{2} - 15:00/
+    And the output should match /\d{2}:\d{2} - \d{2}:\d{2}/
 @pending
   Scenario: Adding a time record with tags
     Given an existing project file
