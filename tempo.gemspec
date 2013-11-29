@@ -8,6 +8,7 @@ spec = Gem::Specification.new do |s|
   s.homepage = 'http://jonathangabel.com'
   s.platform = Gem::Platform::RUBY
   s.summary = 'A command line time tracker for recording by day or by project'
+  s.description = 'Record and report time spent by project'
 # Add your other files here if you make them
 # Add lib files to lib.tempo.rb
   s.files = %w(
