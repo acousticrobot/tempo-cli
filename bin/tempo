@@ -32,13 +32,11 @@ switch [:i, :id]
 desc 'Manage the Projects that timed tasks are assigned to'
 long_desc "Manage the Projects that timed tasks are assigned to.
 
-By default, lists the current project.
-
-With --list tag an no arguments suplied, lists all projects.
-
+Manage the Projects that timed tasks are assigned to.
+By default, lists the current project, or with --list tag, lists all projects.
 The active project will be marked by an asterisk.
 
-If suplied with arguments and no command options,
+If supplied with arguments and no command options,
 a new project will be added.
 
 Arguments supplied to --list, --delete, and --[un]tag
@@ -71,7 +69,7 @@ $ tempo project --add star gazing --tag cellar
 $ tempo project star gazing --untag cellar --tag stellar"
 
 arg_name '"name of the project"'
-command [:p, :project] do |c|
+command [:project, :p] do |c|
 
   c.desc 'Add a Project'
   c.long_desc "Add a Project (default command behavior). When used with --tag adds a new project with the given tag"
@@ -85,7 +83,7 @@ command [:p, :project] do |c|
   c.long_desc "Match project with an exact title"
   c.switch [:e, :exact]
 
-  c.desc 'list by or perfom command by project id'
+  c.desc 'list by or perform command by project id'
   c.long_desc 'show IDs in output or perform command by matching to id'
   c.switch [:i, :id], negatable: false
 
@@ -160,7 +158,7 @@ $ tempo checkout star gazing
 $ tempo checkout -a star gazing"
 
 arg_name '"name of the project"'
-command [:c, :checkout] do |c|
+command [:checkout, :c] do |c|
 
   c.desc 'Add and Checkout a new project'
   c.arg_name 'project title'
@@ -212,22 +210,16 @@ Arguments supplied will use fuzzy matching unless you:
 
 examples:
 
-# Add a new project as a child of the current project
-
-$ tempo checkout aquascaping
-
-$ tempo project --child mow the seagrass
-
 # Arrange an existing project as a root project
 
-$ tempo arrange << aquascaping
+$ tempo arrange : aquascaping
 
 # Arrange an existing project as a child project
 
-$ tempo arrange aquascaping << coral pruning"
+$ tempo arrange aquascaping : coral pruning"
 
 arg_name '[parent project] : child project'
-command [:a, :arrange] do |c|
+command [:arrange, :a] do |c|
 
   c.desc 'use an exact match for project title'
   c.switch [:e, :exact]
@@ -252,23 +244,28 @@ You can also add a description of the time entry.
 
 To start a time entry at a time other than the current, pass it in as an argument
 to the --at flag.  This will accept a number of human readable formats, multiple
-word timeframes should be enclosed in quotes
+word time formats should be enclosed in quotes.
 
 examples:
 
-tempo start learning how to do the Hustle --at 'yesterday at 10:00 in the evening'
+# start a new time record at the current time with no description
+
+$ tempo start
+
+# start and end a previous time record with a description
+
+$ tempo start learning how to do the Hustle --at 'yesterday at 8:00 in the evening' --end 'yesterday at 11:59pm'
 "
 
-
 arg_name 'description'
-command [:s, :start] do |c|
+command [:start, :s] do |c|
 
   c.desc 'end the entry at a given time'
-  c.arg_name 'end time'
+  c.arg_name 'time'
   c.flag [:e, :end]
 
-  c.desc 'start time'
-  c.arg_name 'start the time entry at the given time'
+  c.desc 'start the entry at a given time'
+  c.arg_name 'time'
   c.flag [:a, :at]
 
   c.action do |global_options, options, args|
@@ -287,24 +284,22 @@ You can optionally add a description of the time entry, which will overwrite the
 
 To end a time entry at a time other than the current, pass it in as an argument
 to the --at flag.  This will accept a number of human readable formats, multiple
-word timeframes should be enclosed in quotes.
+word time formats should be enclosed in quotes.
 
 examples:
 
-# creating an entry at 4:55pm
+# creating an entry at 4:55pm, then ending it 5 minutes later and changing the description
 
 $ tempo start --at 16:55 practicing the human torch trick
 
-# ending it 5 minutes later and changing the description
-
-$ tempo end learning how to stop, drop, and roll --at 'today at 5:00 in the evening'
+$ tempo end --at 'today at 5:00pm' learning how to stop, drop, and roll
 "
 
 
 arg_name 'time out, defaults to now'
-command [:e, :end] do |c|
+command [:end, :e] do |c|
 
-  c.desc 'end time'
+  c.desc 'time'
   c.arg_name 'end the current time entry at the given time'
   c.flag [:a, :at]
 
@@ -340,20 +335,20 @@ $ tempo report 11/24/14
 
 $ tempo report -f 'a week ago'
 
-# report a time period
+# report a period of days
 
 $ tempo report -f 'last monday' -t 'last friday'"
 
 arg_name '[day]'
-command [:r, :report] do |c|
+command [:report, :r] do |c|
 
-  c.desc 'from date'
-  c.arg_name 'begin time records on this date'
+  c.desc 'begin time records on this date'
+  c.arg_name 'time'
   c.default_value 'last record'
   c.flag [:f, :from]
 
-  c.desc 'to date'
-  c.arg_name 'end time records on this date'
+  c.desc 'end time records on this date'
+  c.arg_name 'time'
   c.default_value 'today'
   c.flag [:t, :to]
 
@@ -372,7 +367,9 @@ entry.
 
 Defaults to the current time entry, or most recently completed time entry
 if none are running.  Optionally, you can supply an id for a time entry on the current
-day, or a day and id to update previous time entries. The description, if passed in, will be used to replace the existing description. You can
+day, or a day and id to update previous time entries.
+
+The description, if passed in, will be used to replace the existing description. You can
 also change the start or end time, or delete the entire time entry.
 
 examples:
@@ -385,7 +382,7 @@ $ tempo update practicing banjo
 
 $ tempo update --id 2 --on 'yesterday' practicing banjo
 
-# update the start time
+# update the start time for the last time entry
 
 $ tempo update --start 7:00
 
@@ -395,10 +392,15 @@ $ tempo update --end '8:00pm' practicing banjo
 
 # delete the last time entry
 
-$ tempo update --delete"
+$ tempo update --delete
+
+# update the description, start, and end time for a previous day's entry
+
+$ tempo update --on 1/17/14 --start \"1/17/14 8am\" --end \"1/17/14 10am\" practicing banjo
+"
 
 arg_name '[description]'
-command [:u, :update] do |c|
+command [:update, :u] do |c|
 
   c.desc 'Select by Id'
   c.arg_name 'number'
@@ -408,8 +410,8 @@ command [:u, :update] do |c|
   c.arg_name 'date'
   c.flag [:o, :on]
 
-  c.desc 'Update Project for the Time Entry to the current project'
-  c.switch [:p, :project]
+  c.desc 'Update to the active project'
+  c.switch [:p, :project], negatable: false
 
   c.desc 'Update the Start Time'
   c.arg_name 'time'
