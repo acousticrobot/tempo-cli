@@ -1,7 +1,7 @@
 # Ensure we require the local version and not one we might have installed already
 require File.join([File.dirname(__FILE__),'lib','tempo','version.rb'])
 spec = Gem::Specification.new do |s|
-  s.name = 'tempo'
+  s.name = 'tempo-cli'
   s.version = Tempo::VERSION
   s.author = 'Jonathan Gabel'
   s.email = 'hello@jonathangabel.com'
@@ -11,11 +11,7 @@ spec = Gem::Specification.new do |s|
   s.description = 'Record and report time spent by project'
 # Add your other files here if you make them
 # Add lib files to lib.tempo.rb
-  s.files = %w(
-    bin/tempo
-    lib/tempo/version.rb
-    lib/tempo.rb
-  )
+  s.files = `git ls-files`.split("\n")
   s.require_paths << 'lib'
   s.has_rdoc = true
   s.bindir = 'bin'

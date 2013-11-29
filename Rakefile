@@ -7,10 +7,10 @@ require 'cucumber/rake/task'
 
 Rake::RDocTask.new do |rd|
   rd.rdoc_files.include("lib/**/*.rb","bin/**/*")
-  rd.title = 'Your application title'
+  rd.title = 'tempo'
 end
 
-spec = eval(File.read('tempo.gemspec'))
+spec = eval(File.read('tempo-cli.gemspec'))
 
 Gem::PackageTask.new(spec) do |pkg|
 end
