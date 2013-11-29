@@ -83,13 +83,13 @@ command [:project, :p] do |c|
   c.long_desc "Match project with an exact title"
   c.switch [:e, :exact]
 
-  c.desc 'list by or perform command by project id'
+  c.desc 'List by or perform command by project id'
   c.long_desc 'show IDs in output or perform command by matching to id'
   c.switch [:i, :id], negatable: false
 
   c.desc 'Delete a Project'
   c.default_value nil
-  c.arg_name 'project title'
+  c.arg_name 'title'
   c.flag [:d, :delete]
 
   c.desc 'Tag a Project'
@@ -152,16 +152,18 @@ Arguments supplied will use fuzzy matching unless you:
 examples:
 
 # checking out an existing project titled 'star gazing'
+
 $ tempo checkout star gazing
 
 # adding and checking out a new project titled 'star gazing'
+
 $ tempo checkout -a star gazing"
 
 arg_name '"name of the project"'
 command [:checkout, :c] do |c|
 
   c.desc 'Add and Checkout a new project'
-  c.arg_name 'project title'
+  c.arg_name 'title'
   c.flag [:a, :add]
 
   c.desc 'use an exact match for project title'

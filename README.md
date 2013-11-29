@@ -1,34 +1,42 @@
 # tempo
 
-A command Line interface for time tracking by project.
+A command line interface for time tracking by project.
 
 ## Methodology
 
 ### Track time by Project
 
-Tempo tracks time against projects.  Projects can be nested, and tagged, and each time entry can have an additional description.  Time reports are produced by day.  Future enhancements will include reports by project and time totals by day or by project.
+Tempo tracks time against projects.  Projects can be nested, and tagged, and each time entry can have an additional description.  Time reports are produced by day.  
+
+Future enhancements will include reports by project and time totals by day or by project.
 
 ### Records
 
-All records are produced in yaml files, at the root user directory.  These reports can be edited by hand, but keep in mind that any invalid time data could cause problems when it is read back into the app.
+All records are produced in YAML files, at the root user directory.  These reports can be edited by hand, but keep in mind that any invalid data could cause problems when it is read back into the app. Make sure time formatting is valid and that they don't overlap, and that all ids are unique per page. 
+
+Each day's time records are designed to work independently. When adding or updating time records, only the records for the days in question are loaded into the app. The most recent day's records will also always be read in, to assure no running records are created earlier than existing records. 
 
 ### Features
 
-All commands and command options can be abbreviated to the first lette
-
-##### example
-
-    # these two commands are the same:
-    tempo project --list
-    tempo p -l
+#### command line assistance
 
 run `tempo help` for a list of commands
 
 run `tempo [command] --help` for help on any command
 
+#### syntax
+
+All commands and command options can be abbreviated to the first letter:
+
+##### example
+
+    # these two commands are the same:
+    $ tempo project --list
+    $ tempo p -l
+
 #### fuzzy matching
 
-Commands that manage the projects will use fuzzy matching for the project name. This means if you have a project called "put on my big boy pants" you will be able to checkout this project by running `tempo checkout pants`. If you have a situation where fuzzy matching causes errors because it matches with more than one project, you can always use the --exact flag, and only an exact match will work.
+Commands that manage the projects will use fuzzy matching for the project name. This means if you have a project called "put on my big boy pants" you will be able to checkout this project by running `tempo checkout pants`. If you have a situation where fuzzy matching causes errors because it matches with more than one project, you can always use the --exact flag, and pass in an exact match.
 
 #### Ids
 
@@ -47,9 +55,9 @@ Before you begin using tempo, you must have at least one project. Projects can b
 ##### command options
 
     --add                  - Add a Project
-    --delete=project title - Delete a Project
+    --delete=title         - Delete a Project
     --exact                - Exact Match
-    --id                   - list by or perform command by project id
+    --id                   - List by or perform command by project Id
     --list                 - List Projects
     --tag=tagword          - Tag a Project
     --untag=tagword        - Untag a Project
@@ -79,21 +87,23 @@ If supplied with arguments and no command options, a new project will be added.
 #### checkout
 ##### Checkout a project to track time against
 
+    tempo [global options] checkout [command options] "name of the project"
+
 ##### command options
 
-    --add=project title - Add and Checkout a new project
-    --exact             - use an exact match for project title
-    --id                - checkout by project id
+    --add=title     - Add and Checkout a new project
+    --exact                 - use an exact match for project title
+    --id                    - checkout by project id
 
 Only one project is active at a time, and this project will be assigned to all new time records.  You can checkout existing projects, or use this command to create a new active project
 
-    tempo [global options] checkout [command options] "name of the project"
+#### examples:
 
-    examples:
+    # checking out an existing project titled 'star gazing' 
+    $ tempo checkout star gazing
 
-    # checking out an existing project titled 'star gazing' $ tempo checkout star gazing
-
-    # adding and checking out a new project titled 'star gazing' $ tempo checkout --add star gazing 
+    # adding and checking out a new project titled 'star gazing' 
+    $ tempo checkout --add star gazing 
 
 #### arrange
 ##### Arrange project hierarchy
@@ -102,8 +112,8 @@ Only one project is active at a time, and this project will be assigned to all n
 
 ##### command options
 
-    -e, --[no-]exact - use an exact match for project title
-    -i, --[no-]id    - checkout by project id
+    --exact    - use an exact match for project title
+    --id       - checkout by project id
 
 Arrange projects into a parent/child hierarchy
 
@@ -127,7 +137,6 @@ New projects are added as root projects by default. Use arrange to arrange exist
     --at=time
     --end=time
 
-DESCRIPTION
     Starts a new time entry, and closes out any running time entries.
 
     You can also add a description of the time entry.
@@ -169,20 +178,20 @@ DESCRIPTION
 
 ##### command options
 
-    --delete       - Delete a Time Entry
-    --end=time     - Update the End Time
-    --id=number    - Select by Id
-    --on=date      - Select On Date
-    --project      - Update to the active project
-    --start=time   - Update the Start Time
+    --delete            - Delete a Time Entry
+    --end=time          - Update the End Time
+    --id=number         - Select by Id
+    --on=date           - Select On Date
+    --project           - Update to the active project
+    --start=time        - Update the Start Time
 
-    update the project, start time, or end time for a time entry.
+update the project, start time, or end time for a time entry.
 
-    Defaults to the current time entry, or most recently completed time entry if none are running. Optionally, you can supply an id for a time entry on the current day, or a day and id to update previous time entries. 
+Defaults to the current time entry, or most recently completed time entry if none are running. Optionally, you can supply an id for a time entry on the current day, or a day and id to update previous time entries. 
 
-    The description, if passed in, will be used to replace the existing description. You can also change the start or end time, or delete the entire time entry.
+The description, if passed in, will be used to replace the existing description. You can also change the start or end time, or delete the entire time entry.
 
-    examples:
+##### examples:
 
     # update description for the last time entry
     $ tempo update practicing banjo
@@ -214,7 +223,7 @@ DESCRIPTION
 
     Reports time entries for a day or a period of days. By default, lists the last recorded day's entries. To list a different day, supply a day as the args. To list a series of records, include a --from and --to value
 
-    examples:
+##### examples:
 
     # report current day's entries
     $ tempo report
@@ -235,7 +244,7 @@ DESCRIPTION
 All records are rounded to the nearest minute.  Time records are organized by day, and close out on the day they were started.
 
 Tempo uses [Chronic](https://github.com/mojombo/chronic) to parse time formats, which adds a lot of convenience functions such as "yesterday at 5:00".
-Chronic does have some limitations and inconsistencies as well.
+Chronic does have some limitations and inconsistencies as well, please see the [https://github.com/mojombo/chronic/issues](list of known issues) if you find problems with time parsing.
 
 #### No overlapping projects
 
@@ -243,26 +252,43 @@ It is assumed only one time record can exist for any given time. Overlapping tim
 
 #### Only one running project
 
-One entry can be running at any given time, and it must be the most recent entry.  Older entries will be closed out when a new one is started, and it the entry is running on a previous day, it will close out on the last minute of the day.
+One entry can be running at any given time, and it must be the most recent entry.  Older entries will be closed out when a new one is started, and if the entry is running on a previous day, it will be closed out on the last minute of that day.
 
 ## Tempo Development
 
+Project development is on-going and in my spare time.  Any error reporting, pull requests, and suggestions welcome. 
+
 ### Planned features
+
+#### Files
+
+  * add a config file with global options.
+  * add an option to change the location of the tempo file structure (for syncing with Dropbox, for instance).
 
 #### Projects
 
-Add an archive capability.
-Allow adding and listing projects in the same command.
+  * add an archive capability, which hides inactive projects from project lists. This can be handled with an tag keyword 'archived'.
+  * allow adding a new project and listing all projects in the same command.
+
+#### Start
+
+  * Allow start to use a project other than the current one.
+
+#### Resume
+
+  * Add a command to start the last time entry running again.
+  * Add a command to start a new time entry with the same details as a previous one.
 
 #### Time format enhancements
 
-  * Updating time record start or end time using `--on` should not need the full date repeated for `--start` or `--end`
+  * Updating time record start or end time using `--on` should not need the full date repeated for `--start` or `--end`.
+  * invalid times should be retried with the current (or most logical) date. Example: if '9:00' doesn't work, try 'today at 9:00'
 
 #### Reporting
 
   * Recording output to file
   * Reporting by project
-  * Composite view records (grouped time records by day or project)
+  * Composite view records (grouped time records by day or project), to allow nested list reporting
   * Total hours by project or day
   * Alternative formats: JSON, HTML
 
@@ -272,20 +298,29 @@ You need to use `bundle exec bin/tempo` to run in development
 
 ### testing
 
-rakes default behavior is to run unit tests and cucumber features
+rakes default behavior is to run unit tests and all cucumber features
 
+#### run unit tests only
 run `bundle exec rake test` to run unit tests only
 
-if tests fail, you can cleanup the testing directories with `bundle exec rake clean`
+#### run only some cucumber features
 
-## other command line time tracking apps:
+add @focus before specific features and run `bundle exec rake features focus`
+
+#### cleanup
+
+Testing creates a test directory at ~/testing/
+
+You can cleanup the testing directories with `bundle exec rake clean`
+
+### other command line time tracking apps:
 
 This is a very opinionated time tracking app, you may find others that suit your working method better:
 
-A utility that saves to separate time sheets for each project, using SQLite:
+If you would prefer to keep your data in a database, or run independant time sheets by project, here is a utility that uses SQLite:
 
-timetrap[https://github.com/samg/timetrap]
+[https://github.com/samg/timetrap](timetrap)
 
-Another one worth checking out:
+Another one worth checking out for a lightweight time tracker:
 
-t_time_tracker[https://github.com/christiangenco/t_time_tracker]
+https://github.com/christiangenco/t_time_tracker](t_time_tracker[)
