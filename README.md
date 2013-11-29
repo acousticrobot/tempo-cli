@@ -43,12 +43,12 @@ Commands that manage the projects will use fuzzy matching for the project name. 
 Every project and time record has an id which can also be used to match against. Running commands with the global --id flag will include ids in the output.
 Time record ids are on a per-day basis, and begin again with an id of 1 on the next day.
 
-### Commands
+## Commands
 
 Before you begin using tempo, you must have at least one project. Projects can be tagged, and organized as sub-projects.  To view your projects, look at  ~/tempo/tempo_projects.yaml
 
-#### project
-##### Manage the Projects that timed tasks are assigned to
+### project
+#### Manage the Projects that timed tasks are assigned to
 
     tempo [global options] p [command options] "name of the project"
 
@@ -84,8 +84,8 @@ If supplied with arguments and no command options, a new project will be added.
     # untagging and tagging an existing project
     $ tempo project star gazing --untag cellar --tag stellar 
 
-#### checkout
-##### Checkout a project to track time against
+### checkout
+#### Checkout a project to track time against
 
     tempo [global options] checkout [command options] "name of the project"
 
@@ -105,8 +105,8 @@ Only one project is active at a time, and this project will be assigned to all n
     # adding and checking out a new project titled 'star gazing' 
     $ tempo checkout --add star gazing 
 
-#### arrange
-##### Arrange project hierarchy
+### arrange
+#### Arrange project hierarchy
 
     tempo [global options] arrange [command options] [parent project] : child project
 
@@ -128,8 +128,8 @@ New projects are added as root projects by default. Use arrange to arrange exist
     # (aquascaping will be the parent of coral pruning)
     $ tempo arrange aquascaping : coral pruning 
 
-#### start
-##### Start a time entry
+### start
+#### Start a time entry
 
     tempo [global options] start [command options] description
 
@@ -151,8 +151,8 @@ New projects are added as root projects by default. Use arrange to arrange exist
     # start and end a previous time record with a description
     $ tempo start learning how to do the Hustle --at 'yesterday at 8:00 in the evening' --end 'yesterday at 11:59pm'
 
-#### end
-##### End a time entry
+### end
+#### End a time entry
 
     tempo [global options] end [command options] time out, defaults to now
 
@@ -171,8 +171,8 @@ New projects are added as root projects by default. Use arrange to arrange exist
     $ tempo start --at 16:55 practicing the human torch trick
     $ tempo end --at 'today at 5:00pm' learning how to stop, drop, and roll
 
-#### update
-##### update a time entry
+### update
+#### Update a time entry
 
     tempo [global options] update [command options] [description]
 
@@ -211,8 +211,8 @@ The description, if passed in, will be used to replace the existing description.
     # update the description, start, and end time for a previous day's entry
     $ tempo update --on 1/17/14 --start "1/17/14 8am" --end "1/17/14 10am" practicing banjo
 
-#### report
-##### Report time entries
+### report
+#### Report time entries
 
     tempo [global options] report [command options] [day]
 
@@ -237,20 +237,20 @@ The description, if passed in, will be used to replace the existing description.
     # report a period of days
     $ tempo report -f 'last monday' -t 'last friday' 
 
-### Assumptions and Limitations
+## Assumptions and Limitations
 
-#### Time periods
+### Time periods
 
 All records are rounded to the nearest minute.  Time records are organized by day, and close out on the day they were started.
 
 Tempo uses [Chronic](https://github.com/mojombo/chronic) to parse time formats, which adds a lot of convenience functions such as "yesterday at 5:00".
 Chronic does have some limitations and inconsistencies as well, please see the [https://github.com/mojombo/chronic/issues](list of known issues) if you find problems with time parsing.
 
-#### No overlapping projects
+### No overlapping projects
 
 It is assumed only one time record can exist for any given time. Overlapping time entries will result in an error.  
 
-#### Only one running project
+### Only one running project
 
 One entry can be running at any given time, and it must be the most recent entry.  Older entries will be closed out when a new one is started, and if the entry is running on a previous day, it will be closed out on the last minute of that day.
 
@@ -292,11 +292,11 @@ Project development is on-going and in my spare time.  Any error reporting, pull
   * Total hours by project or day
   * Alternative formats: JSON, HTML
 
-### running in development
+### Running in development
 
 You need to use `bundle exec bin/tempo` to run in development
 
-### testing
+### Testing
 
 rakes default behavior is to run unit tests and all cucumber features
 
@@ -313,14 +313,14 @@ Testing creates a test directory at ~/testing/
 
 You can cleanup the testing directories with `bundle exec rake clean`
 
-### other command line time tracking apps:
+### Other command line time tracking apps:
 
 This is a very opinionated time tracking app, you may find others that suit your working method better:
 
 If you would prefer to keep your data in a database, or run independant time sheets by project, here is a utility that uses SQLite:
 
-[https://github.com/samg/timetrap](timetrap)
+[timetrap](https://github.com/samg/timetrap)
 
 Another one worth checking out for a lightweight time tracker:
 
-https://github.com/christiangenco/t_time_tracker](t_time_tracker[)
+[t_time_tracker](https://github.com/christiangenco/t_time_tracker)
