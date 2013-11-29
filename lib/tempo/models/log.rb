@@ -1,5 +1,3 @@
-require "time_utilities"
-
 module Tempo
   module Model
     class Log < Tempo::Model::Base
