@@ -35,8 +35,7 @@ end
 
 task :cucumber => :features
 
-desc :tests_setup
-task :tests_setup do |t|
+task :tests_setup do
   @ORIGINAL_HOME = ENV['HOME']
   ENV['HOME'] = ENV['HOME'] + "/testing"
   Dir.mkdir(ENV['HOME'], 0700) unless File.exists?(ENV['HOME'])
@@ -44,8 +43,7 @@ task :tests_setup do |t|
   Dir.mkdir(dir, 0700) unless File.exists?(dir)
 end
 
-desc :tests_teardown
-task :tests_teardown do |t|
+task :tests_teardown do
   ENV['HOME'] = @ORIGINAL_HOME
   dir = File.join(Dir.home, "testing")
   FileUtils.rm_r dir if File.exists?(dir)
