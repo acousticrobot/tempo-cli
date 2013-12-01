@@ -3,7 +3,7 @@
 # In development, you need to use `bundle exec bin/tempo` to run this app
 require 'gli'
 require 'tempo'
-require 'pry'
+
 include GLI::App
 # to preserve all the args in ARGV:
 # preserve_argv

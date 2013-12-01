@@ -2,6 +2,16 @@
 
 A command line interface for time tracking by project.
 
+## Installation
+
+    gem install tempo-cli   
+
+### binary
+
+Tempo cli runs with the binary `tempo`, but you can alias a shorter binary for your convenience, for example "t":
+
+    echo "alias t='tempo'" >> ~/.bash_profile
+
 ## Methodology
 
 ### Track time by Project
@@ -44,8 +54,6 @@ Every project and time record has an id which can also be used to match against.
 Time record ids are on a per-day basis, and begin again with an id of 1 on the next day.
 
 ## Commands
-
-Before you begin using tempo, you must have at least one project. Projects can be tagged, and organized as sub-projects.  To view your projects, look at  ~/tempo/tempo_projects.yaml
 
 ### project
 #### Manage the Projects that timed tasks are assigned to
@@ -238,6 +246,8 @@ The description, if passed in, will be used to replace the existing description.
     $ tempo report -f 'last monday' -t 'last friday' 
 
 ## Assumptions and Limitations
+
+Before you begin using tempo, you must have at least one project. Projects can be tagged, and organized as sub-projects.  See project in the commands section below, for more information. To view your projects file, look at  ~/tempo/tempo_projects.yaml
 
 ### Time periods
 
