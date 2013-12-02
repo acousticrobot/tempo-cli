@@ -7,6 +7,8 @@ module Tempo
 
         def parse options, args
 
+          return Views.project_assistance if Model::Project.index.empty?
+
           return Views::arrange_parse_error unless args.include? ":"
 
           parent_args = []

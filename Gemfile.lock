@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tempo (0.1.0)
+    tempo-cli (0.1.2)
       chronic (~> 0.10.2)
       gli (= 2.6.1)
 
@@ -52,5 +52,5 @@ DEPENDENCIES
   pry (~> 0.9.12.2)
   rake
   rdoc
-  tempo!
+  tempo-cli!
   turn (~> 0.9.6)

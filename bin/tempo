@@ -8,7 +8,10 @@ include GLI::App
 # to preserve all the args in ARGV:
 # preserve_argv
 
-program_desc 'Command line time tracking by project'
+program_desc 'Command line time tracking by project
+
+For more help on any command, run: tempo [command] --help
+'
 
 version Tempo::VERSION
 
@@ -32,11 +35,8 @@ switch [:i, :id]
 desc 'Manage the Projects that timed tasks are assigned to'
 long_desc "Manage the Projects that timed tasks are assigned to.
 
-Manage the Projects that timed tasks are assigned to.
 By default, lists the current project, or with --list tag, lists all projects.
-The active project will be marked by an asterisk.
-
-If supplied with arguments and no command options,
+The active project will be marked by an asterisk. If supplied with arguments and no command options,
 a new project will be added.
 
 Arguments supplied to --list, --delete, and --[un]tag
