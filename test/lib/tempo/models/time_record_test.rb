@@ -1,4 +1,5 @@
 require "test_helper"
+require "pry"
 
 describe Tempo do
 
@@ -66,10 +67,20 @@ describe Tempo do
       Tempo::Model::TimeRecord.current.must_equal nil
     end
 
-    it "has a running? method" do
+    it "has a running boolean method" do
       time_record_factory
       @record_1.running?.must_equal false
       @record_6.running?.must_equal true
+    end
+
+    it "has a next record method" do
+      time_record_factory
+      @record_1.next_record.must_equal @record_2
+      @record_2.next_record.must_equal @record_3
+      @record_3.next_record.must_equal @record_4
+      @record_4.next_record.must_equal @record_5
+      @record_5.next_record.must_equal @record_6
+      @record_6.next_record.must_equal nil
     end
 
     it "has a duration method returning seconds" do
@@ -92,16 +103,38 @@ describe Tempo do
       @record_3.end_time.must_equal Time.new(2014,1,1,23,59)
     end
 
-    it "closes out new projects if not the most recent" do
+    it "closes out new projects at if not the most recent" do
+    # Verify project closes out at the start time of the next time record,
+    # which is not necessarily the running record
       project_factory
       Tempo::Model::TimeRecord.clear_all
-      @record_2 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
-      @record_1 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
+      @record_1 = Tempo::Model::TimeRecord.new({project: @project_2,
+                                                description: "day 1 drinking coffee, check on the mushrooms",
+                                                start_time: Time.new(2014, 1, 1, 9, 30 ) })
+      @record_2 = Tempo::Model::TimeRecord.new({project: @project_2,
+                                                description: "day 1 pet the sheep",
+                                                start_time: Time.new(2014, 1, 1, 10, 30 ) })
+      @record_3 = Tempo::Model::TimeRecord.new({project: @project_1,
+                                                description: "make the coffee, check the weather",
+                                                start_time: Time.new(2014, 1, 1, 7 ) })
       Tempo::Model::TimeRecord.current.must_equal @record_2
-      @record_1.end_time.must_equal @record_2.start_time
+      @record_3.end_time.must_equal @record_1.start_time
     end
 
-    it "closes out all projects when init with an end time" do
+    it "on init closes out new projects on the same day" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record_1 = Tempo::Model::TimeRecord.new({project: @project_2,
+                                                description: "day 1 drinking coffee, check on the mushrooms",
+                                                start_time: Time.new(2014, 1, 2, 10, 30 ) })
+      @record_2 = Tempo::Model::TimeRecord.new({project: @project_2,
+                                                description: "day 1 pet the sheep",
+                                                start_time: Time.new(2014, 1, 1, 10, 30 ) })
+      Tempo::Model::TimeRecord.current.must_equal @record_1
+      @record_2.end_time.must_equal Time.new(2014, 1, 1, 23, 59 )
+    end
+
+    it "closes earlier running when init with an end time" do
       project_factory
       Tempo::Model::TimeRecord.clear_all
       @record_1 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
@@ -112,12 +145,12 @@ describe Tempo do
 
     it "errors when start time inside existing record" do
       time_record_factory
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise Tempo::TimeConflictError
     end
 
     it "errors when start time same as existing record" do
       time_record_factory
-      proc { Tempo::Model::TimeRecord.new({ start_time: @record_1.start_time }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: @record_1.start_time }) }.must_raise Tempo::TimeConflictError
     end
 
     it "errors when end time is before start time" do
@@ -146,19 +179,19 @@ describe Tempo do
     it "errors when end time in existing record" do
       Tempo::Model::TimeRecord.clear_all
       r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 1, 12 ) })
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 11 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 11 ) }) }.must_raise Tempo::TimeConflictError
     end
 
     it "errors when record spans an existing record" do
       Tempo::Model::TimeRecord.clear_all
       r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 1, 11 ) })
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise Tempo::TimeConflictError
     end
 
     it "errors when record spans a running record" do
       Tempo::Model::TimeRecord.clear_all
       r1 = Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ) })
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 8 ), end_time: Time.new(2014, 1, 1, 12 ) }) }.must_raise Tempo::TimeConflictError
     end
 
     it "has a valid start time check for existing record" do
@@ -171,6 +204,51 @@ describe Tempo do
       time_record_factory
       @record_2.valid_end_time?(@record_2.end_time).must_equal true
       @record_2.valid_end_time?(@record_3.end_time).must_equal false
+    end
+
+    it "can validate and update a start time" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record = Tempo::Model::TimeRecord.new({project: @project_1,
+                                              start_time: Time.new(2014, 1, 1, 8 ),
+                                              end_time: Time.new(2014, 1, 1, 10 ) })
+      proc { @record.start_time = Time.new(2014, 1, 1, 11 )}.must_raise ArgumentError
+
+      @record.start_time = Time.new(2014, 1, 1, 9 )
+      @record.start_time.must_equal Time.new(2014, 1, 1, 9 )
+    end
+
+    it "can validate and update an end time" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record = Tempo::Model::TimeRecord.new({project: @project_1,
+                                              start_time: Time.new(2014, 1, 1, 8 ),
+                                              end_time: Time.new(2014, 1, 1, 10 ) })
+
+      proc { @record.end_time = Time.new(2014, 1, 1, 7 )}.must_raise ArgumentError
+      @record.end_time = Time.new(2014, 1, 1, 11 )
+      @record.end_time.must_equal Time.new(2014, 1, 1, 11 )
+    end
+
+    it "can update a start and end time" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record = Tempo::Model::TimeRecord.new({project: @project_3,
+                                              start_time: Time.new(2014, 1, 1, 8 ),
+                                              end_time: Time.new(2014, 1, 1, 10 ) })
+
+      @record.update_times(Time.new(2014, 1, 1, 8 ), Time.new(2014, 1, 1, 10 ))
+    end
+
+    it "closes earlier running when start time is updated" do
+      project_factory
+      Tempo::Model::TimeRecord.clear_all
+      @record_1 = Tempo::Model::TimeRecord.new({ project: @project_2, description: "record 1", start_time: Time.new(2014, 1, 1, 10 ) })
+      @record_2 = Tempo::Model::TimeRecord.new({ project: @project_1, description: "record 2", start_time: Time.new(2014, 1, 1, 7 ), end_time: Time.new(2014, 1, 1, 8 ) })
+      Tempo::Model::TimeRecord.current.must_equal @record_1
+
+      @record_2.update_times(Time.new(2014, 1, 1, 11 ), Time.new(2014, 1, 1, 12 ))
+      Tempo::Model::TimeRecord.current.must_equal nil
     end
 
     it "comes with freeze dry for free" do

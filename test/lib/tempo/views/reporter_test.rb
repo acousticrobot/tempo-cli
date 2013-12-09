@@ -19,7 +19,7 @@ describe Tempo do
 
       it "raises and error when view records of unknown format" do
         record = "an invalid record object"
-        proc { Tempo::Views::Reporter.add_view_record record }.must_raise Tempo::Views::InvalidViewRecordError
+        proc { Tempo::Views::Reporter.add_view_record record }.must_raise Tempo::InvalidViewRecordError
       end
 
       it "sends the reports to the screen formatter on report" do

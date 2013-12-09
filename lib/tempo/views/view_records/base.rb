@@ -19,9 +19,6 @@
 module Tempo
   module Views
 
-    class InvalidViewRecordError < Exception
-    end
-
     module ViewRecords
 
       # The most simple view records, with a message string

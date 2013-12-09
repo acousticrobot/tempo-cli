@@ -36,6 +36,7 @@ Feature: Start Command starts a new time record
     When I run `tempo start --end "1 hour from now"`
     Then the stdout should contain "time record started"
     And the output should match /\d{2}:\d{2} - \d{2}:\d{2}/
+
 @pending
   Scenario: Adding a time record with tags
     Given an existing project file
@@ -45,7 +46,7 @@ Feature: Start Command starts a new time record
     When I run `tempo start --at "1-1-2014 7:00"`
     And I run `tempo end --at "1-1-2014 10:00"`
     And I run `tempo start --at "1-1-2014 8:00"`
-    Then the stderr should contain "error: Time conflict with existing record"
+    Then the stderr should contain "error: time <08:00> conflicts with existing record: 07:00 - 10:00"
 
   Scenario: Adding a time record and closing out the last one
     Given an existing project file
@@ -60,21 +61,15 @@ Feature: Start Command starts a new time record
     And I run `tempo start --at "1-3-2014 10:00"`
     Then the stdout should contain "time record started"
     And the time record 20140101 should contain ":end_time: 2014-01-01 23:59" at line 5
-@pending
-  Scenario: Adding an evening time record should compensate for local time
-    # need to mock entering time in the evening, 21:26:46 -0400
-    # make sure --at "5:00" is recorded for the local day, not GMC
 
-# Adding a time record at the beginning of the day seems to close out at the last time record
-# check on and fix this bug.
- @pending
+
   Scenario: Adding an earlier time record should immediately close out
     Given an existing project file
-    When I run `tempo start --at "1-1-2014 9:00"`
+    When I run `tempo start --at "1-1-2014 10:00"`
     And I run `tempo start --at "1-1-2014 17:00"`
     And I run `tempo start --at "1-1-2014 6:00"`
     Then the stdout should contain "time record started"
-    And the time record 20140101 should contain ":end_time: 2014-01-01 9:00" at line 5
+    And the time record 20140101 should contain ":end_time: 2014-01-01 10:00" at line 5
 
   Scenario: Adding an earlier day time record should immediately close out
     Given an existing project file
@@ -83,5 +78,9 @@ Feature: Start Command starts a new time record
     Then the stdout should contain "time record started"
     And the time record 20140101 should contain ":end_time: 2014-01-01 23:59" at line 5
 
+@pending
+  Scenario: Adding an evening time record should compensate for local time
+    # need to mock entering time in the evening, 21:26:46 -0400
+    # make sure --at "5:00" is recorded for the local day, not GMC
 
 

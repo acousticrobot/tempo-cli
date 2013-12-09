@@ -11,6 +11,7 @@ module Tempo
         # for example Jan 1, 2013 would be  :"130101"
         # id counter is managed through the private methods
         # increase_id_counter and next_id below
+        #
         def id_counter time
           dsym = date_symbol time
           @id_counter = {} unless @id_counter.kind_of? Hash
@@ -26,6 +27,7 @@ module Tempo
         # all instances are saved in the index inherited from base.
         # Additionally, the days index organizes all instances into
         # arrays by day.  This is used for saving to file.
+        #
         def days_index
           @days_index = {} unless @days_index.kind_of? Hash
           @days_index
@@ -56,6 +58,7 @@ module Tempo
         end
 
         # load all the records for a single day
+        #
         def load_day_record time
           dsym = date_symbol time
           if not days_index.has_key? dsym
@@ -65,6 +68,7 @@ module Tempo
         end
 
         # load the records for each day from time 1 to time 2
+        #
         def load_days_records time_1, time_2
 
           return if time_1.nil? || time_2.nil?
@@ -76,6 +80,7 @@ module Tempo
         end
 
         # load the records for the most recently recorded day
+        #
         def load_last_day
           reg = /(\d+)\.yaml/
           if records.last

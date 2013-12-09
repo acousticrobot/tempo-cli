@@ -4,6 +4,7 @@
 require 'time_utilities.rb'
 
 require 'tempo/version.rb'
+require 'tempo/exceptions.rb'
 
 require 'tempo/models/base.rb'
 require 'tempo/models/composite.rb'

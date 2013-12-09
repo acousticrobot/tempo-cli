@@ -9,8 +9,6 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = 'A command line time tracker for recording by day and by project'
   s.description = 'tempo-cli is a command line time tracking application.  Record time spent on projects in YAML files, and manage them from the command line.'
-# Add your other files here if you make them
-# Add lib files to lib.tempo.rb
   s.files = `git ls-files`.split("\n")
   s.require_paths << 'lib'
   s.has_rdoc = true

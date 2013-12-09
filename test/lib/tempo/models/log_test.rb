@@ -78,7 +78,7 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
-    it "loads the records for a the most recent day and return day" do
+    it "loads records for most recent and return day" do
       log_record_factory
       last_day = Tempo::Model::MessageLog.load_last_day
 
