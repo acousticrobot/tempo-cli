@@ -265,26 +265,36 @@ describe Tempo do
       test_file_1 = File.join(ENV['HOME'],'tempo/tempo_time_records/20140101.yaml')
       test_file_2 = File.join(ENV['HOME'],'tempo/tempo_time_records/20140102.yaml')
       contents = eval_file_as_array( test_file_1 )
-      contents.must_equal [ "---", ":project_title: sheep herding", ":description: day 1 pet the sheep",
-                            ":start_time: 2014-01-01 07:00:00.000000000 -05:00", ":end_time: 2014-01-01 07:30:00.000000000 -05:00",
-                            ":id: 1", ":project: 1", ":tags: []",
-                            "---", ":project_title: horticulture - basement mushrooms", ":description: day 1 drinking coffee, check on the mushrooms",
-                            ":start_time: 2014-01-01 07:30:00.000000000 -05:00", ":end_time: 2014-01-01 17:30:00.000000000 -05:00",
-                            ":id: 2", ":project: 2", ":tags: []",
-                            "---", ":project_title: horticulture - backyard bonsai", ":description: day 1 water the bonsai",
-                            ":start_time: 2014-01-01 17:30:00.000000000 -05:00", ":end_time: 2014-01-01 23:59:00.000000000 -05:00",
-                            ":id: 3", ":project: 3", ":tags:", "- horticulture", "- trees"]
+
+      # testing with regex because time zone will be different on different computers,
+      # ex: ":start_time: 2014-01-02 07:15:00.000000000 -05:00"
+      eval = [ /---/, /:project_title: sheep herding/, /:description: day 1 pet the sheep/,
+                            /:start_time: 2014-01-01 07:00:00.000000000/, /:end_time: 2014-01-01 07:30:00.000000000/,
+                            /:id: 1/, /:project: 1/, /:tags: \[\]/,
+                            /---/, /:project_title: horticulture - basement mushrooms/, /:description: day 1 drinking coffee, check on the mushrooms/,
+                            /:start_time: 2014-01-01 07:30:00.000000000/, /:end_time: 2014-01-01 17:30:00.000000000/,
+                            /:id: 2/, /:project: 2/, /:tags: \[\]/,
+                            /---/, /:project_title: horticulture - backyard bonsai/, /:description: day 1 water the bonsai/,
+                            /:start_time: 2014-01-01 17:30:00.000000000/, /:end_time: 2014-01-01 23:59:00.000000000/,
+                            /:id: 3/, /:project: 3/, /:tags:/, /- horticulture/, /- trees/ ]
+      contents.each_with_index do |c, i|
+        c.must_match eval[i]
+      end
+
       contents = eval_file_as_array( test_file_2 )
-      # TODO: test this one too when stable
-      contents.must_equal ["---", ":project_title: sheep herding", ":description: day 2 pet the sheep",
-                           ":start_time: 2014-01-02 07:15:00.000000000 -05:00", ":end_time: 2014-01-02 07:45:00.000000000 -05:00",
-                           ":id: 1", ":project: 1", ":tags: []",
-                           "---", ":project_title: horticulture - basement mushrooms", ":description: day 2 drinking coffee, check on the mushrooms",
-                           ":start_time: 2014-01-02 07:45:00.000000000 -05:00", ":end_time: 2014-01-02 17:00:00.000000000 -05:00",
-                           ":id: 2", ":project: 2", ":tags: []",
-                           "---", ":project_title: horticulture - backyard bonsai", ":description: day 2 water the bonsai",
-                           ":start_time: 2014-01-02 17:00:00.000000000 -05:00", ":end_time: :running",
-                           ":id: 3", ":project: 3", ":tags: []"]
+      eval = [/---/, /:project_title: sheep herding/, /:description: day 2 pet the sheep/,
+                           /:start_time: 2014-01-02 07:15:00.000000000/, /:end_time: 2014-01-02 07:45:00.000000000/,
+                           /:id: 1/, /:project: 1/, /:tags: \[\]/,
+                           /---/, /:project_title: horticulture - basement mushrooms/, /:description: day 2 drinking coffee, check on the mushrooms/,
+                           /:start_time: 2014-01-02 07:45:00.000000000/, /:end_time: 2014-01-02 17:00:00.000000000/,
+                           /:id: 2/, /:project: 2/, /:tags: \[\]/,
+                           /---/, /:project_title: horticulture - backyard bonsai/, /:description: day 2 water the bonsai/,
+                           /:start_time: 2014-01-02 17:00:00.000000000/, /:end_time: :running/,
+                           /:id: 3/, /:project: 3/, /:tags: \[\]/]
+
+      contents.each_with_index do |c, i|
+        c.must_match eval[i]
+      end
     end
   end
 end
