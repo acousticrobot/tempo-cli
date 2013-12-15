@@ -1,3 +1,5 @@
+require 'yaml'
+
 # Composite Model extends base to accomodate tree structures
 # Each instance can be a root instance, or a child of another
 # instance, and each instance can have any number of children.

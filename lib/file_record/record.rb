@@ -1,3 +1,5 @@
+require 'yaml'
+
 module FileRecord
   class Record
     class << self

@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Tempo
   module Model
 
