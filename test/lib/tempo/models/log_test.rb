@@ -47,20 +47,30 @@ describe Tempo do
       test_file_1 = File.join(test_dir, "20140101.yaml")
       test_file_2 = File.join(test_dir, "20140102.yaml")
       contents = eval_file_as_array( test_file_1 )
-      contents.must_equal [ "---", ":start_time: 2014-01-01 07:00:00.000000000 -05:00",
-                            ":id: 1", ":message: day 1 pet the sheep",
-                            "---", ":start_time: 2014-01-01 07:30:00.000000000 -05:00",
-                            ":id: 2", ":message: day 1 drinking coffee, check on the mushrooms",
-                            "---", ":start_time: 2014-01-01 12:30:00.000000000 -05:00",
-                            ":id: 3", ":message: day 1 water the bonsai"]
+
+      # testing with regex because time zone will be different on different computers,
+      # ex: ":start_time: 2014-01-02 07:15:00.000000000 -05:00"
+      eval = [ /---/, /:start_time: 2014-01-01 07:00:00.000000000/,
+                            /:id: 1/, /:message: day 1 pet the sheep/,
+                            /---/, /:start_time: 2014-01-01 07:30:00.000000000/,
+                            /:id: 2/, /:message: day 1 drinking coffee, check on the mushrooms/,
+                            /---/, /:start_time: 2014-01-01 12:30:00.000000000/,
+                            /:id: 3/, /:message: day 1 water the bonsai/]
+      contents.each_with_index do |c, i|
+        c.must_match eval[i]
+      end
+
       contents = eval_file_as_array( test_file_2 )
-      contents.must_equal [ "---", ":start_time: 2014-01-02 07:15:00.000000000 -05:00",
-                            ":id: 1", ":message: day 2 pet the sheep",
-                            "---", ":start_time: 2014-01-02 07:45:00.000000000 -05:00",
-                            ":id: 2", ":message: day 2 drinking coffee, check on the mushrooms",
-                            "---", ":start_time: 2014-01-02 12:00:00.000000000 -05:00",
-                            ":id: 3", ":message: day 2 water the bonsai"]
-     end
+      eval = [ /---/, /:start_time: 2014-01-02 07:15:00.000000000/,
+                            /:id: 1/, /:message: day 2 pet the sheep/,
+                            /---/, /:start_time: 2014-01-02 07:45:00.000000000/,
+                            /:id: 2/, /:message: day 2 drinking coffee, check on the mushrooms/,
+                            /---/, /:start_time: 2014-01-02 12:00:00.000000000/,
+                            /:id: 3/, /:message: day 2 water the bonsai/]
+      contents.each_with_index do |c, i|
+        c.must_match eval[i]
+      end
+    end
 
     it "grants children ability to read from a file" do
       log_record_factory

@@ -45,7 +45,7 @@ module Tempo
 
         def records
           path = FileRecord::Record.log_dir( self )
-          Dir[path + "/*.yaml"]
+          Dir[path + "/*.yaml"].sort!
         end
 
         def save_to_file
