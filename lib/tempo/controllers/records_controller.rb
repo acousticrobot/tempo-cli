@@ -6,12 +6,15 @@ module Tempo
       class << self
 
         def initialize_from_records options, args
-          if File.exists?( File.join( ENV['HOME'], 'tempo' ))
 
-            Tempo::Controllers::Projects.load
+          dir = File.join( options.fetch( :directory, ENV['HOME']))
+
+          if File.exists?(File.join(dir, 'tempo'))
+
+            Tempo::Controllers::Projects.load directory: dir
 
           else
-            FileRecord::Directory.create_new
+            FileRecord::Directory.create_new directory: dir
           end
         end
 

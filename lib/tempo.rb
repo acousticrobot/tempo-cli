@@ -27,4 +27,5 @@ require 'tempo/views/base.rb'
 Dir[File.dirname(__FILE__) + '/tempo/views/*.rb'].each {|file| require file }
 
 require 'file_record/directory.rb'
+#require 'file_record/record_utility.rb'
 require 'file_record/record.rb'

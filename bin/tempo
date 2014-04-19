@@ -3,10 +3,13 @@
 # In development, you need to use `bundle exec bin/tempo` to run this app
 require 'gli'
 require 'tempo'
+require 'pry'
 
 include GLI::App
 # to preserve all the args in ARGV:
 # preserve_argv
+
+#config_file '.tempo.yaml'
 
 program_desc 'Command line time tracking by project
 
@@ -24,6 +27,11 @@ switch [:v, :verbose]
 desc 'output id'
 long_desc 'include id reporting in the command output'
 switch [:i, :id]
+
+desc 'directory'
+long_desc 'location of the tempo directory'
+default_value ENV['HOME']
+flag [:d,:directory]
 
 # desc 'Describe some flag here'
 # default_value 'the default'
@@ -446,6 +454,11 @@ pre do |global,command,options,args|
 
   Tempo::Views::initialize_view_options command.name, global, options
 
+  # pass a custom directory into options
+  if global[:directory] != ENV['HOME']
+    options[:directory] = File.join(ENV['HOME'], global[:directory])
+  end
+
   # Load the stored records
   Tempo::Controllers::Records.initialize_from_records options, args
 
@@ -469,7 +482,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  #puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

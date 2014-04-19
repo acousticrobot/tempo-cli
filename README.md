@@ -315,7 +315,7 @@ run `bundle exec rake test` to run unit tests only
 
 #### run only some cucumber features
 
-add @focus before specific features and run `bundle exec rake features focus`
+add @focus before specific features and run `bundle exec rake features:focus`
 
 #### cleanup
 

@@ -26,23 +26,6 @@ module Tempo
         Tempo::Views::Reporter.add_options view_opts
       end
 
-      # DEPRACATE- View is returned in post
-      #
-      # puts each line if output=true
-      # else returns an array of view lines
-      def return_view( view, options={} )
-        output = options.fetch( :output, true )
-
-        if output
-          if view.is_a? String
-            puts view
-          else
-            view.each { |line| puts line }
-          end
-        end
-        view
-      end
-
       def options_report( command, global_options, options, args )
         globals_list = "global options: "
         global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }
@@ -59,6 +42,10 @@ module Tempo
 
       def no_items( items, category=:info )
         ViewRecords::Message.new "no #{items} exist", category: category
+        if items == "projects"
+          ViewRecords::Message.new "You must at least one project before you can begin tracking time"
+          ViewRecords::Message.new "run `tempo project --help` for more information"
+        end
       end
 
       def no_match_error( items, request, plural=true )

@@ -5,9 +5,12 @@ module Tempo
 
       class << self
 
-        def load
-          if File.exists?( File.join( ENV['HOME'], 'tempo', @projects.file ))
-            @projects.read_from_file
+        def load(options={})
+
+          # directory = options.fetch( :directory, ENV['HOME'])
+          directory = ENV['HOME']
+          if File.exists?( File.join( directory, 'tempo', @projects.file ))
+            @projects.read_from_file # directory
           end
         end
 
