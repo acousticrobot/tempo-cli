@@ -42,15 +42,15 @@ describe Tempo do
     end
 
     it "should revive a tree structure from a file" do
-       tree_factory
-       test_file = File.join(ENV['HOME'],'tempo','tempo_trees.yaml')
-       File.delete(test_file) if File.exists?( test_file )
-       contents = Tempo::Model::Tree.save_to_file
-       Tempo::Model::Tree.clear_all
-       Tempo::Model::Tree.read_from_file
-       branch1 = Tempo::Model::Tree.find_by_id 3
-       branch1.parent.must_equal 1
-       branch1.children.must_equal [7,8]
+      tree_factory
+      test_file = File.join(ENV['HOME'],'tempo','tempo_trees.yaml')
+      File.delete(test_file) if File.exists?( test_file )
+      contents = Tempo::Model::Tree.save_to_file
+      Tempo::Model::Tree.clear_all
+      Tempo::Model::Tree.read_from_file
+      branch1 = Tempo::Model::Tree.find_by_id 3
+      branch1.parent.must_equal 1
+      branch1.children.must_equal [7,8]
     end
 
     it "should have a << child method" do

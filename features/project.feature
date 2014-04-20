@@ -3,7 +3,6 @@ Feature: Project Command manages a list of projects
   New projects can be added and deleted
   Projects can also be tagged as inactive or inactive
 
-@focus
   Scenario: Listing the current project before any projects exist
     Given a clean installation
     When I run `tempo project`

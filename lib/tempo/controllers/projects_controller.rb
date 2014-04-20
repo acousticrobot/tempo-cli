@@ -7,10 +7,10 @@ module Tempo
 
         def load(options={})
 
-          # directory = options.fetch( :directory, ENV['HOME'])
-          directory = ENV['HOME']
+          directory = options.fetch( :directory, ENV['HOME'])
+
           if File.exists?( File.join( directory, 'tempo', @projects.file ))
-            @projects.read_from_file # directory
+            @projects.read_from_file options
           end
         end
 

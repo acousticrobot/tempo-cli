@@ -110,9 +110,8 @@ module Tempo
         # Time will be converted into "YYYYmmdd"
         # ex: 1-1-2014 => "20140101"
         def day_id time
-          if time.kind_of? String
-            return time if time =~ /^\d{8}$/
-          end
+          return time if time.to_s =~ /^\d{8}$/
+
           raise ArgumentError, "Invalid Time" if not time.kind_of? Time
           time.strftime("%Y%m%d")
         end

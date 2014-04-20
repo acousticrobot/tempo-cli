@@ -57,10 +57,11 @@ module FileRecord
         file = "tempo#{file_name}s.yaml"
       end
 
-      # record a child of Tempo::Model::Base
+      # record a list of Tempo::Model::Base
       def save_model( model, options={} )
-        file = model_filename model
-        file_path = File.join(Dir.home,'tempo', file)
+        util = FileUtility.new model, options
+        file_path = util.file_path
+
         File.delete( file_path ) if File.exists?( file_path )
 
         File.open( file_path,'a' ) do |f|
@@ -70,24 +71,17 @@ module FileRecord
         end
       end
 
-      # record a child of Tempo::Model::Log
+      # record a list of Tempo::Model::Log
       def save_log( model, options={} )
-        options = options.dup
-
-        options[:create] = true
         dir = FileUtility.new(model, options).log_directory_path
 
         model.days_index.each do |day, days_logs|
 
-          options[:time] = day
-          file_path = FileUtility.new(model, options).file_path
+          opts = options.dup
+          opts[:time] = day
 
-          file = "#{day.to_s}.yaml"
-          f_p = File.join(dir, file)
-
-          if file_path != f_p
-            binding.pry
-          end
+          util = FileUtility.new model, opts
+          file_path = util.file_path
 
           File.delete( file_path ) if File.exists?( file_path )
 
@@ -102,19 +96,21 @@ module FileRecord
         end
       end
 
-      def read_instances( model, file, options={} ) #@done
-        instances = YAML::load_stream( File.open( file ) )
+      def read_instances( model, file_path, options={} )
+        instances = YAML::load_stream( File.open( file_path ) )
         instances.each do |i|
           model.new( i )
         end
       end
 
-      def read_model( model, options={} ) #@done
-        file_path = FileUtility.new(model, options).file_path
+      def read_model( model, options={} )
+        util = FileUtility.new model, options
+        file_path = util.file_path
+
         read_instances model, file_path
       end
 
-      def read_log( model, time, options={} ) #@done
+      def read_log( model, time, options={} )
 
         options[:time] = time
         file_path = FileUtility.new(model, options).file_path

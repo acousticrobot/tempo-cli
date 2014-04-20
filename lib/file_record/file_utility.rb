@@ -14,21 +14,23 @@
 # pass time into options on init
 # example Tempo::Model::Logs class instances are saved into:
 # Users/usrname/tempo/tempo_logs/
-# The files are given filenames based on the Logs day id (11/12/2014 -> '20141112')
+# The files are given filenames based on the Logs day id (11/12/2014 -> '20141112.yaml')
 # See Tempo::Model::Logs for more information
 
 module FileRecord
-  class Utility
+  class FileUtility
 
     def initialize(model, options={})
       @model = model
       @time = options.fetch(:time, nil)
       @directory = options.fetch(:directory, Dir.home)
+      @create = options.fetch( :create, false )
     end
 
     # split Tempo::Model::Project into ["tempo", "model", "project"]
+    # split Tempo::Model::TimeRecord into ["tempo", "model", "time_record"]
     def split_name
-      @model.new.class.to_s.split("::").each {|n| n.downcase!}
+      @model.name.to_s.split("::").each {|n| n.gsub!(/([a-z])([A-Z])/, '\1_\2'); n.downcase!}
     end
 
     # Tempo::Model::Project -> "tempo"
@@ -41,39 +43,49 @@ module FileRecord
       split_name[-1]
     end
 
+    # Tempo::Model::Log on 12/1/2015 -> 20151201.yaml
+    # Tempo::Model::Base -> tempo_bases.yaml
     def filename
       # return Log file name
-      return "#{model.day_id( time )}.yaml" if @time
+      return "#{@model.day_id( @time )}.yaml" if @time
 
-      # return Tempo::Model::Project -> tempo_projects.yaml
       sn = split_name
       file = "#{sn[0]}_#{sn[-1]}s.yaml"
     end
 
     # ex. Tempo::Model::Log -> tempo_logs
-    def log_subdir
+    def log_directory
       sn = split_name
       "#{sn[0]}_#{sn[-1]}s"
     end
 
     # Tempo::Model::Log -> Users/usrname/tempo/tempo_logs/
-    # Will also creates directory if not found
-    def log_dirpath
-      dir = File.join(@directory, module_name, log_subdir)
-      Dir.mkdir(dir, 0700) unless File.exists?(dir)
+    # Will also create the directory if not found
+    # This method does not require time to be present in options
+    def log_directory_path
+      dir = File.join(@directory, module_name, log_directory)
+
+      if @create and !File.exists?(dir)
+        Dir.mkdir(dir, 0700)
+      end
+
       dir
     end
 
     # returns full path and file for model
-    # ex. Tempo::Model::Log 11/12/2014 -> Users/usrname/tempo/tempo_logs/20141112.yaml
-    # ex. Tempo::Model::Base -> Users/usrname/tempo/tempo_bases.yaml
+    # Tempo::Model::Log on 11/12/2014 -> Users/usrname/tempo/tempo_logs/20141112.yaml
+    # Tempo::Model::Base -> Users/usrname/tempo/tempo_bases.yaml
     # Will also creates directory if not found
-    def filepath
+    def file_path
 
-      return File.join(log_dirpath, filename) if @time
+      return File.join(log_directory_path, filename) if @time
 
       dir = File.join(@directory, module_name)
-      Dir.mkdir(dir, 0700) unless File.exists?(dir)
+
+      if @create and !File.exists?(dir)
+        Dir.mkdir(dir, 0700)
+      end
+
       File.join(dir, filename)
     end
   end

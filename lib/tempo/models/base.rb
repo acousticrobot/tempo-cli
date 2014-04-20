@@ -38,8 +38,8 @@ module Tempo
           FileRecord::Record.save_model self
         end
 
-        def read_from_file
-          FileRecord::Record.read_model self
+        def read_from_file(options={})
+          FileRecord::Record.read_model self, options
         end
 
         def method_missing meth, *args, &block

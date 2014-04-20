@@ -2,6 +2,7 @@ Feature: Arrange Command manages the hierarchy of a list of projects
   Projects can be ordered as root projects or children of other projects
   The arrange command manages the relationship between parentg and child projects
 
+@focus
   Scenario: Arranging a project as a root projects
     Given an existing project file
     When I successfully run `tempo arrange : basement mushrooms`
