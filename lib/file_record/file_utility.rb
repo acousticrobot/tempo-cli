@@ -28,6 +28,15 @@ module FileRecord
       @destroy = options.fetch( :destroy, false )
     end
 
+    def save_instances_to_file(instances)
+
+      File.open( file_path,'a' ) do |f|
+        instances.each do |i|
+          f.puts YAML::dump( i.freeze_dry )
+        end
+      end
+    end
+
     # split Tempo::Model::Project into ["tempo", "model", "project"]
     # split Tempo::Model::TimeRecord into ["tempo", "model", "time_record"]
     def split_name

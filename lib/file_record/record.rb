@@ -64,12 +64,7 @@ module FileRecord
         options[:create] = true
         options[:destroy] = true
 
-        file = model_filename model
-        f_p = File.join(Dir.home,'tempo', file)
-
         file_path = FileUtility.new(model, options).file_path
-
-        #File.delete( file_path ) if File.exists?( file_path )
 
         File.open( file_path,'a' ) do |f|
           model.index.each do |m|
@@ -85,23 +80,15 @@ module FileRecord
         options[:create] = true
         options[:destroy] = true
 
-        #dir = FileUtility.new(model, options).log_directory_path
-
         model.days_index.each do |day, days_logs|
 
           options[:time] = day
-          file_path = FileUtility.new(model, options).file_path
-
-          File.delete( file_path ) if File.exists?( file_path )
+          ut = FileUtility.new(model, options)
 
           # don't write to an empty file
           next if days_logs.empty?
 
-          File.open( file_path,'a' ) do |f|
-            days_logs.each do |log|
-              f.puts YAML::dump( log.freeze_dry )
-            end
-          end
+          ut.save_instances_to_file days_logs
         end
       end
 
