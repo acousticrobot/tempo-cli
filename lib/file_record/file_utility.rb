@@ -25,6 +25,7 @@ module FileRecord
       @time = options.fetch(:time, nil)
       @directory = options.fetch(:directory, Dir.home)
       @create = options.fetch( :create, false )
+      @destroy = options.fetch( :destroy, false )
     end
 
     # split Tempo::Model::Project into ["tempo", "model", "project"]
@@ -78,7 +79,7 @@ module FileRecord
     # Will also creates directory if not found
     def file_path
 
-      return File.join(log_directory_path, filename) if @time
+      return clean_path(File.join(log_directory_path, filename)) if @time
 
       dir = File.join(@directory, module_name)
 
@@ -86,7 +87,17 @@ module FileRecord
         Dir.mkdir(dir, 0700)
       end
 
-      File.join(dir, filename)
+      clean_path File.join(dir, filename)
+    end
+
+    # remove existing file when passed :destroy => true in options
+    def clean_path(file_path)
+
+      if @destroy and File.exists?(file_path)
+        File.delete(file_path)
+      end
+
+      file_path
     end
   end
 end

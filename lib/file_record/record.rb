@@ -59,9 +59,17 @@ module FileRecord
 
       # record a child of Tempo::Model::Base
       def save_model( model, options={} )
+
+        options = options.dup
+        options[:create] = true
+        options[:destroy] = true
+
         file = model_filename model
-        file_path = File.join(Dir.home,'tempo', file)
-        File.delete( file_path ) if File.exists?( file_path )
+        f_p = File.join(Dir.home,'tempo', file)
+
+        file_path = FileUtility.new(model, options).file_path
+
+        #File.delete( file_path ) if File.exists?( file_path )
 
         File.open( file_path,'a' ) do |f|
           model.index.each do |m|
@@ -71,23 +79,18 @@ module FileRecord
       end
 
       # record a child of Tempo::Model::Log
-      def save_log( model, options={} )
-        options = options.dup
+      def save_log( model, options={} ) #@done
 
+        options = options.dup
         options[:create] = true
-        dir = FileUtility.new(model, options).log_directory_path
+        options[:destroy] = true
+
+        #dir = FileUtility.new(model, options).log_directory_path
 
         model.days_index.each do |day, days_logs|
 
           options[:time] = day
           file_path = FileUtility.new(model, options).file_path
-
-          file = "#{day.to_s}.yaml"
-          f_p = File.join(dir, file)
-
-          if file_path != f_p
-            binding.pry
-          end
 
           File.delete( file_path ) if File.exists?( file_path )
 

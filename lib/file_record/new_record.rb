@@ -59,8 +59,7 @@ module FileRecord
 
       # record a list of Tempo::Model::Base
       def save_model( model, options={} )
-        util = FileUtility.new model, options
-        file_path = util.file_path
+        file_path = FileUtility.new(model, opts).file_path
 
         File.delete( file_path ) if File.exists?( file_path )
 
@@ -80,8 +79,7 @@ module FileRecord
           opts = options.dup
           opts[:time] = day
 
-          util = FileUtility.new model, opts
-          file_path = util.file_path
+          file_path = FileUtility.new(model, opts).file_path
 
           File.delete( file_path ) if File.exists?( file_path )
 
