@@ -1,15 +1,15 @@
+# Create a new directory structure, copying the contents from
+# directory_structure/tempo into ~/tempo.
+# If a directory is passed in through the options, the tempo directory
+# will be created within that directory instead, in the users home folder
+#
+# ex. create new(directory: "custom/directory")
+# => Users/usrname/custom/directory/tempo
+
 module FileRecord
   class Directory
 
     class << self
-
-      # Create a new directory structure, copying the contents from
-      # directory_structure/tempo into ~/tempo.
-      # If a directory is passed in through the options, the tempo directory
-      # will be created within that directory instead, in the users home folder
-      #
-      # ex. create new(directory: "custom/directory")
-      # => Users/usrname/custom/directory/tempo
 
       def create_new(options={})
 

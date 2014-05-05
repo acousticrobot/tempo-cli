@@ -1,3 +1,6 @@
+# Handles the CRUD of base, composite and log models
+# relies on file utility to do the heavey lifting.
+
 require 'yaml'
 
 module FileRecord
@@ -74,7 +77,7 @@ module FileRecord
       end
 
       # record a child of Tempo::Model::Log
-      def save_log( model, options={} ) #@done
+      def save_log( model, options={} )
 
         options = options.dup
         options[:create] = true
