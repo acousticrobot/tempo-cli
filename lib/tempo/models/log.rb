@@ -52,7 +52,6 @@ module Tempo
           FileRecord::Record.save_log( self )
         end
 
-
         def read_from_file time
           dsym = date_symbol time
           @days_index[ dsym ] = [] if not days_index.has_key? dsym

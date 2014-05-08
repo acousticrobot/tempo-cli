@@ -24,6 +24,10 @@ module FileRecord
       @model = model
       @time = options.fetch(:time, nil)
       @directory = options.fetch(:directory, Dir.home)
+
+      # options to allow for file creation and destruction,
+      # default to false so that file path enquiries can't
+      # change the directory structure
       @create = options.fetch( :create, false )
       @destroy = options.fetch( :destroy, false )
     end
@@ -85,7 +89,7 @@ module FileRecord
     # returns full path and file for model
     # Tempo::Model::Log on 11/12/2014 -> Users/usrname/tempo/tempo_logs/20141112.yaml
     # Tempo::Model::Base -> Users/usrname/tempo/tempo_bases.yaml
-    # Will also creates directory if not found
+    # Will also creates directory if not found and passed create:true in options
     def file_path
 
       return clean_path(File.join(log_directory_path, filename)) if @time
@@ -99,7 +103,7 @@ module FileRecord
       clean_path File.join(dir, filename)
     end
 
-    # remove existing file when passed :destroy => true in options
+    # remove existing file when passed destroy:true in options
     def clean_path(file_path)
 
       if @destroy and File.exists?(file_path)

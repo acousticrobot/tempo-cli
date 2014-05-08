@@ -1,5 +1,5 @@
 # Handles the CRUD of base, composite and log models
-# relies on file utility to do the heavey lifting.
+# relies on file utility to do the heavy lifting.
 
 require 'yaml'
 
@@ -39,11 +39,13 @@ module FileRecord
         end
       end
 
+      # X-> File Util?
       def log_dirname( model )
         dir_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
         dir = "tempo#{dir_name}s"
       end
 
+      # X-> File Util?
       def log_dir( model )
         dir_name = log_dirname model
         dir = File.join(Dir.home,'tempo', dir_name)
@@ -51,10 +53,12 @@ module FileRecord
         dir
       end
 
+      # X-> File Util?
       def log_filename( model, time )
         file = "#{model.day_id( time )}.yaml"
       end
 
+      # X-> File Util?
       def model_filename( model )
         file_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
         file = "tempo#{file_name}s.yaml"
@@ -95,6 +99,8 @@ module FileRecord
         end
       end
 
+      # Used by read_model and read_log to load all instances from a file
+      #
       def read_instances( model, file, options={} ) #@done
         instances = YAML::load_stream( File.open( file ) )
         instances.each do |i|
@@ -102,11 +108,14 @@ module FileRecord
         end
       end
 
+      # Read in all models instances from the model file
       def read_model( model, options={} ) #@done
+
         file_path = FileUtility.new(model, options).file_path
         read_instances model, file_path
       end
 
+      # Read in all log model instances from a time stamped file
       def read_log( model, time, options={} ) #@done
 
         options[:time] = time
