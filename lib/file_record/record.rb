@@ -1,5 +1,5 @@
 # Handles the CRUD of base, composite and log models
-# relies on file utility to do the heavy lifting.
+# relies on file utility to manage the directories and filenames.
 
 require 'yaml'
 
@@ -39,19 +39,19 @@ module FileRecord
         end
       end
 
-      # X-> File Util?
-      def log_dirname( model )
-        dir_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
-        dir = "tempo#{dir_name}s"
-      end
+      # # X-> File Util?
+      # def log_dirname( model )
+      #   dir_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
+      #   dir = "tempo#{dir_name}s"
+      # end
 
-      # X-> File Util?
-      def log_dir( model )
-        dir_name = log_dirname model
-        dir = File.join(Dir.home,'tempo', dir_name)
-        Dir.mkdir(dir, 0700) unless File.exists?(dir)
-        dir
-      end
+      # # X-> File Util?
+      # def log_dir( model )
+      #   dir_name = log_dirname model
+      #   dir = File.join(Dir.home,'tempo', dir_name)
+      #   Dir.mkdir(dir, 0700) unless File.exists?(dir)
+      #   dir
+      # end
 
       # X-> File Util?
       def log_filename( model, time )
@@ -65,7 +65,7 @@ module FileRecord
       end
 
       # record a child of Tempo::Model::Base
-      def save_model( model, options={} )
+      def save_model( model, options={} ) #@done
 
         options = options.dup
         options[:create] = true
@@ -81,7 +81,7 @@ module FileRecord
       end
 
       # record a child of Tempo::Model::Log
-      def save_log( model, options={} )
+      def save_log( model, options={} ) #@done
 
         options = options.dup
         options[:create] = true
@@ -92,7 +92,7 @@ module FileRecord
           options[:time] = day
           ut = FileUtility.new(model, options)
 
-          # don't write to an empty file
+          # don't create an empty file
           next if days_logs.empty?
 
           ut.save_instances_to_file days_logs

@@ -36,15 +36,19 @@ module Tempo
         end
 
         def file time
-          FileRecord::Record.log_filename( self, time )
+          FileRecord::FileUtility.new(self, {time: time}).filename
         end
 
+        # Returns the immediate directory for the log
+        # Tempo::Model::MessageLog => tempo_message_logs
         def dir
-          FileRecord::Record.log_dirname( self )
+          FileRecord::FileUtility.new(self).log_directory
         end
 
+        # Load all records from a directory
+        # TODO need to pass in options[:directory] for alternate root directory
         def records
-          path = FileRecord::Record.log_dir( self )
+          path =  FileRecord::FileUtility.new(self).log_directory_path
           Dir[path + "/*.yaml"].sort!
         end
 

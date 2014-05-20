@@ -33,6 +33,11 @@ describe Tempo do
       Tempo::Model::MessageLog.days_index[:"20140102"].length.must_equal 3
     end
 
+    it "creates a directory to save to" do
+      log_factory
+      Tempo::Model::MessageLog.dir.must_equal "tempo_message_logs"
+    end
+
     it "creates a file name to save to" do
       log_factory
       date = Time.new(2014,1,1)
