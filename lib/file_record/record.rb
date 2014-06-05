@@ -7,63 +7,6 @@ module FileRecord
   class Record
     class << self
 
-      # record text as a string, and all objects as yaml
-      # don't write over an existing document unless :force = true
-      # @options file file path to record to
-      # @options record string or object to record
-      # options
-      #  - force: true, overwrite file
-      #  - format: 'yaml', 'string'
-      def create( file, record, options={} )
-
-        if record.is_a?(String)
-          format = options.fetch(:format, 'string')
-        else
-          format = options.fetch(:format, 'yaml')
-        end
-
-        if File.exists?(file)
-          raise ArgumentError.new "file already exists" unless options[:force]
-        end
-
-        File.open( file,'w' ) do |f|
-
-          case format
-          when 'yaml'
-            f.puts YAML::dump( record )
-          when 'string'
-            f.puts record
-          else
-            f.puts record
-          end
-        end
-      end
-
-      # # X-> File Util?
-      # def log_dirname( model )
-      #   dir_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
-      #   dir = "tempo#{dir_name}s"
-      # end
-
-      # # X-> File Util?
-      # def log_dir( model )
-      #   dir_name = log_dirname model
-      #   dir = File.join(Dir.home,'tempo', dir_name)
-      #   Dir.mkdir(dir, 0700) unless File.exists?(dir)
-      #   dir
-      # end
-
-      # X-> File Util?
-      def log_filename( model, time )
-        file = "#{model.day_id( time )}.yaml"
-      end
-
-      # X-> File Util?
-      def model_filename( model )
-        file_name = model.name[14..-1].gsub(/([A-Z])/, '_\1').downcase
-        file = "tempo#{file_name}s.yaml"
-      end
-
       # record a child of Tempo::Model::Base
       def save_model( model, options={} ) #@done
 
@@ -125,14 +68,6 @@ module FileRecord
           read_instances model, file_path
         end
       end
-    end
-
-    def update
-
-    end
-
-    def delete
-
     end
   end
 end

@@ -10,7 +10,7 @@ describe Tempo do
 
   describe "Model::Base" do
 
-    it "inheritale from" do
+    it "is inheritable from" do
       Tempo::Model::Animal.superclass.must_equal Tempo::Model::Base
     end
 
@@ -30,7 +30,7 @@ describe Tempo do
       end
     end
 
-    it "creates a file name to save to" do
+    it "knows which file name to save to" do
       frog_factory
       Tempo::Model::Animal.file.must_equal "tempo_animals.yaml"
     end

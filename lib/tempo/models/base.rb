@@ -31,13 +31,15 @@ module Tempo
 
         # example: Tempo::Model::Animal -> tempo_animals.yaml
         def file
-          FileRecord::Record.model_filename self
+          FileRecord::FileUtility.new(self).filename
         end
 
-        def save_to_file
-          FileRecord::Record.save_model self
+        # pass custom directory through in options
+        def save_to_file(options={})
+          FileRecord::Record.save_model self, options
         end
 
+        # pass custom directory through in options
         def read_from_file(options={})
           FileRecord::Record.read_model self, options
         end
