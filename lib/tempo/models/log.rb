@@ -20,6 +20,7 @@ module Tempo
           @id_counter[ dsym ] ||= 1
         end
 
+        # Returns an array of ids for the given day
         def ids time
           dsym = date_symbol time
           @ids = {} unless @ids.kind_of? Hash

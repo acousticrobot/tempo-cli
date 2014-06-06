@@ -55,7 +55,7 @@ module Tempo
               @projects.current = project
             end
 
-            @projects.save_to_file
+            @projects.save_to_file options
 
             Views::project_added project
           end

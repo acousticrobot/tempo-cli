@@ -17,11 +17,12 @@ describe Tempo do
     it "inherits the freeze-dry method" do
       log_factory
       frozen = @log_4.freeze_dry
+      binding.pry if @log_4.id != 1
       frozen.must_equal({ :start_time=>Time.new(2014, 01, 02, 07, 15),
                           :id=>1, :message=>"day 2 pet the sheep"})
     end
 
-    it "inherits the same indexing method" do
+    it "inherits the base indexing method" do
       log_factory
       Tempo::Model::MessageLog.index.length.must_equal 6
     end
@@ -47,12 +48,11 @@ describe Tempo do
     it "grants children the ability to write to a file" do
       log_factory
       test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
-      # FileUtils.rm_r test_dir if File.exists?(test_dir)
+      FileUtils.rm_r test_dir if File.exists?(test_dir)
       Tempo::Model::MessageLog.save_to_file
       test_file_1 = File.join(test_dir, "20140101.yaml")
       test_file_2 = File.join(test_dir, "20140102.yaml")
       contents = eval_file_as_array( test_file_1 )
-
       # testing with regex because time zone will be different on different computers,
       # ex: ":start_time: 2014-01-02 07:15:00.000000000 -05:00"
       eval = [ /---/, /:start_time: 2014-01-01 07:00:00.000000000/,

@@ -4,17 +4,21 @@ When /^I get help for "([^""]*)"$/ do |app_name|
 end
 
 Given /^a clean installation$/ do
-  @testing_env = File.join( ENV['HOME'], 'tempo' )
-  FileUtils.rm_r( @testing_env ) if File.exists?( @testing_env )
+  @testing_env = File.join(ENV['HOME'], 'tempo')
+  FileUtils.rm_r(@testing_env) if File.exists?(@testing_env)
+
+  # Testing global --directory argument in /alt_dir
+  @alt_dir = File.join(ENV['HOME'], 'alt_dir')
+  FileUtils.rm_r(@alt_dir) if File.exists?(@alt_dir)
 end
 
 Given /^an existing project file$/ do
-  @testing_env = File.join( ENV['HOME'], 'tempo' )
-  FileUtils.rm_r( @testing_env ) if File.exists?( @testing_env )
+  @testing_env = File.join(ENV['HOME'], 'tempo')
+  FileUtils.rm_r( @testing_env ) if File.exists?(@testing_env)
   Dir.mkdir( @testing_env, 0700 )
-  projects_file = File.join( @testing_env, 'tempo_projects.yaml' )
+  projects_file = File.join(@testing_env, 'tempo_projects.yaml')
 
-  File.open( projects_file,'w' ) do |f|
+  File.open(projects_file,'w') do |f|
     projects = ["---", ":id: 1", ":parent: :root", ":children:", "- 2", "- 3", ":title: horticulture", ":tags:", "- cultivation", ":current: true",
                 "---", ":id: 2", ":parent: 1", ":children: []", ":title: backyard bonsai", ":tags:", "- miniaturization", "- outdoors",
                 "---", ":id: 3", ":parent: 1", ":children: []", ":title: basement mushrooms", ":tags:", "- fungi", "- indoors",
@@ -29,9 +33,9 @@ Given /^an existing project file$/ do
 end
 
 Given /^an existing time record file$/ do
-  @records_directory = File.join( ENV['HOME'], 'tempo/tempo_time_records' )
-  FileUtils.rm_r( @records_directory ) if File.exists?( @records_directory )
-  Dir.mkdir( @records_directory, 0700 )
+  @records_directory = File.join(ENV['HOME'], 'tempo/tempo_time_records')
+  FileUtils.rm_r(@records_directory) if File.exists?(@records_directory)
+  Dir.mkdir(@records_directory, 0700)
   projects_file = File.join( @records_directory, '20140101.yaml' )
 
   File.open( projects_file,'w' ) do |f|
@@ -104,7 +108,7 @@ Then /^the time record (.*?) should not contain "(.*?)"$/ do |arg1, arg2|
   contents.should_not include arg2
 end
 
-Then /^the (.*?) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
+Then /^the (\S*) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
   file = File.join( ENV['HOME'], 'tempo', "tempo_#{arg1}s.yaml")
   contents = []
   File.open(file, "r") do |f|
@@ -115,7 +119,7 @@ Then /^the (.*?) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg
   contents[arg3.to_i - 1].should include arg2
 end
 
-Then /^the (.*?) file should contain "(.*?)"$/ do |arg1, arg2|
+Then /^the (\S*) file should contain "(.*?)"$/ do |arg1, arg2|
   file = File.join( ENV['HOME'], 'tempo', "tempo_#{arg1}s.yaml")
   contents = []
   File.open(file, "r") do |f|
@@ -135,4 +139,26 @@ Then /^the (.*?) file should not contain "(.*?)"$/ do |arg1, arg2|
     end
   end
   contents.should_not include arg2
+end
+
+Then /^the alternate directory (.*?) file should contain "(.*?)"$/ do |arg1, arg2|
+  file = File.join( ENV['HOME'], 'alt_dir',  'tempo', "tempo_#{arg1}s.yaml")
+  contents = []
+  File.open(file, "r") do |f|
+    f.readlines.each do |line|
+      contents << line.chomp
+    end
+  end
+  contents.should include arg2
+end
+
+Then /^the alternate directory (.*?) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
+  file = File.join( ENV['HOME'], 'alt_dir', 'tempo', "tempo_#{arg1}s.yaml")
+  contents = []
+  File.open(file, "r") do |f|
+    f.readlines.each do |line|
+      contents << line.chomp
+    end
+  end
+  contents[arg3.to_i - 1].should include arg2
 end

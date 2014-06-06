@@ -106,6 +106,11 @@ def project_factory
 end
 
 def log_factory
+
+  # delete all records so they aren't loaded when new logs are created
+  test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
+  FileUtils.rm_r test_dir if File.exists?(test_dir)
+
   Tempo::Model::MessageLog.clear_all
   @log_1 = Tempo::Model::MessageLog.new({ message: "day 1 pet the sheep", start_time: Time.new(2014, 1, 1, 7 ) })
   @log_2 = Tempo::Model::MessageLog.new({ message: "day 1 drinking coffee, check on the mushrooms", start_time: Time.new(2014, 1, 1, 7, 30 ) })
