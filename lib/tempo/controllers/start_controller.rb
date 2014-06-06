@@ -8,7 +8,7 @@ module Tempo
 
       class << self
 
-        def start_timer options, args
+        def start_timer(options, args)
 
           return Views.project_assistance if Model::Project.index.empty?
 
@@ -28,6 +28,7 @@ module Tempo
             return Views.no_match_error( "valid timeframe", options[:end], false ) if time_out.nil?
             opts[:end_time] = time_out
           end
+
           @time_records.load_last_day
           record = @time_records.new(opts)
           @time_records.save_to_file

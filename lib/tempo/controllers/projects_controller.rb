@@ -14,7 +14,7 @@ module Tempo
           end
         end
 
-        def index options, args
+        def index(options, args)
 
           request = reassemble_the args
 
@@ -42,7 +42,7 @@ module Tempo
           end
         end
 
-        def add options, args, tags=nil
+        def add(options, args, tags=nil)
           request = reassemble_the args
 
           if @projects.include? request
@@ -61,7 +61,7 @@ module Tempo
           end
         end
 
-        def delete options, args
+        def delete(options, args)
 
           reassemble_the args, options[:delete]
           match = match_project :delete, options, args
@@ -81,7 +81,7 @@ module Tempo
         end
 
         # add a project with tags, or tag or untag an existing project
-        def tag options, args
+        def tag(options, args)
 
           # TODO @projects_find_by_tag if args.empty?
 

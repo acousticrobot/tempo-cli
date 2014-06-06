@@ -3,7 +3,7 @@ module Tempo
     class Base
       class << self
 
-        def filter_projects_by_title options, args
+        def filter_projects_by_title(options, args)
           if options[:exact]
             match = reassemble_the args
             match = [match]
@@ -18,7 +18,7 @@ module Tempo
         # that match positively against every
         # member of the matches array
         #
-        def fuzzy_match haystack, matches, attribute="id"
+        def fuzzy_match(haystack, matches, attribute="id")
 
           matches = [matches] unless matches.is_a? Array
 
@@ -38,7 +38,7 @@ module Tempo
         # a flag in the front. The value is also added back intto the
         # front of the original array
 
-        def reassemble_the args, flag=nil
+        def reassemble_the(args, flag=nil)
           assembled = ""
           args.unshift flag if flag
           args.each { |a| assembled += " #{a}" }
@@ -48,7 +48,7 @@ module Tempo
         private
 
         # TODO: escape regex characters ., (), etc.
-        def match_to_regex match, type=:fuzzy
+        def match_to_regex(match, type=:fuzzy)
           match.downcase!
           if type == :exact
             /^#{match}$/
@@ -57,7 +57,7 @@ module Tempo
           end
         end
 
-        def fuzzy_array_match haystack, matches
+        def fuzzy_array_match(haystack, matches)
           results = []
           matches.each do |m|
             reg = match_to_regex m
@@ -70,7 +70,7 @@ module Tempo
           haystack
         end
 
-        def model_match haystack, matches, attribute, type=:fuzzy
+        def model_match(haystack, matches, attribute, type=:fuzzy)
           attribute = "@#{attribute}".to_sym
           contenders = haystack.index
           results = []
@@ -85,7 +85,7 @@ module Tempo
           contenders
         end
 
-        def match_project command, options, args
+        def match_project(command, options, args)
           if options[:id]
             match = @projects.find_by_id args[0]
             Views::no_match_error( "projects", "id=#{args[0]}" ) if not match
@@ -99,7 +99,7 @@ module Tempo
 
         # verify one and only one match returned in match array
         # returns the single match
-        def single_match matches, request, command
+        def single_match(matches, request, command)
 
           if matches.length == 0
             Views::no_match_error "projects", request

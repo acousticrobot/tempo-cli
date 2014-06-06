@@ -5,7 +5,7 @@ module Tempo
 
       class << self
 
-        def parse options, args
+        def parse(options, args)
 
           return Views.project_assistance if Model::Project.index.empty?
 
@@ -29,23 +29,23 @@ module Tempo
           end
         end
 
-        def make_root_project options, args
+        def make_root_project(options, args)
           root = match_project :arrange, options, args
           if root.parent == :root
             Views::arrange_already_root root
           else
             parent = match_project :arrange, {id: true}, root.parent
             parent.remove_child root
-            @projects.save_to_file
+            @projects.save_to_file options
             Views::arrange_root root
           end
         end
 
-        def make_child_project options, parent_args, child_args
+        def make_child_project(options, parent_args, child_args)
           parent = match_project :arrange, options, parent_args
           child = match_project :arrange, options, child_args
           parent << child
-          @projects.save_to_file
+          @projects.save_to_file options
           Views::arrange_parent_child parent, child
         end
       end #class << self

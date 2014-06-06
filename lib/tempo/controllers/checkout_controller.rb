@@ -13,7 +13,7 @@ module Tempo
 
           else
             project = @projects.new({ title: request, current: true })
-            @projects.save_to_file
+            @projects.save_to_file options
             Views::project_checkout project
           end
         end
@@ -27,7 +27,7 @@ module Tempo
               Views::project_already_current match
             else
               @projects.current = match
-              @projects.save_to_file
+              @projects.save_to_file options
               Views::project_checkout match
             end
           end

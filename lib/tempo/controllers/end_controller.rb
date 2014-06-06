@@ -8,7 +8,7 @@ module Tempo
 
       class << self
 
-        def end_timer options, args
+        def end_timer(options, args)
 
           return Views.project_assistance if Model::Project.index.empty?
 
