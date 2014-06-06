@@ -73,7 +73,7 @@ module Tempo
 
             if @projects.index.include?(match)
               match.delete
-              @projects.save_to_file
+              @projects.save_to_file options
               Views::projects_list_view if options[:list]
               Views::project_deleted match
             end
@@ -99,7 +99,7 @@ module Tempo
             if match
               match.tag tags
               match.untag untags
-              @projects.save_to_file
+              @projects.save_to_file options
               Views::project_tags match
             end
           end
