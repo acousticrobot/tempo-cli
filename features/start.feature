@@ -9,7 +9,6 @@ Feature: Start Command starts a new time record
     Then the stderr should contain "no projects exist"
     And the project file should contain "#" at line 1
 
-@focus
   Scenario: Adding a time record for the current time
     Given an existing project file
     When I run `tempo start`

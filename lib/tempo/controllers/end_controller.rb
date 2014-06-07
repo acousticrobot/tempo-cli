@@ -20,17 +20,16 @@ module Tempo
 
           return Views.no_match_error( "valid timeframe", options[:at], false ) if not time_out
 
-          options = { end_time: time_out }
+          options[:end_time] = time_out
           options[:description] = reassemble_the args
 
-          @time_records.load_last_day
+          @time_records.load_last_day options
           record = @time_records.current
-
           return Views.no_items( "running time records", :error ) if ! record
 
           record.end_time = time_out
           record.description = options[:description] if options[:description]
-          @time_records.save_to_file
+          @time_records.save_to_file options
 
           Views.end_time_record_view record
 
