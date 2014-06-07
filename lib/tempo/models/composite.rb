@@ -4,7 +4,7 @@ require 'yaml'
 # Each instance can be a root instance, or a child of another
 # instance, and each instance can have any number of children.
 # report_trees is a utility method for testing the validity of the
-# model, and cam be used as a template for creating tree reports.
+# model, and can be used as a template for creating tree reports.
 
 module Tempo
   module Model

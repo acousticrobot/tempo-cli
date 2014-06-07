@@ -1,5 +1,9 @@
 require 'yaml'
 
+# Log extends base by allowing models to be associated with a time instance.
+# Ids are only unique by day, and each model also has a day id. Together these
+# two ids assure uniquness. When saved, each day is recorded as it's own file.
+
 module Tempo
   module Model
     class Log < Tempo::Model::Base
@@ -14,14 +18,14 @@ module Tempo
         # id counter is managed through the private methods
         # increase_id_counter and next_id below
         #
-        def id_counter time
+        def id_counter(time)
           dsym = date_symbol time
           @id_counter = {} unless @id_counter.kind_of? Hash
           @id_counter[ dsym ] ||= 1
         end
 
         # Returns an array of ids for the given day
-        def ids time
+        def ids(time)
           dsym = date_symbol time
           @ids = {} unless @ids.kind_of? Hash
           @ids[dsym] ||= []
@@ -36,7 +40,9 @@ module Tempo
           @days_index
         end
 
-        def file time
+        # Passthrough function, returns the log filename for a given date
+        #
+        def file(time)
           FileRecord::FileUtility.new(self, {time: time}).filename
         end
 
@@ -46,53 +52,56 @@ module Tempo
           FileRecord::FileUtility.new(self).log_directory
         end
 
-        # Load all records from a directory
-        # TODO need to pass in options[:directory] for alternate root directory
-        def records
-          path =  FileRecord::FileUtility.new(self).log_directory_path
+        # Load all records from a directory into an array
+        # send alternate directory through options
+        def records(options={})
+          path =  FileRecord::FileUtility.new(self, options).log_directory_path
           Dir[path + "/*.yaml"].sort!
         end
 
-        def save_to_file
-          FileRecord::Record.save_log( self )
+        # send alternate directory through options
+        def save_to_file(options={})
+          FileRecord::Record.save_log(self, options)
         end
 
-        def read_from_file time
+        # send alternate directory through options
+        def read_from_file(time, options={})
           dsym = date_symbol time
           @days_index[ dsym ] = [] if not days_index.has_key? dsym
-          FileRecord::Record.read_log( self, time )
+          FileRecord::Record.read_log(self, time, options)
         end
 
         # load all the records for a single day
         #
-        def load_day_record time
+        def load_day_record(time, options={})
           dsym = date_symbol time
           if not days_index.has_key? dsym
             @days_index[ dsym ] = []
-            read_from_file time
+            read_from_file time, options
           end
         end
 
         # load the records for each day from time 1 to time 2
         #
-        def load_days_records time_1, time_2
+        def load_days_records(time_1, time_2, options={})
 
           return if time_1.nil? || time_2.nil?
 
-          days = ( time_2.to_date - time_1.to_date ).to_i
+          days = (time_2.to_date - time_1.to_date).to_i
           return if days < 0
 
-          (days + 1).times { |i| load_day_record( time_1.add_days( i ))}
+          (days + 1).times { |i| load_day_record(time_1.add_days(i), options)}
         end
 
         # load the records for the most recently recorded day
         #
-        def load_last_day
+        def load_last_day(options={})
           reg = /(\d+)\.yaml/
-          if records.last
-            d_id = reg.match(records.last)[1] if records.last
+          recs = records(options)
+          if recs.last
+            d_id = reg.match(recs.last)[1]
             time = day_id_to_time d_id if d_id
-            load_day_record time
+            load_day_record time, options
             return time
           end
         end
@@ -100,7 +109,7 @@ module Tempo
         # takes and integer, and time or day_id
         # and returns the instance that matches both
         # the id and d_id
-        def find_by_id id, time
+        def find_by_id(id, time)
           time = day_id time
           ids = find "id", id
           d_ids = find "d_id", time
@@ -113,18 +122,18 @@ module Tempo
         # day_ids can be run through without change
         # Time will be converted into "YYYYmmdd"
         # ex: 1-1-2014 => "20140101"
-        def day_id time
+        def day_id(time)
           return time if time.to_s =~ /^\d{8}$/
 
           raise ArgumentError, "Invalid Time" if not time.kind_of? Time
           time.strftime("%Y%m%d")
         end
 
-        def day_id_to_time d_id
+        def day_id_to_time(d_id)
           time = Time.new(d_id[0..3].to_i, d_id[4..5].to_i, d_id[6..7].to_i)
         end
 
-        def delete instance
+        def delete(instance)
           id = instance.id
           dsym = date_symbol instance.d_id
 
@@ -134,8 +143,8 @@ module Tempo
         end
       end
 
-      def initialize( options={} )
-        @start_time = options.fetch(:start_time, Time.now )
+      def initialize(options={})
+        @start_time = options.fetch(:start_time, Time.now)
         @start_time = Time.new(@start_time) if @start_time.kind_of? String
 
         self.class.load_day_record(@start_time)
@@ -144,7 +153,7 @@ module Tempo
         id_candidate = options[:id]
         if !id_candidate
           @id = self.class.next_id @start_time
-        elsif self.class.ids( @start_time ).include? id_candidate
+        elsif self.class.ids(@start_time).include? id_candidate
           raise IdentityConflictError, "Id #{id_candidate} already exists"
         else
           @id = id_candidate
@@ -165,7 +174,7 @@ module Tempo
 
       class << self
 
-        def add_to_days_index member
+        def add_to_days_index(member)
           @days_index = {} unless @days_index.kind_of? Hash
           dsym = date_symbol member.start_time
           @days_index[dsym] ||= []
@@ -173,7 +182,7 @@ module Tempo
           @days_index[dsym].sort! { |a,b| a.start_time <=> b.start_time }
         end
 
-        def add_id time, id
+        def add_id(time, id)
           dsym = date_symbol time
           @ids = {} unless @ids.kind_of? Hash
           @ids[dsym] ||= []
@@ -181,18 +190,18 @@ module Tempo
           @ids[dsym].sort!
         end
 
-        def date_symbol time
-          day_id( time ).to_sym
+        def date_symbol(time)
+          day_id(time).to_sym
         end
 
-        def increase_id_counter time
+        def increase_id_counter(time)
           dsym = date_symbol time
           @id_counter = {} unless @id_counter.kind_of? Hash
           @id_counter[ dsym ] ||= 0
           @id_counter[ dsym ] = @id_counter[ dsym ].next
         end
 
-        def next_id time
+        def next_id(time)
           while ids(time).include? id_counter time
             increase_id_counter time
           end

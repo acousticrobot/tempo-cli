@@ -1,5 +1,12 @@
 require 'yaml'
 
+# The Base model class, from which all other models are derived.
+# Models are given a unique id, which is stored in the class index.
+# FileRecord handles all file storage and retrieval. Options are passed
+# through to FileRecord for the purpose of sending in an alternative directory.
+# example: options = {directory: "my_directory"} will save to Users/username/my_directory.
+#
+
 module Tempo
   module Model
 
@@ -115,7 +122,7 @@ module Tempo
           index.delete( instance )
           ids.delete( id )
         end
-      end
+      end # class methods
 
       def initialize options={}
         id_candidate = options[:id]

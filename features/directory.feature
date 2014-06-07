@@ -52,8 +52,6 @@ Feature: Global Directory Command allows for an alternate directory location
 
   Scenario: Adding a time record in an alternate directory
     Given an alternate directory and an existing project file
-    When I run `tempo --directory alt_dir start --at "1-1-2014 7:00"`
+    When I run `tempo --directory alt_dir start --at "1-1-2014 7:00" filling the bathtub`
     Then the stdout should contain "time record started"
-    And the alternate directory time record 20140101 should contain ":start_time: 2014-01-01 08:00:00"
-
-
+    And the alternate directory time record 20140101 should contain ":description: filling the bathtub"

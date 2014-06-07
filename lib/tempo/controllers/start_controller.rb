@@ -29,9 +29,9 @@ module Tempo
             opts[:end_time] = time_out
           end
 
-          @time_records.load_last_day
+          @time_records.load_last_day options
           record = @time_records.new(opts)
-          @time_records.save_to_file
+          @time_records.save_to_file options
 
           Views.start_time_record_view record
 

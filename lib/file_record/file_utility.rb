@@ -73,7 +73,7 @@ module FileRecord
       "#{sn[0]}_#{sn[-1]}s"
     end
 
-    # Tempo::Model::Log -> Users/usrname/tempo/tempo_logs/
+    # Tempo::Model::Log -> Users/usrname/(alternate_directory/)tempo/tempo_logs/
     # Will also create the directory if not found
     # This method does not require time to be present in options
     def log_directory_path

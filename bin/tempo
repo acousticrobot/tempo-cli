@@ -482,7 +482,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  #puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

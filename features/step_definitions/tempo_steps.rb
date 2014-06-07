@@ -194,8 +194,8 @@ Then /^the alternate directory (.*?) file should not contain "(.*?)"$/ do |arg1,
   contents.should_not include arg2
 end
 
-Then /^the alternate directory time record (.*?) should contain "(.*?)" (\d+)$/ do |arg1, arg2|
-  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+Then /^the alternate directory time record (\d+) should contain "(.*?)"$/ do |arg1, arg2|
+  file = File.join(ENV['HOME'], 'alt_dir', 'tempo', 'tempo_time_records', "#{arg1}.yaml")
   contents = []
   File.open(file, "r") do |f|
     f.readlines.each do |line|
