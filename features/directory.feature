@@ -63,3 +63,26 @@ Feature: Global Directory Command allows for an alternate directory location
     And I successfully run `tempo --directory alt_dir end --at "1-1-2014 8:00"`
     Then the stdout should contain "time record ended"
     And the alternate directory time record 20140101 should contain ":end_time: 2014-01-01 08:00:00" at line 5
+
+  Scenario: Reporting the time entries on the current day stored in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at 7 alt directory new entry`
+    And I run `tempo --directory alt_dir end --at 8`
+    And I successfully run `tempo --directory alt_dir report`
+    Then the output should match /Records for/
+
+  Scenario: Reporting the time entries for multipe days stored in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at "2014-01-01" alt directory new entry`
+    When I run `tempo --directory alt_dir start --at "2014-01-02" alt directory newer entry`
+    And I successfully run `tempo --directory alt_dir report --from "2014-01-01" --to "2014-01-02"`
+    Then the output should contain "Records for 01/01/2014:"
+    And the output should contain "Records for 01/02/2014:"
+
+  Scenario: Reporting the time entries on a specific day stored in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at "2014-01-01" alt directory new entry`
+    And I successfully run `tempo --directory alt_dir report "2014-01-01"`
+    Then the output should contain "Records for 01/01/2014:"
+
+

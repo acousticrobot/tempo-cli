@@ -11,13 +11,14 @@ Feature: Report Command formats and outputs time records
     Given an existing project file
     When I run `tempo report`
     Then the stderr should contain "no time records exist"
-
+@focus
   Scenario: Reporting the time entries on the current day
     Given an existing project file
     When I run `tempo start -a 7 my new project`
     And I run `tempo end -a 8`
-    And I run `tempo report`
-    Then the output should match /\d{2}:\d{2} - \d{2}:\d{2}  \[\d{1,2}:\d{2}\] horticulture: my new project/
+    And I successfully run `tempo report`
+    Then the output should match /Records for/
+    And the output should match /\d{2}:\d{2} - \d{2}:\d{2}  \[\d{1,2}:\d{2}\] horticulture: my new project/
 
   Scenario: Reporting the time entries on a specific day
     Given an existing project file

@@ -21,7 +21,7 @@ module Tempo
             to = Time.parse options[:to]
             return Views.no_match_error( "valid timeframe", options[:to], false ) if to.nil?
 
-            @time_records.load_days_records from, to
+            @time_records.load_days_records from, to, options
 
             error_timeframe = " from #{from.strftime('%m/%d/%Y')} to #{to.strftime('%m/%d/%Y')}"
 
@@ -29,7 +29,7 @@ module Tempo
           # current day record
           #
           elsif args.empty?
-            @time_records.load_last_day
+            @time_records.load_last_day options
 
           # arguments have been supplied,
           # so we return the records for a single day
@@ -40,7 +40,7 @@ module Tempo
             day = Time.parse time
             return Views.no_match_error( "valid timeframe", time, false ) if day.nil?
 
-            @time_records.load_day_record day
+            @time_records.load_day_record day, options
 
             error_timeframe = " on #{day.strftime('%m/%d/%Y')}"
           end
