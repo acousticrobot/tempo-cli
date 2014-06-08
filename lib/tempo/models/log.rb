@@ -55,8 +55,7 @@ module Tempo
         # Load all records from a directory into an array
         # send alternate directory through options
         def records(options={})
-          path =  FileRecord::FileUtility.new(self, options).log_directory_path
-          Dir[path + "/*.yaml"].sort!
+          FileRecord::FileUtility.new(self, options).log_records
         end
 
         # send alternate directory through options

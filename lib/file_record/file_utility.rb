@@ -103,6 +103,11 @@ module FileRecord
       clean_path File.join(dir, filename)
     end
 
+    # Returns the list of log records from a log directory
+    def log_records
+      Dir[log_directory_path + "/*.yaml"].sort!
+    end
+
     # remove existing file when passed destroy:true in options
     def clean_path(file_path)
 
