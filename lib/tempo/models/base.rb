@@ -51,7 +51,7 @@ module Tempo
           FileRecord::Record.read_model self, options
         end
 
-        def method_missing meth, *args, &block
+        def method_missing(meth, *args, &block)
 
           if meth.to_s =~ /^find_by_(.+)$/
             run_find_by_method($1, *args, &block)
@@ -63,14 +63,14 @@ module Tempo
           end
         end
 
-        def run_sort_by_method attribute, args=@index.clone, &block
+        def run_sort_by_method(attribute, args=@index.clone, &block)
           attr = "@#{attribute}".to_sym
           args.sort! { |a,b| a.instance_variable_get( attr ) <=> b.instance_variable_get( attr ) }
           return args unless block
           block.call args
         end
 
-        def run_find_by_method attrs, *args, &block
+        def run_find_by_method(attrs, *args, &block)
           # Make an array of attribute names
           attrs = attrs.split('_and_')
 
@@ -90,14 +90,14 @@ module Tempo
         end
 
         # find by id should be exact, so we remove the array wrapper
-        def find_by_id id
+        def find_by_id(id)
           matches = find "id", id
           match = matches[0]
         end
 
         # example: Tempo::Model.find("id", 1)
         #
-        def find key, value
+        def find(key, value)
           key = "@#{key}".to_sym
           matches = []
           index.each do |i|
@@ -117,14 +117,14 @@ module Tempo
           matches
         end
 
-        def delete instance
+        def delete(instance)
           id = instance.id
           index.delete( instance )
           ids.delete( id )
         end
       end # class methods
 
-      def initialize options={}
+      def initialize(options={})
         id_candidate = options[:id]
         if !id_candidate
           @id = self.class.next_id
@@ -144,9 +144,6 @@ module Tempo
         state.each do |attr|
           key = attr[1..-1].to_sym
           val = instance_variable_get attr
-
-          #val = val.to_s if val.kind_of? Time
-
           record[key] = val
         end
         record
@@ -158,13 +155,13 @@ module Tempo
 
       protected
 
-      def self.add_to_index member
+      def self.add_to_index(member)
         @index ||= []
         @index << member
         @index.sort! { |a,b| a.id <=> b.id }
       end
 
-      def self.add_id id
+      def self.add_id(id)
         @ids ||=[]
         @ids << id
         @ids.sort!

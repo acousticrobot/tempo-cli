@@ -17,7 +17,7 @@ module Tempo
         # record type.  See View Records for all possible record types.  See screen formatter
         # for examples of proc blocks.
         #
-        def format_records records, options={}
+        def format_records(records, options={})
           @options = options
           records.each do |record|
             class_block = "#{record.type}_block"

@@ -27,7 +27,7 @@ module Tempo
       class << self
         attr_accessor :view_records
 
-        def add_format *formats
+        def add_format(*formats)
           @@formats ||= []
           formats.each {|format| @@formats << format}
         end
@@ -40,12 +40,12 @@ module Tempo
           @@options ||= {}
         end
 
-        def add_options options
+        def add_options(options)
           @@options ||= {}
           @@options.merge! options
         end
 
-        def add_view_record record
+        def add_view_record(record)
           @@view_records ||= []
 
           if /Views::ViewRecords/.match record.class.name

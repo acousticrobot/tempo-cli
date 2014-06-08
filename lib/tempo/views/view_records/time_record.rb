@@ -11,18 +11,18 @@ module Tempo
         attr_accessor :description, :duration, :end_time, :project, :running
 
         class << self
-          def max_description_length len=0
+          def max_description_length(len=0)
             @max_description_length ||= 0
             @max_description_length = @max_description_length > len ? @max_description_length : len
           end
 
-          def max_project_length len=0
+          def max_project_length(len=0)
             @max_project_length ||= 0
             @max_project_length = @max_project_length > len ? @max_project_length : len
           end
         end
 
-        def initialize model, options={}
+        def initialize(model, options={})
           super model, options
           @description = model.description
           @description ||= ""
@@ -34,7 +34,7 @@ module Tempo
           self.class.max_project_length @project.length
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda do |m|
             running = m.running ? "*" : " "
             description = @description ? "#{m.project}: #{m.description}" : "#{m.project}"

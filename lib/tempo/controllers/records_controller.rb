@@ -5,7 +5,7 @@ module Tempo
 
       class << self
 
-        def initialize_from_records options, args
+        def initialize_from_records(options, args)
 
           dir = File.join( options.fetch( :directory, ENV['HOME']))
 

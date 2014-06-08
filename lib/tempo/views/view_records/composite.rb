@@ -18,19 +18,19 @@ module Tempo
         attr_accessor :depth
 
         class << self
-          def max_depth depth=0
+          def max_depth(depth=0)
             @max_depth ||= 0
             @max_depth = @max_depth > depth ? @max_depth : depth
           end
         end
 
-        def initialize model, options={}
+        def initialize(model, options={})
           super model, options
           @depth = options.fetch(:depth, 0)
           self.class.max_depth @depth
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda {|model| "#{"  " * model.depth}#{ model.type.capitalize} #{model.id}"}
           block.call self
         end

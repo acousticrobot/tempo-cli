@@ -30,7 +30,7 @@ module Tempo
         end
       end
 
-      def initialize options={}
+      def initialize(options={})
 
         # declare these first for model organization when sent to YAML
         @project_title = nil
@@ -54,7 +54,7 @@ module Tempo
         leave_only_one_running
       end
 
-      def start_time= time
+      def start_time=time
         raise ArgumentError if !time.kind_of? Time
         if @end_time != :running
           @start_time = time if verify_times time, @end_time
@@ -66,7 +66,7 @@ module Tempo
       # end time cannot be set to :running, only to a
       # valid Time object
       #
-      def end_time= time
+      def end_time=time
         raise ArgumentError if !time.kind_of? Time
         @end_time = time if verify_times self.start_time, time
       end
@@ -74,7 +74,7 @@ module Tempo
       # method for updating both times at once, necessary if it would
       # cause a conflict to do them individually
       #
-      def update_times start_time, end_time
+      def update_times(start_time, end_time)
         raise ArgumentError if !start_time.kind_of? Time
         raise ArgumentError if !end_time.kind_of? Time
         verify_times start_time, end_time
@@ -86,7 +86,7 @@ module Tempo
       # Public method to access verify start time,
       # determine if an error will be raised
       #
-      def valid_start_time? time
+      def valid_start_time?(time)
         return false if !time.kind_of? Time
         begin
           if @end_time != :running
@@ -103,7 +103,7 @@ module Tempo
       # Public method to access verify end time,
       # determine if an error will be raised
       #
-      def valid_end_time? time
+      def valid_end_time?(time)
         return false if !time.kind_of? Time
         begin
           verify_times self.start_time, time
@@ -160,7 +160,7 @@ module Tempo
         record
       end
 
-      def tag tags
+      def tag(tags)
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
           tag.split.each {|t| @tags << t if ! @tags.include? t }
@@ -168,7 +168,7 @@ module Tempo
         @tags.sort!
       end
 
-      def untag tags
+      def untag(tags)
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
           tag.split.each {|t| @tags.delete t }
@@ -184,7 +184,7 @@ module Tempo
       #close current at the end time, or on the last minute
       # of the day if end time is another day
       #
-      def self.close_current end_time
+      def self.close_current(end_time)
         if end_time.day > current.start_time.day
           out = end_of_day current.start_time
           current.end_time = out
@@ -254,7 +254,7 @@ module Tempo
       # check a time against all loaded instances, verify that it doesn't
       # fall in the middle of any closed time records
       #
-      def verify_start_time time
+      def verify_start_time(time)
 
         # Check that there are currently
         # records on the day to iterate through
@@ -278,7 +278,7 @@ module Tempo
       # end time of :running. This condition, (currently only possible from init)
       # requires a second check to close out all but the most recent time entry.
       #
-      def verify_times start_time, end_time
+      def verify_times(start_time, end_time)
 
         verify_start_time start_time
 
@@ -307,7 +307,7 @@ module Tempo
       #
       # It will return true if it is exactly the record start or end time
       #
-      def time_in_record? time, record
+      def time_in_record?(time, record)
         return false if record.end_time == :running
         time >= record.start_time && time <= record.end_time
       end
@@ -318,7 +318,7 @@ module Tempo
       # this condition must be accounted for separately.
       # It assumes a valid start and end time.
       #
-      def time_span_intersects_record? start_time, end_time, record
+      def time_span_intersects_record?(start_time, end_time, record)
         if record.end_time == :running
           return true if start_time <= record.start_time && end_time > record.start_time
           return false
@@ -332,7 +332,7 @@ module Tempo
 
       # returns the last minute of the day
       #
-      def self.end_of_day time
+      def self.end_of_day(time)
         Time.new(time.year, time.month, time.day, 23, 59)
       end
     end

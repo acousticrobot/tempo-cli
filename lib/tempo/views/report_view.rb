@@ -2,13 +2,13 @@ module Tempo
   module Views
     class << self
 
-      def report_records_view options={}
+      def report_records_view(options={})
 
-        projects = options.fetch( :projects, Tempo::Model::Project.index )
-        return no_items( "projects" ) if projects.empty?
+        projects = options.fetch(:projects, Tempo::Model::Project.index)
+        return no_items("projects") if projects.empty?
 
         time_records = options.fetch( :time_records, Tempo::Model::TimeRecord.days_index )
-        return no_items( "time records" ) if time_records.empty?
+        return no_items("time records") if time_records.empty?
 
         time_records.each do |d_id, days_record|
 

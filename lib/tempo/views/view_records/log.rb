@@ -12,13 +12,13 @@ module Tempo
       class Log < ViewRecords::Model
         attr_accessor :start_time, :d_id
 
-        def initialize model, options={}
+        def initialize(model, options={})
           super model, options
           @start_time = model.start_time
           @d_id = model.d_id
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda {|model| "#{ model.type.capitalize} #{model.d_id}-#{model.id} #{model.start_time.strftime('%H:%M')}"}
           block.call self
         end

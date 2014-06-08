@@ -9,11 +9,11 @@ module Tempo
 
       class << self
 
-        def current( instance=nil )
+        def current(instance=nil)
           @current
         end
 
-        def current=( instance )
+        def current=(instance)
           if instance.class == self
             @current = instance
           else
@@ -21,8 +21,8 @@ module Tempo
           end
         end
 
-        def include?( title )
-          matches = find_by_title( title )
+        def include?(title)
+          matches = find_by_title(title)
           return false if matches.empty?
           matches.each do |match|
             return true if match.title == title
@@ -44,6 +44,7 @@ module Tempo
         self.class.current == self
       end
 
+      # record the active project by adding current = true
       def freeze_dry
         record = super
         if self.class.current == self
@@ -52,7 +53,7 @@ module Tempo
         record
       end
 
-      def tag( tags )
+      def tag(tags)
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
           tag.split.each {|t| @tags << t if ! @tags.include? t }
@@ -60,7 +61,7 @@ module Tempo
         @tags.sort!
       end
 
-      def untag( tags )
+      def untag(tags)
         return unless tags and tags.kind_of? Array
         tags.each do |tag|
           tag.split.each {|t| @tags.delete t }

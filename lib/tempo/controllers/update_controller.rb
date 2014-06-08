@@ -8,7 +8,7 @@ module Tempo
 
       class << self
 
-        def parse options, args
+        def parse(options, args)
 
           reassemble_the args
 

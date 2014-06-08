@@ -3,7 +3,7 @@ module Tempo
     class << self
 
       # called in the pre block, pushes relavent options to the reporter
-      def initialize_view_options command, global_options, options
+      def initialize_view_options(command, global_options, options)
         view_opts = {}
         view_opts[:verbose] = global_options[:verbose]
         view_opts[:id] = global_options[:id]
@@ -26,7 +26,7 @@ module Tempo
         Tempo::Views::Reporter.add_options view_opts
       end
 
-      def options_report( command, global_options, options, args )
+      def options_report(command, global_options, options, args)
         globals_list = "global options: "
         global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }
         ViewRecords::Message.new globals_list[0..-2], category: :debug
@@ -40,7 +40,7 @@ module Tempo
         ViewRecords::Message.new "args: #{args}", category: :debug
       end
 
-      def no_items( items, category=:info )
+      def no_items(items, category=:info)
         ViewRecords::Message.new "no #{items} exist", category: category
         if items == "projects"
           ViewRecords::Message.new "You must at least one project before you can begin tracking time"
@@ -48,16 +48,16 @@ module Tempo
         end
       end
 
-      def no_match_error( items, request, plural=true )
+      def no_match_error(items, request, plural=true)
         match = plural ? "match" : "matches"
         ViewRecords::Message.new "no #{items} #{match} the request: #{request}", category: :error
       end
 
-      def already_exists_error( item, request )
+      def already_exists_error(item, request)
         ViewRecords::Message.new "#{item} '#{request}' already exists", category: :error
       end
 
-      def checkout_assistance( options={} )
+      def checkout_assistance(options={})
         ViewRecords::Message.new "checkout command run with no arguments"
         ViewRecords::Message.new "perhaps you meant one of these?"
         ViewRecords::Message.new "  tempo checkout --add <new project name>"

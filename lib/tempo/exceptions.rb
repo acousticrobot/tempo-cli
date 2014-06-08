@@ -19,7 +19,7 @@ module Tempo
   #
   class TimeConflictError < ArgumentError
 
-    def initialize( start_time=nil, end_time=nil, target_start_time=nil, target_end_time=nil )
+    def initialize(start_time=nil, end_time=nil, target_start_time=nil, target_end_time=nil)
 
       @end_time = (end_time.kind_of? Time) ? end_time.strftime('%H:%M') : end_time.to_s
       @end_time = " - #{@end_time}" if !@end_time.empty?

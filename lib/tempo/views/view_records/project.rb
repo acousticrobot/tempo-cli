@@ -12,13 +12,13 @@ module Tempo
         attr_accessor :title, :tags, :current, :duration
 
         class << self
-          def max_title_length len=0
+          def max_title_length(len=0)
             @max_title_length ||= 0
             @max_title_length = @max_title_length > len ? @max_title_length : len
           end
         end
 
-        def initialize model, options={}
+        def initialize(model, options={})
           super model, options
           @title = model.title
           @tags = model.tags

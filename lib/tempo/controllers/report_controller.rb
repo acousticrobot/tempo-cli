@@ -6,7 +6,7 @@ module Tempo
 
       class << self
 
-        def report options, args
+        def report(options, args)
 
           return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
 

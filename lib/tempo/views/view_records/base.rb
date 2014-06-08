@@ -30,14 +30,14 @@ module Tempo
       class Message
         attr_accessor :type, :message, :category
 
-        def initialize message, options={}
+        def initialize(message, options={})
           @message = message
           @category = options.fetch( :category, :info )
           @type = "message"
           Reporter.add_view_record self
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda {|m| "#{m.message}"}
           block.call self
         end
@@ -63,18 +63,18 @@ module Tempo
           @total = seconds
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda do |d|
             "#{ d.hours.to_s }:#{ d.minutes.to_s.rjust(2, '0') }"
           end
           block.call self
         end
 
-        def add seconds
+        def add(seconds)
           @total += seconds
         end
 
-        def subtract seconds
+        def subtract(seconds)
           @total -= seconds
         end
 
@@ -96,7 +96,7 @@ module Tempo
       class Model
         attr_accessor :id, :type
 
-        def initialize model, options={}
+        def initialize(model, options={})
           @id = model.id
 
           # example: Tempo::Model::Something => "something"
@@ -104,7 +104,7 @@ module Tempo
           Reporter.add_view_record self
         end
 
-        def format &block
+        def format(&block)
           block ||= lambda {|model| "#{ model.type.capitalize} #{model.id}"}
           block.call self
         end

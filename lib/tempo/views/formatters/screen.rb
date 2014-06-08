@@ -13,7 +13,7 @@ module Tempo
 
       class Screen < Tempo::Views::Formatters::Base
 
-        def message_block record
+        def message_block(record)
           record.format do |m|
             case m.category
             when :error
@@ -25,18 +25,18 @@ module Tempo
           end
         end
 
-        def duration_block record
+        def duration_block(record)
           record.format do |d|
             puts "#{ d.hours.to_s }:#{ d.minutes.to_s.rjust(2, '0') }"
           end
         end
 
         # spacer for project titles, active project marked with *
-        def active_indicator( project )
+        def active_indicator(project)
           indicator = project.current ? "* " : "  "
         end
 
-        def tag_partial tags, title_length
+        def tag_partial(tags, title_length)
           max_length = ViewRecords::Project.max_title_length
           max_length += ViewRecords::Project.max_depth * 2 if @options[:depth]
           max_length += 6 if @options[:id]
@@ -50,11 +50,11 @@ module Tempo
           view[0..-3] + "]"
         end
 
-        def id_partial id
+        def id_partial(id)
           @options[:id] ? "[#{id}] ".rjust(6, ' ') : ""
         end
 
-        def project_block record
+        def project_block(record)
 
           record.format do |r|
             @options[:active] = @options.fetch( :active, false )
@@ -71,7 +71,7 @@ module Tempo
           end
         end
 
-        def timerecord_block record
+        def timerecord_block(record)
           record.format do |r|
             id = id_partial r.id
             running = r.running ? "*" : " "
