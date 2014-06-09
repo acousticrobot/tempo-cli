@@ -5,6 +5,7 @@ spec = Gem::Specification.new do |s|
   s.version = Tempo::VERSION
   s.author = 'Jonathan Gabel'
   s.email = 'hello@jonathangabel.com'
+  s.license = 'MIT'
   s.homepage = 'https://github.com/josankapo/tempo-cli'
   s.platform = Gem::Platform::RUBY
   s.summary = 'A command line time tracker for recording by day and by project'
@@ -14,11 +15,11 @@ spec = Gem::Specification.new do |s|
   s.has_rdoc = true
   s.bindir = 'bin'
   s.executables << 'tempo'
-  s.add_development_dependency('rake')
-  s.add_development_dependency('rdoc')
-  s.add_development_dependency('aruba')
-  s.add_development_dependency('turn', '~> 0.9.6')
-  s.add_development_dependency('pry','~> 0.9.12.2')
-  s.add_runtime_dependency('gli', '~> 2.10.0')
-  s.add_runtime_dependency "chronic", "~> 0.10.2"
+  s.add_development_dependency('rake', '~> 10.3')
+  s.add_development_dependency('rdoc', '~> 4.1')
+  s.add_development_dependency('aruba', '~> 0.5')
+  s.add_development_dependency('turn', '~> 0.9')
+  s.add_development_dependency('pry','~> 0.9')
+  s.add_runtime_dependency('gli', '~> 2.10')
+  s.add_runtime_dependency "chronic", "~> 0.10"
 end
