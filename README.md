@@ -22,9 +22,15 @@ Future enhancements will include reports by project and time totals by day or by
 
 ### Records
 
-All records are produced in YAML files, at the root user directory.  These reports can be edited by hand, but keep in mind that any invalid data could cause problems when it is read back into the app. Make sure time formatting is valid and that they don't overlap, and that all ids are unique per page. 
+All records are produced in YAML files.  These reports can be edited by hand, but keep in mind that any invalid data could cause problems when it is read back into the app. Make sure time formatting is valid and that they don't overlap, and that all ids are unique per page. 
 
 Each day's time records are designed to work independently. When adding or updating time records, only the records for the days in question are loaded into the app. The most recent day's records will also always be read in, to assure no running records are created earlier than existing records. 
+
+#### Alternate Directory for Records
+
+By default tempo will create a directory `tempo` in the root level of the user directory, where all records are stored.  You can use the global option --directory to supply an alternate directory within the user directory. 
+
+For example, to rout to a Dropbox folder to manage syncing records across computers, you would run `tempo --directory Dropbox <your command>`. This options can also be permanently set in a configuration file. If you run `tempo --directory Dropbox initconfig` the configuration file .tempo.yaml will be created, and all tempo commands will be routed to `/Users/username/Dropbox`.
 
 ### Features
 

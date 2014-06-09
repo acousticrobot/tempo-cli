@@ -62,7 +62,6 @@ Feature: Start Command starts a new time record
     Then the stdout should contain "time record started"
     And the time record 20140101 should contain ":end_time: 2014-01-01 23:59" at line 5
 
-
   Scenario: Adding an earlier time record should immediately close out
     Given an existing project file
     When I run `tempo start --at "1-1-2014 10:00"`

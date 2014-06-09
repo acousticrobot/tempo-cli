@@ -210,9 +210,13 @@ long_desc "Arrange projects into a parent/child hierarchy
 
 New projects are added as root projects by default.
 
-Use the --child flag with the project command to add a new project as the child of the current project
-
 Use arrange to arrange existing projects as child or root projects.
+
+If you want to add a new project that is a child of the existing project,
+
+use the --child flag with the project command instead:
+
+$ `tempo project --child 'my new project'
 
 Arguments supplied will use fuzzy matching unless you:
 
