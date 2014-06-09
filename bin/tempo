@@ -3,7 +3,6 @@
 # In development, you need to use `bundle exec bin/tempo` to run this app
 require 'gli'
 require 'tempo'
-require 'pry'
 
 include GLI::App
 
