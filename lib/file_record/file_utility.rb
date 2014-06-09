@@ -89,7 +89,8 @@ module FileRecord
     # returns full path and file for model
     # Tempo::Model::Log on 11/12/2014 -> Users/usrname/tempo/tempo_logs/20141112.yaml
     # Tempo::Model::Base -> Users/usrname/tempo/tempo_bases.yaml
-    # Will also creates directory if not found and passed create:true in options
+    # Will also create directory if not found and passed create:true in options
+    # Will destroy file if passed destroy:true in options
     def file_path
 
       return clean_path(File.join(log_directory_path, filename)) if @time

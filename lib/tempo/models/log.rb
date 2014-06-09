@@ -105,6 +105,16 @@ module Tempo
           end
         end
 
+        # delete the file for a single day
+        # this is necessary for removing a single entry on a day
+        # since updates will skip over days with no entries
+        #
+        def delete_day_record(time, options={})
+          options[:time] = time
+          options[:destroy] = true
+          FileRecord::FileUtility.new(self, options).file_path
+        end
+
         # takes and integer, and time or day_id
         # and returns the instance that matches both
         # the id and d_id

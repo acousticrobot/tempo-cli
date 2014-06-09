@@ -1,4 +1,3 @@
-@focus
 Feature: Global Directory Command allows for an alternate directory location
   The default directory is located in the home directory
   Adding a directory arguement will run all commands to that subdirectory within the home directory
@@ -85,4 +84,25 @@ Feature: Global Directory Command allows for an alternate directory location
     And I successfully run `tempo --directory alt_dir report "2014-01-01"`
     Then the output should contain "Records for 01/01/2014:"
 
+  Scenario: Deleting the last record stored in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at "2014-01-01" alt directory new entry`
+    And I successfully run `tempo --directory alt_dir update --delete`
+    Then the output should contain "time record deleted:"
+    And the alternate directory time record 20140101 should not exist
+
+  Scenario: Updating the last time record stored in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at "2014-01-01" alt directory new entry`
+    And I successfully run `tempo --directory alt_dir update anemone feeding`
+    Then the output should contain "time record updated:"
+    And the alternate directory time record 20140101 should contain ":description: anemone feeding" at line 3
+
+  Scenario: Updating a time record on an earlier day in an alternate directory
+    Given an alternate directory and an existing project file
+    When I run `tempo --directory alt_dir start --at "12/1/2014 7:00" --end "12/1/2014 8:00" raking leaves`
+    And I run `tempo --directory alt_dir start --at "12/2/2014 8:00" --end "12/1/2014 9:00" counting rosebuds`
+    When I successfully run `tempo --directory alt_dir update --on "12/1/2014" feeding flytraps`
+    Then the output should contain "time record updated:\n07:00 - 08:00  [1:00] horticulture: feeding flytraps"
+    And the alternate directory time record 20141201 should contain ":description: feeding flytraps" at line 3
 

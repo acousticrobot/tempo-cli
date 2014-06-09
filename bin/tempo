@@ -6,10 +6,12 @@ require 'tempo'
 require 'pry'
 
 include GLI::App
+
 # to preserve all the args in ARGV:
 # preserve_argv
 
-#config_file '.tempo.yaml'
+# used to store an alternate directory path:
+config_file '.tempo.yaml'
 
 program_desc 'Command line time tracking by project
 

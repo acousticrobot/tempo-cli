@@ -11,7 +11,7 @@ Feature: Report Command formats and outputs time records
     Given an existing project file
     When I run `tempo report`
     Then the stderr should contain "no time records exist"
-@focus
+
   Scenario: Reporting the time entries on the current day
     Given an existing project file
     When I run `tempo start -a 7 my new project`

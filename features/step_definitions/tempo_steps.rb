@@ -128,6 +128,11 @@ Then /^the time record (.*?) should not contain "(.*?)"$/ do |arg1, arg2|
   contents.should_not include arg2
 end
 
+Then /^the time record (.*?) should not exist$/ do |arg1|
+  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+  File.exists?(file).should == false
+end
+
 Then /^the (\S*) file should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
   file = File.join(ENV['HOME'], 'tempo', "tempo_#{arg1}s.yaml")
   contents = []
@@ -203,5 +208,10 @@ Then /^the alternate directory time record (\d+) should contain "(.*?)" at line 
     end
   end
   contents[arg3.to_i - 1].should include arg2
+end
+
+Then /^the alternate directory time record (.*?) should not exist$/ do |arg1|
+  file = File.join(ENV['HOME'], 'alt_dir', 'tempo/tempo_time_records', "#{arg1}.yaml")
+  File.exists?(file).should == false
 end
 

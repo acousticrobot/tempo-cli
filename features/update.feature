@@ -19,7 +19,13 @@ Feature: Update Command manages edits to the time records
     And an existing time record file
     When I successfully run `tempo update --delete`
     Then the stdout should contain "time record deleted:\n13:32 - 16:46  [3:14] nano aquarium: trimming the coral"
-    And the time record 20140101 should not contain "nano aquarium"
+    And the time record 20140101 should not contain ":project_title: nano aquarium"
+
+  Scenario: Deleting the only record on a day
+    Given an existing project file
+    When I run `tempo start --at "12/1/2014 7:00" --end "12/1/2014 8:00" raking leaves`
+    And I successfully run `tempo update --on "12/1/2014" --delete`
+    Then the time record 20141201 should not exist
 
   Scenario: Updating the description for the last time record
     Given an existing project file

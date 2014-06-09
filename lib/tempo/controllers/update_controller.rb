@@ -14,14 +14,16 @@ module Tempo
 
           return Views.project_assistance if Model::Project.index.empty?
 
+          # Load last day, or specific day if options includes an on-date
           if options[:on]
             day = Time.parse options[:on]
             return Views.no_match_error( "valid timeframe", options[:from], false ) if day.nil?
-            @time_records.load_day_record day
+            @time_records.load_day_record day, options
           else
-            day = @time_records.load_last_day
+            day = @time_records.load_last_day options
           end
 
+          # Load the last record, or record by id if options includes an id
           if options[:id]
             record = @time_records.find_by_id( options[:id], day )
             return Views.no_match_error( "time record on #{day.strftime('%m/%d/%Y')}", "id = #{options[:id]}", false ) if !record
@@ -30,13 +32,22 @@ module Tempo
             return Views.no_items( "time records on #{day.strftime('%m/%d/%Y')}", :error ) if ! record
           end
 
-
+          # DELETE and existing record, no need to check for further updates
           if options[:delete]
-            record.delete
-            @time_records.save_to_file
+
+            # If only record on the given day, delete the file
+            if Tempo::Model::TimeRecord.ids(record.d_id).length == 1
+              @time_records.delete_day_record record.d_id, options
+            else
+              record.delete
+              @time_records.save_to_file options
+            end
+
             Views.delete_time_record_view record
 
-          else
+          else # check for flags and update one or all attributes
+
+            # Update the START time of the record
             if options[:start]
               start_time = Time.parse options[:start]
               return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
@@ -49,6 +60,7 @@ module Tempo
               end
             end
 
+            # Update the END time of the record
             if options[:end]
               end_time = Time.parse options[:end]
               return Views.no_match_error( "valid timeframe", options[:at], false ) if end_time.nil?
@@ -61,14 +73,16 @@ module Tempo
               end
             end
 
+            # Update the PROJECT
             if options[:project]
               record.project = @projects.current.id
             end
 
+            # Update the DESCRIPTION
             options[:description] = reassemble_the args
             record.description = options[:description] if options[:description] && !options[:description].empty?
 
-            @time_records.save_to_file
+            @time_records.save_to_file options
             Views.update_time_record_view record
           end
         end
