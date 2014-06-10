@@ -53,11 +53,15 @@ module Tempo
 
         def method_missing(meth, *args, &block)
 
-          if meth.to_s =~ /^find_by_(.+)$/
-            run_find_by_method($1, *args, &block)
+          if respond_to? meth
+            if meth.to_s =~ /^find_by_(.+)$/
+              run_find_by_method($1, *args, &block)
 
-          elsif meth.to_s =~ /^sort_by_(.+)$/
-            run_sort_by_method($1, *args, &block)
+            elsif meth.to_s =~ /^sort_by_(.+)$/
+              run_sort_by_method($1, *args, &block)
+            else
+              super
+            end
           else
             super
           end
@@ -65,10 +69,18 @@ module Tempo
 
         def respond_to?(method_id, include_private = false)
           if method_id.to_s =~ /^find_by_(.+)$/ || method_id.to_s =~ /^sort_by_(.+)$/
-            true
+            instances_have_attributes? $1.split('_and_')
           else
             super
           end
+        end
+
+        def instances_have_attributes?(attrs)
+            finder_attrs = attrs.map { |key| "@#{key}".to_sym }
+            model_attrs = index.map { |i| i.instance_variables }.flatten.uniq
+
+            # Make sure all attributes are present in index objects
+            (model_attrs & finder_attrs).size == finder_attrs.size
         end
 
         def run_sort_by_method(attribute, args=@index.clone, &block)

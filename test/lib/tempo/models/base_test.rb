@@ -142,6 +142,11 @@ describe Tempo do
       Tempo::Model::Animal.must_respond_to :find_by_species
     end
 
+    it "doesn't respond to find_by_ method for non-existent attribute" do
+      Tempo::Model::Animal.wont_respond_to :find_by_blah
+      proc { Tempo::Model::Animal.find_by_blah 1 }.must_raise NoMethodError
+    end
+
     it "has a sort_by_ method" do
       frog_factory
       list = Tempo::Model::Animal.sort_by_species [ @gray_tree_frog, @pine_barrens_tree_frog ]
@@ -166,6 +171,11 @@ describe Tempo do
 
     it "responds to sort_by_ method" do
       Tempo::Model::Animal.must_respond_to :sort_by_species
+    end
+
+    it "doesn't respond to sort_by_ method for non-existent attribute" do
+      Tempo::Model::Animal.wont_respond_to :sort_by_blah
+      proc { Tempo::Model::Animal.sort_by_blah }.must_raise NoMethodError
     end
 
     it "has a method_missing method" do
