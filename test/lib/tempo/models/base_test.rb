@@ -138,6 +138,10 @@ describe Tempo do
       search.must_equal [ @gray_tree_frog ]
     end
 
+    it "responds to find_by_ method" do
+      Tempo::Model::Animal.must_respond_to :find_by_species
+    end
+
     it "has a sort_by_ method" do
       frog_factory
       list = Tempo::Model::Animal.sort_by_species [ @gray_tree_frog, @pine_barrens_tree_frog ]
@@ -158,6 +162,10 @@ describe Tempo do
         species_list[0..-3]
       end
       list.must_equal "h. andersonii, h. avivoca, h. chinensis, h. chrysoscelis, h. versicolor"
+    end
+
+    it "responds to sort_by_ method" do
+      Tempo::Model::Animal.must_respond_to :sort_by_species
     end
 
     it "has a method_missing method" do

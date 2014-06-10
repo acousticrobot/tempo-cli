@@ -63,6 +63,14 @@ module Tempo
           end
         end
 
+        def respond_to?(method_id, include_private = false)
+          if method_id.to_s =~ /^find_by_(.+)$/ || method_id.to_s =~ /^sort_by_(.+)$/
+            true
+          else
+            super
+          end
+        end
+
         def run_sort_by_method(attribute, args=@index.clone, &block)
           attr = "@#{attribute}".to_sym
           args.sort! { |a,b| a.instance_variable_get( attr ) <=> b.instance_variable_get( attr ) }
