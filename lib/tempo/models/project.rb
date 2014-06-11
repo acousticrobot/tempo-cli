@@ -22,8 +22,12 @@ module Tempo
         end
 
         def include?(title)
+
+          return false if index.empty?
+
           matches = find_by_title(title)
           return false if matches.empty?
+
           matches.each do |match|
             return true if match.title == title
           end
