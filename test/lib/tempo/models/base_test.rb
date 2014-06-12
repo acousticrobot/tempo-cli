@@ -1,11 +1,30 @@
 require "test_helper"
 
+# Used to test define_method is called
+# the first time a find_by_ and sort_by_
+# is called. Don't use for any other tests
+class Plant < Tempo::Model::Base
+  attr_accessor :stem, :leaf
+
+  def initialize( options={} )
+    super options
+    @stem = options.fetch(:stem, "woody")
+    @leaf = options.fetch(:leaf, "broad")
+  end
+end
+
+
 describe Tempo do
 
   before do
     # See Rakefile for directory prep and cleanup
     @dir = File.join( Dir.home,"tempo" )
     Dir.mkdir(@dir, 0700) unless File.exists?(@dir)
+  end
+
+  def after_teardown
+    Tempo::Model::Animal.clear_all
+    super
   end
 
   describe "Model::Base" do
@@ -127,10 +146,6 @@ describe Tempo do
       search = Tempo::Model::Animal.find_by_species("Versicolor")
       search.must_equal [ @gray_tree_frog ]
 
-      # # test, does this work, and should it?
-      # search = Tempo::Model::Animal.find_by_species("h. color")
-      # search.must_equal [ @gray_tree_frog ]
-
       search = Tempo::Model::Animal.find_by_genious("hyla")
       search.length.must_equal 5
 
@@ -139,12 +154,23 @@ describe Tempo do
     end
 
     it "responds to find_by_ method" do
+      # Current behavior raises error if no instances exist.
+      # This behavior could be relaxed, or models could be made
+      # to explicity declare findable attributes
+      frog_factory
       Tempo::Model::Animal.must_respond_to :find_by_species
     end
 
     it "doesn't respond to find_by_ method for non-existent attribute" do
       Tempo::Model::Animal.wont_respond_to :find_by_blah
       proc { Tempo::Model::Animal.find_by_blah 1 }.must_raise NoMethodError
+    end
+
+    it "defines find_by_ methods after first call" do
+      plant = Plant.new
+      Plant.methods.include?(:find_by_stem).must_equal false
+      Plant.find_by_stem("woody")
+      Plant.methods.include?(:find_by_stem).must_equal true
     end
 
     it "has a sort_by_ method" do
@@ -170,12 +196,23 @@ describe Tempo do
     end
 
     it "responds to sort_by_ method" do
+      # Current behavior raises error if no instances exist.
+      # This behavior could be relaxed, or models could be made
+      # to explicity declare sortable attributes
+      frog_factory
       Tempo::Model::Animal.must_respond_to :sort_by_species
     end
 
     it "doesn't respond to sort_by_ method for non-existent attribute" do
       Tempo::Model::Animal.wont_respond_to :sort_by_blah
       proc { Tempo::Model::Animal.sort_by_blah }.must_raise NoMethodError
+    end
+
+    it "defines sort_by methods after first call" do
+      plant = Plant.new
+      Plant.methods.include?(:sort_by_stem).must_equal false
+      Plant.sort_by_stem
+      Plant.methods.include?(:sort_by_stem).must_equal true
     end
 
     it "has a method_missing method" do

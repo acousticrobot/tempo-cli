@@ -52,13 +52,19 @@ module Tempo
         end
 
         def method_missing(meth, *args, &block)
-
           if respond_to? meth
             if meth.to_s =~ /^find_by_(.+)$/
-              run_find_by_method($1, *args, &block)
+              self.class.send(:define_method, meth) do |*args|
+                run_find_by_method($1, *args)
+              end
+              self.send(meth, *args)
 
             elsif meth.to_s =~ /^sort_by_(.+)$/
-              run_sort_by_method($1, *args, &block)
+              self.class.send(:define_method, meth) do |*args, &block|
+                run_sort_by_method($1, *args, &block)
+              end
+              self.send(meth, *args, &block)
+
             else
               super
             end
@@ -90,7 +96,7 @@ module Tempo
           block.call args
         end
 
-        def run_find_by_method(attrs, *args, &block)
+        def run_find_by_method(attrs, *args)
           # Make an array of attribute names
           attrs = attrs.split('_and_')
 
