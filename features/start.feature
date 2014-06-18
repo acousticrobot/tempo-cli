@@ -70,6 +70,29 @@ Feature: Start Command starts a new time record
     Then the stdout should contain "time record started"
     And the time record 20140101 should contain ":end_time: 2014-01-01 10:00" at line 5
 
+  Scenario: Resuming the last time record
+    Given an existing project file
+    When I run `tempo start --at "1-1-2014 10:00" tweezing the cactus`
+    And I run `tempo end --at "1-1-2014 12:00"`
+    And I successfully run `tempo start --resume --at "1-1-2014 13:00"`
+    Then the stdout should contain "time record started"
+    And the time record 20140101 should contain ":description: tweezing the cactus" at line 11
+
+  Scenario: Resuming the last time record with a different project checked out ignores current project
+    Given an existing project file
+    When I run `tempo start --at "1-1-2014 10:00" tweezing the cactus`
+    And I run `tempo end --at "1-1-2014 12:00"`
+    And I run `tempo checkout basement mushrooms`
+    And I successfully run `tempo start --resume --at "1-1-2014 13:00"`
+    Then the stdout should contain "time record started"
+    And the time record 20140101 should contain ":project_title: horticulture" at line 10
+
+  Scenario: Attempting to resume the last project when one is running
+    Given an existing project file
+    When I run `tempo start --at "1-1-2014 10:00"`
+    And I run `tempo start --resume`
+    Then the stderr should contain "error: cannot resume last time record when it is still running"
+
   Scenario: Adding an earlier day time record should immediately close out
     Given an existing project file
     When I run `tempo start --at "1-5-2014 7:00"`

@@ -8,11 +8,26 @@ module Tempo
 
       class << self
 
+        def running(options, args)
+          @time_records.load_last_day options
+
+          if @time_records.last_record.running?
+            Views.message "Last time record is currently running"
+          else
+            @time_records.last_record.running!
+            @time_records.save_to_file options
+            Views.update_time_record_view @time_records.last_record
+          end
+        end
+
         def parse(options, args)
 
           reassemble_the args
 
           return Views.project_assistance if Model::Project.index.empty?
+
+          # Reopen last record and ignore all other values if passed --running switch
+          return running(options, args) if options[:running]
 
           # Load last day, or specific day if options includes an on-date
           if options[:on]
@@ -52,9 +67,13 @@ module Tempo
               start_time = Time.parse options[:start]
               return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
 
-              # TODO: add "today " to start time and try again if not valid
               if record.valid_start_time? start_time
                 record.start_time = start_time
+
+              # try to update the time on the day, to handle updating with time params only
+              elsif record.valid_start_time? start_time.on_date(record.start_time)
+                record.start_time = start_time.on_date(record.start_time)
+
               else
                 return Views::ViewRecords::Message.new "cannot change start time to #{start_time.strftime('%H:%M')}", category: :error
               end
@@ -68,6 +87,11 @@ module Tempo
               # TODO: add "today " to end time and try again if not valid
               if record.valid_end_time? end_time
                 record.end_time = end_time
+
+              # try to update the time on the day, to handle updating with time params only
+              elsif record.valid_end_time? end_time.on_date(record.end_time)
+                record.end_time = end_time.on_date(record.end_time)
+
               else
                 return Views::ViewRecords::Message.new "cannot change end time to #{end_time.strftime('%H:%M')}", category: :error
               end

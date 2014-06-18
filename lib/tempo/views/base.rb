@@ -48,6 +48,14 @@ module Tempo
         end
       end
 
+      def message(message)
+        ViewRecords::Message.new message, category: :info
+      end
+
+      def error(message)
+        ViewRecords::Message.new message, category: :error
+      end
+
       def no_match_error(items, request, plural=true)
         match = plural ? "match" : "matches"
         ViewRecords::Message.new "no #{items} #{match} the request: #{request}", category: :error

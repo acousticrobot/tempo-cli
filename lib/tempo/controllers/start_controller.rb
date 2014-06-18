@@ -30,7 +30,24 @@ module Tempo
           end
 
           @time_records.load_last_day options
-          record = @time_records.new(opts)
+
+          if options[:resume]
+            last_record = @time_records.last_record
+
+            return Views.error("cannot resume last time record when it is still running") if last_record.running?
+
+            opts[:description] = last_record.description
+
+            # we use the last used project, but don't save it as current
+            # in case a different project has been checked out.
+            @projects.current = @projects.find_by_id(last_record.project)
+
+            record = @time_records.new(opts)
+
+          else
+            record = @time_records.new(opts)
+          end
+
           @time_records.save_to_file options
 
           Views.start_time_record_view record

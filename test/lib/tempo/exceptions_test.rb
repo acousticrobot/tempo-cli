@@ -11,21 +11,21 @@ describe Tempo::TimeConflictError do
 
   it "can create a message with a target duration" do
     @exception = Tempo::TimeConflictError.new @start_time, @end_time, @target_start_time, @target_end_time
-    @exception.to_s.must_equal "time <08:15 - 08:45> conflicts with existing record: 07:15 - 09:15"
+    @exception.to_s.must_equal "time <08:15 - 08:45> conflicts with existing record: 07:15 - 09:15 on Jan 02, 2014"
   end
 
   it "can create a message with a target time" do
     @exception = Tempo::TimeConflictError.new @start_time, @end_time, @target_start_time
-    @exception.to_s.must_equal "time <08:15> conflicts with existing record: 07:15 - 09:15"
+    @exception.to_s.must_equal "time <08:15> conflicts with existing record: 07:15 - 09:15 on Jan 02, 2014"
   end
 
   it "can create a message without a target time" do
     @exception = Tempo::TimeConflictError.new @start_time, @end_time
-    @exception.to_s.must_equal "time conflicts with existing record: 07:15 - 09:15"
+    @exception.to_s.must_equal "time conflicts with existing record: 07:15 - 09:15 on Jan 02, 2014"
   end
 
   it "can handle running time entries" do
     @exception = Tempo::TimeConflictError.new @start_time, :running, @target_start_time
-    @exception.to_s.must_equal "time <08:15> conflicts with existing record: 07:15 - running"
+    @exception.to_s.must_equal "time <08:15> conflicts with existing record: 07:15 - running on Jan 02, 2014"
   end
 end

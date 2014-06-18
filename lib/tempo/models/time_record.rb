@@ -65,6 +65,7 @@ module Tempo
 
       # end time cannot be set to :running, only to a
       # valid Time object
+      # Use running! to restart a time record
       #
       def end_time=time
         raise ArgumentError if !time.kind_of? Time
@@ -154,6 +155,11 @@ module Tempo
         @end_time == :running
       end
 
+      def running!
+        raise "only the most recent record can be reopened" unless self == self.class.last_record
+        @end_time = :running
+      end
+
       def freeze_dry
         record = super
         record[:project_title] = project_title
@@ -181,7 +187,7 @@ module Tempo
 
       private
 
-      #close current at the end time, or on the last minute
+      # close current at the end time, or on the last minute
       # of the day if end time is another day
       #
       def self.close_current(end_time)

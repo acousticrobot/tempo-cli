@@ -261,6 +261,10 @@ To start a time entry at a time other than the current, pass it in as an argumen
 to the --at flag.  This will accept a number of human readable formats, multiple
 word time formats should be enclosed in quotes.
 
+Use the --resume flag to start a new time entry with the last used project and description.
+
+To reopen the last time entry (change the end time back to 'running') see `tempo update --running`
+
 examples:
 
 # start a new time record at the current time with no description
@@ -274,6 +278,9 @@ $ tempo start learning how to do the Hustle --at 'yesterday at 8:00 in the eveni
 
 arg_name 'description'
 command [:start, :s] do |c|
+
+  c.desc 'start an entry using the last description and project'
+  c.switch [:r, :resume], negatable: false
 
   c.desc 'end the entry at a given time'
   c.arg_name 'time'
@@ -432,6 +439,9 @@ command [:update, :u] do |c|
   c.arg_name 'time'
   c.flag [:s, :start]
 
+  c.desc 'Change the last time entry back to actively running (ignores all other options)'
+  c.switch [:r, :running], negatable: false
+
   c.desc 'Update the End Time'
   c.arg_name 'time'
   c.flag [:e, :end]
@@ -487,7 +497,7 @@ on_error do |exception|
   # return false to skip default error handling
 
   # remove before distribution:
-  # puts exception.backtrace
+  puts exception.backtrace
 
   true
 end

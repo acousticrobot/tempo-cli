@@ -4,6 +4,7 @@ require 'rubygems/package_task'
 require 'rdoc/task'
 require 'cucumber'
 require 'cucumber/rake/task'
+require "fileutils"
 
 Rake::RDocTask.new do |rd|
   rd.rdoc_files.include("lib/**/*.rb","bin/**/*")
@@ -62,4 +63,4 @@ task :clean => [:tests_setup, :tests_teardown]
 
 task :default => [:tests_setup, :run_tests, :features, :tests_teardown]
 
-task 'features:focus' => [:tests_setup, :run_tests, 'cucumber:focus', :tests_teardown]
+task 'features:focus' => [:tests_setup, :run_tests, 'cucumber:focus']

@@ -48,6 +48,14 @@ Feature: Update Command manages edits to the time records
     Then the stdout should contain "time record updated:\n13:32 - 16:35  [3:03] nano aquarium: trimming the coral"
     And the time record 20140101 should contain ":end_time: 2014-01-01 16:35:00" at line 37
 
+  Scenario: Restarting the last time record
+    Given an existing project file
+    When I run `tempo start --at "1-5-2015 7:00"`
+    And I run `tempo end --at "1-5-2015 15:00"`
+    And I run `tempo update --running`
+    Then the stdout should contain "time record updated"
+    And the time record 20150105 should contain ":end_time: :running" at line 5
+
   Scenario: Updating to the project for the last time record
     Given an existing project file
     And an existing time record file
@@ -72,4 +80,23 @@ Feature: Update Command manages edits to the time records
     When I successfully run `tempo update --on "12/1/2013" --id 1 --end "12/1/2013 8:35"`
     Then the stdout should contain "time record updated:\n07:00 - 08:35  [1:35] horticulture: raking leaves"
     And the time record 20131201 should contain ":end_time: 2013-12-01 08:35:00" at line 5
+
+  Scenario: Updating the start time on an earlier day passing only time no date
+    Given an existing project file
+    And an existing time record file
+    When I run `tempo start --at "12/1/2013 7:00" --end "12/1/2013 8:00" raking leaves`
+    And I run `tempo start --at "12/1/2013 9:00" --end "12/1/2013 10:00" counting rosebuds`
+    When I successfully run `tempo update --on "12/1/2013" --id 1 --start "7:35"`
+    Then the stdout should contain "time record updated:\n07:35 - 08:00  [0:25] horticulture: raking leaves"
+    And the time record 20131201 should contain ":start_time: 2013-12-01 07:35:00" at line 4
+
+  Scenario: Updating the end time on an earlier day passing only time no date
+    Given an existing project file
+    And an existing time record file
+    When I run `tempo start --at "12/1/2013 7:00" --end "12/1/2013 8:00" raking leaves`
+    And I run `tempo start --at "12/1/2013 9:00" --end "12/1/2013 10:00" counting rosebuds`
+    When I successfully run `tempo update --on "12/1/2013" --id 1 --end "8:35"`
+    Then the stdout should contain "time record updated:\n07:00 - 08:35  [1:35] horticulture: raking leaves"
+    And the time record 20131201 should contain ":end_time: 2013-12-01 08:35:00" at line 5
+
 

@@ -150,6 +150,7 @@ New projects are added as root projects by default. Use arrange to arrange exist
 ##### command options
     --at=time
     --end=time
+    --restart
 
     Starts a new time entry, and closes out any running time entries.
 
@@ -197,6 +198,7 @@ New projects are added as root projects by default. Use arrange to arrange exist
     --id=number         - Select by Id
     --on=date           - Select On Date
     --project           - Update to the active project
+    --running           - Set the last project back to running (reopen the end-time)
     --start=time        - Update the Start Time
 
 update the project, start time, or end time for a time entry.

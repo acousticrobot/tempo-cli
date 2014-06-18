@@ -58,6 +58,13 @@ module Tempo
           FileRecord::FileUtility.new(self, options).log_records
         end
 
+        # returns the loaded record with the latest start time
+        # Only loads records if options[:load] is true
+        def last_record(options={})
+          load_last_day(options) if options[:load]
+          sort_by_start_time.last
+        end
+
         # send alternate directory through options
         def save_to_file(options={})
           FileRecord::Record.save_log(self, options)

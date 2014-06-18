@@ -17,7 +17,6 @@ describe Tempo do
     it "inherits the freeze-dry method" do
       log_factory
       frozen = @log_4.freeze_dry
-      binding.pry if @log_4.id != 1
       frozen.must_equal({ :start_time=>Time.new(2014, 01, 02, 07, 15),
                           :id=>1, :message=>"day 2 pet the sheep"})
     end
@@ -181,6 +180,11 @@ describe Tempo do
       Tempo::Model::MessageLog.index.must_equal [ @log_4, @log_2, @log_5, @log_3, @log_6 ]
       Tempo::Model::MessageLog.days_index[:"20140101"].length.must_equal 2
       Tempo::Model::MessageLog.days_index[:"20140102"].length.must_equal 3
+    end
+
+    it "can return the last record" do
+      log_factory
+      Tempo::Model::MessageLog.last_record.must_equal @log_6
     end
   end
 end

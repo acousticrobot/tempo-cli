@@ -73,6 +73,19 @@ describe Tempo do
       @record_6.running?.must_equal true
     end
 
+    it "has a running! method for last record only" do
+      time_record_factory
+       @record_6.end_time = Time.new(2014, 1, 2, 19, 00 )
+       @record_6.running!
+      Tempo::Model::TimeRecord.current.must_equal @record_6
+    end
+
+    it "running! method succeeds on last record only" do
+      time_record_factory
+      proc { @record_1.running!}.must_raise RuntimeError
+    end
+
+
     it "has a next record method" do
       time_record_factory
       @record_1.next_record.must_equal @record_2
@@ -155,7 +168,7 @@ describe Tempo do
 
     it "errors when end time is before start time" do
       Tempo::Model::TimeRecord.clear_all
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 10 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 12 ), end_time: Time.new(2014, 1, 1, 10 ) }) }.must_raise Tempo::EndTimeError
     end
 
     it "accepts and end time equal to start time" do
@@ -173,7 +186,7 @@ describe Tempo do
 
     it "errors when end time is on a different day" do
       Tempo::Model::TimeRecord.clear_all
-      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 2, 12 ) }) }.must_raise ArgumentError
+      proc { Tempo::Model::TimeRecord.new({ start_time: Time.new(2014, 1, 1, 10 ), end_time: Time.new(2014, 1, 2, 12 ) }) }.must_raise Tempo::DifferentDaysError
     end
 
     it "errors when end time in existing record" do
@@ -212,7 +225,7 @@ describe Tempo do
       @record = Tempo::Model::TimeRecord.new({project: @project_1,
                                               start_time: Time.new(2014, 1, 1, 8 ),
                                               end_time: Time.new(2014, 1, 1, 10 ) })
-      proc { @record.start_time = Time.new(2014, 1, 1, 11 )}.must_raise ArgumentError
+      proc { @record.start_time = Time.new(2014, 1, 1, 11 )}.must_raise Tempo::EndTimeError
 
       @record.start_time = Time.new(2014, 1, 1, 9 )
       @record.start_time.must_equal Time.new(2014, 1, 1, 9 )
@@ -225,7 +238,7 @@ describe Tempo do
                                               start_time: Time.new(2014, 1, 1, 8 ),
                                               end_time: Time.new(2014, 1, 1, 10 ) })
 
-      proc { @record.end_time = Time.new(2014, 1, 1, 7 )}.must_raise ArgumentError
+      proc { @record.end_time = Time.new(2014, 1, 1, 7 )}.must_raise Tempo::EndTimeError
       @record.end_time = Time.new(2014, 1, 1, 11 )
       @record.end_time.must_equal Time.new(2014, 1, 1, 11 )
     end

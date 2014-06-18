@@ -27,4 +27,9 @@ class Time
   def add_days(days)
     t = self + days * 86400 # 24 * 60 * 60
   end
+
+  def on_date(date)
+    raise ArgumentError if ! date.kind_of? Time
+    Time.new(date.year, date.month, date.day, self.hour, self.min, self.sec)
+  end
 end
