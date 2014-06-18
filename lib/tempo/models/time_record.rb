@@ -285,11 +285,12 @@ module Tempo
         # TODO: a better check for :running conditions
         return true if end_time == :running
 
-        raise ArgumentError, "End time must be greater than start time" if end_time < start_time
+        raise Tempo::EndTimeError.new(start_time, end_time) if end_time < start_time
 
         dsym = self.class.date_symbol end_time
         start_dsym = self.class.date_symbol start_time
-        raise ArgumentError, "End time must be on the same day as start time: #{start_time} : #{end_time}" if dsym != start_dsym
+
+        raise Tempo::DifferentDaysError.new(start_time, end_time) if dsym != start_dsym
 
         # this is necessary if this is the first record
         # for the day and self is not yet added to index
