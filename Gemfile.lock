@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tempo-cli (0.2.3)
+    tempo-cli (0.2.4)
       chronic (~> 0.10)
       gli (~> 2.10)
 

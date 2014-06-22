@@ -457,10 +457,6 @@ command [:update, :u] do |c|
 end
 
 pre do |global,command,options,args|
-  # Return true to proceed; false to abort and not call the
-  # chosen command
-  # Use skips_pre before a command to skip this block
-  # on that command only
 
   # add reporting of all arguments
   if global[:v]
@@ -480,25 +476,22 @@ pre do |global,command,options,args|
   # TODO: send formats in through global options, and then:
   # Tempo::Views::Reporter.add_formats
 
+  # Return true to proceed; false to abort
   true
 end
 
 post do |global,command,options,args|
-  # Post logic here
-  # Use skips_post before a command to skip this
-  # block on that command only
 
   Tempo::Views::Reporter.report
 
 end
 
 on_error do |exception|
-  # Error logic here
+
+  # run DEBUG=true tempo ... to see verbose exceptions
+  puts exception.backtrace if ENV['DEBUG'] == "true"
+
   # return false to skip default error handling
-
-  # remove before distribution:
-  puts exception.backtrace
-
   true
 end
 
