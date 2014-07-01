@@ -53,6 +53,10 @@ module Tempo
 
             if @projects.index.length == 1
               @projects.current = project
+
+            # arrange the project as the child of the current project
+            elsif options[:child]
+              @projects.current << project
             end
 
             @projects.save_to_file options

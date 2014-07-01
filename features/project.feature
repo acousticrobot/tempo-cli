@@ -102,6 +102,13 @@ Feature: Project Command manages a list of projects
     Then the stdout should contain "added project:\nhang gliding\n"
     And the project file should contain ":title: hang gliding"
 
+  Scenario: Adding a project as a child of the current
+    Given an existing project file
+    When I successfully run `tempo project --child hang gliding`
+    Then the stdout should contain "added project:\nhang gliding\n"
+    And the project file should contain "- 7" at line 7
+    And the project file should contain ":parent: 1" at line 52
+
   Scenario: Attempting to add an existing project
     Given an existing project file
     When I run `tempo project "basement mushrooms"`

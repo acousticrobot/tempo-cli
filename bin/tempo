@@ -112,6 +112,9 @@ command [:project, :p] do |c|
   c.arg_name 'tagword'
   c.flag [:u, :untag]
 
+  c.desc 'Add a Project as a child of the current Project'
+  c.switch [:c, :child], negatable: false
+
   c.action do |global_options, options, args|
 
     controller = Tempo::Controllers::Projects
