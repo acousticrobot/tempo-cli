@@ -92,6 +92,14 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
+    it "knows the date of the last record" do
+      log_record_factory
+      last_day = Tempo::Model::MessageLog.last_day
+      match_day = Time.new(2014, 1, 2)
+      Tempo::Model::MessageLog.ids( match_day ).must_equal [] # should not load any records
+      last_day.must_equal match_day
+    end
+
     it "loads records for most recent and return day" do
       log_record_factory
       last_day = Tempo::Model::MessageLog.load_last_day
@@ -101,7 +109,7 @@ describe Tempo do
       Tempo::Model::MessageLog.ids( time_1 ).must_equal []
       Tempo::Model::MessageLog.ids( time_2 ).must_equal [1,2,3]
       Tempo::Model::MessageLog.index[0].message.must_equal "day 2 pet the sheep"
-      last_day.must_equal Time.new(2014, 1, 2)
+      last_day.must_equal time_2
     end
 
     it "loads the records for a time frame" do

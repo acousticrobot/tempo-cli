@@ -32,4 +32,9 @@ class Time
     raise ArgumentError if ! date.kind_of? Time
     Time.new(date.year, date.month, date.day, self.hour, self.min, self.sec)
   end
+
+  def same_day?(date)
+    raise ArgumentError if ! date.kind_of? Time
+    Time.new(date.year, date.month, date.day) == Time.new(self.year, self.month, self.day)
+  end
 end

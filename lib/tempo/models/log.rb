@@ -59,7 +59,8 @@ module Tempo
         end
 
         # returns the loaded record with the latest start time
-        # Only loads records if options[:load] is true
+        # Only loads records if options[:load] is true,
+        # otherwise assumes records are already loaded
         def last_record(options={})
           load_last_day(options) if options[:load]
           sort_by_start_time.last
@@ -99,17 +100,25 @@ module Tempo
           (days + 1).times { |i| load_day_record(time_1.add_days(i), options)}
         end
 
-        # load the records for the most recently recorded day
-        #
-        def load_last_day(options={})
+        # Return a Time object for the last record's date
+        def last_day(options={})
           reg = /(\d+)\.yaml/
-          recs = records(options)
+          recs = records options
           if recs.last
             d_id = reg.match(recs.last)[1]
             time = day_id_to_time d_id if d_id
-            load_day_record time, options
             return time
           end
+          return nil
+        end
+
+        # load the records for the most recently recorded day
+        #
+        def load_last_day(options={})
+          time = last_day options
+          return nil unless time
+          load_day_record time, options
+          return time
         end
 
         # delete the file for a single day
@@ -157,7 +166,7 @@ module Tempo
           days_index[dsym].delete instance
           @ids[dsym].delete id
         end
-      end
+      end # class << self
 
       def initialize(options={})
         @start_time = options.fetch(:start_time, Time.now)

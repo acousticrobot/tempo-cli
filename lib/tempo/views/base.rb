@@ -52,6 +52,10 @@ module Tempo
         ViewRecords::Message.new message, category: :info
       end
 
+      def warning(message)
+        ViewRecords::Message.new message, category: :warning
+      end
+
       def error(message)
         ViewRecords::Message.new message, category: :error
       end

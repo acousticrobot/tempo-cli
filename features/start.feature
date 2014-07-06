@@ -70,6 +70,41 @@ Feature: Start Command starts a new time record
     Then the stdout should contain "time record started"
     And the time record 20140101 should contain ":end_time: 2014-01-01 10:00" at line 5
 
+  Scenario: Adding a future days time record should warn about complications
+    Given an existing project file
+    When I run `tempo start --at "1-1-2033 10:00"`
+    Then the stdout should contain "WARNING"
+    And the time record 20330101 should contain ":start_time: 2033-01-01 10:00" at line 4
+
+  Scenario: Adding a record to a previous day works
+    Given an existing project file
+    When I run `tempo start --at "7/2/14 10:00" existing entry`
+    And I run `tempo start --at "7/1/14 10:00" -e "7/1/2014 11:00" previous entry 1`
+    And I run `tempo start --at "7/1/14 11:00" previous entry 2`
+    Then the time record 20140701 should contain "previous entry 1" at line 3
+    And the time record 20140701 should contain "11:00" at line 5
+    And the time record 20140701 should contain "previous entry 2" at line 11
+    And the time record 20140701 should contain "23:59" at line 13
+
+  Scenario: Adding a record to a previous day works
+    Given an existing project file
+    When I run `tempo start --at "7/2/14 10:00" existing entry`
+    And I run `tempo start --at "7/1/14 10:00" previous entry 1`
+    And I run `tempo start --at "7/1/14 11:00" previous entry 2`
+    Then the stderr should contain "error: time <11:00> conflicts with existing record"
+    And the time record 20140701 should contain "previous entry 1" at line 3
+    And the time record 20140701 should contain "23:59" at line 5
+
+  Scenario: Adding a record to a future day works
+    Given an existing project file
+    When I run `tempo start --at "7/2/33 10:00" existing entry`
+    And I run `tempo start --at "7/1/33 10:00" -e "7/1/2033 11:00" previous entry 1`
+    And I run `tempo start --at "7/1/33 11:00" previous entry 2`
+    Then the time record 20330701 should contain "previous entry 1" at line 3
+    And the time record 20330701 should contain "11:00" at line 5
+    And the time record 20330701 should contain "previous entry 2" at line 11
+    And the time record 20330701 should contain "23:59" at line 13
+
   Scenario: Resuming the last time record
     Given an existing project file
     When I run `tempo start --at "1-1-2014 10:00" tweezing the cactus`

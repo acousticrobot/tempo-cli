@@ -1,5 +1,5 @@
 # Time Record is an extension of the Log Model,
-# it adds and end time, and verifies that no records overlap
+# it adds an end time, and verifies that no records overlap
 # in their time periods. Additionally, one, and only on record
 # can be running at any given time, and it can only be the most
 # recent record.
