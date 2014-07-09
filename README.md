@@ -68,13 +68,14 @@ Time record ids are on a per-day basis, and begin again with an id of 1 on the n
 
 ##### command options
 
-    --add                  - Add a Project
-    --delete=title         - Delete a Project
-    --exact                - Exact Match
-    --id                   - List by or perform command by project Id
-    --list                 - List Projects
-    --tag=tagword          - Tag a Project
-    --untag=tagword        - Untag a Project
+    --add           - Add a Project
+    --child         - Add a Project as a child of the current Project
+    --delete=title  - Delete a Project (default: none)
+    --exact         - Exact Match
+    --id            - List by or perform command by project id
+    --list          - List Projects
+    --tag=tagword   - Tag a Project (default: none)
+    --untag=tagword - Untag a Project (default: none)
 
 
 Manage the Projects that timed tasks are assigned to. By default, lists the current project, or with --list tag, lists all projects. The active project will be marked by an asterisk.
@@ -148,15 +149,15 @@ New projects are added as root projects by default. Use arrange to arrange exist
     tempo [global options] start [command options] description
 
 ##### command options
-    --at=time
-    --end=time
-    --restart
+    --at=time  - start the entry at a given time (default: none)
+    --end=time - end the entry at a given time (default: none)
+    --resume   - start an entry using the last description and project
 
     Starts a new time entry, and closes out any running time entries.
 
     You can also add a description of the time entry.
 
-    To start a time entry at a time other than the current, pass it in as an argument to the --at flag. This will accept a number of human readable formats, multiple word time formats should be enclosed in quotes
+    To start a time entry at a time other than the current, pass it in as an argument to the --at flag. This will accept a number of human readable formats, multiple-word time formats should be enclosed in quotes
 
 ##### examples:
 
@@ -198,7 +199,7 @@ New projects are added as root projects by default. Use arrange to arrange exist
     --id=number         - Select by Id
     --on=date           - Select On Date
     --project           - Update to the active project
-    --running           - Set the last project back to running (reopen the end-time)
+    --running           - Change the last time entry back to actively running (ignores all other options)
     --start=time        - Update the Start Time
 
 update the project, start time, or end time for a time entry.
