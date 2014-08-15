@@ -76,6 +76,18 @@ module FileRecord
         end
       end
     end
+
+    # dir is the directory to backup
+    # backup is the name of the backup
+    def backup(origin_dir, backup_dir)
+      io = tar(origin_dir)
+      gz = gzip(io)
+
+      File.open("#{backup_dir}.tar.gz","w") do |file|
+         file.binmode
+         file.write gz.read
+      end
+    end
   end
 end
 
