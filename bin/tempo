@@ -459,6 +459,30 @@ command [:update, :u] do |c|
   end
 end
 
+# COMMAND: CLEAN
+
+desc 'Clean the tempo file structure'
+long_desc "Creates a backup of the existing tempo directory,
+and then clean all files in the current directory.
+
+Cleaning the projects assures that:
+
+1. All projects that have been renamed have been updated in the files.
+
+2. Any files with time record conflicts are caught and can be corrected."
+
+command [:clean] do |c|
+
+  c.action do |global_options, options, args|
+    controller = Tempo::Controllers::Records
+
+    # controller.backup_records options, args
+
+    controller.clean_records options, args
+  end
+end
+
+
 pre do |global,command,options,args|
 
   # add reporting of all arguments

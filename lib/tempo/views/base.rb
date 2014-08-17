@@ -43,13 +43,13 @@ module Tempo
       def no_items(items, category=:info)
         ViewRecords::Message.new "no #{items} exist", category: category
         if items == "projects"
-          ViewRecords::Message.new "You must at least one project before you can begin tracking time"
+          ViewRecords::Message.new "You must create at least one project before you can begin tracking time"
           ViewRecords::Message.new "run `tempo project --help` for more information"
         end
       end
 
-      def message(message)
-        ViewRecords::Message.new message, category: :info
+      def message(message, category=:info)
+        ViewRecords::Message.new message, category: category
       end
 
       def warning(message)

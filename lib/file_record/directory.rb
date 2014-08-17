@@ -1,6 +1,8 @@
-require 'package'
+require 'stringio'
+require 'rubygems/package'
+require 'rubygems/package'
 require 'zlib'
-require 'fileutils'
+
 
 module FileRecord
   class Directory
@@ -18,7 +20,7 @@ module FileRecord
 
       def create_new(options={})
 
-        directory = options.fetch( :directory, Dir.home )
+        directory = options.fetch(:directory, Dir.home)
         cwd = File.expand_path File.dirname(__FILE__)
         source = File.join(cwd, "directory_structure/tempo")
         if ! Dir.exists? directory
@@ -27,17 +29,28 @@ module FileRecord
         FileUtils.cp_r source, directory
       end
 
-      # dir is the directory to backup
-      # backup is the name of the backup
-      def backup(origin_dir, backup_dir)
-        io = tar(origin_dir)
+      # Backup the tempo directory to tempo_backup_20140101_HrMnS.tar.gz
+      # pass in an optional directory (see create_new)
+      # Pass in a timestamp, or default to 20140101_120000
+      def backup(options={})
+        directory = options.fetch(:directory, Dir.home)
+        timestamp = options.fetch(:timestamp, Time.new.strftime("%y%m%d_%H%M%S"))
+        source = File.join(directory, "tempo")
+        destination = File.join(directory, "tempo_backup_#{timestamp}.tar.gz")
+
+        io = tar(source)
         gz = gzip(io)
 
-        File.open("#{backup_dir}.tar.gz","w") do |file|
+        File.open(destination,"w") do |file|
            file.binmode
            file.write gz.read
         end
+
+        # return the new directory name
+        destination
       end
+
+      private
 
       # COMPRESSION / DECOMPRESSION
       # From: https://gist.github.com/sinisterchipmunk/1335041
