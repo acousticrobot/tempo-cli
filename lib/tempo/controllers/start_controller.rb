@@ -13,14 +13,14 @@ module Tempo
           return Views.project_assistance if Model::Project.index.empty?
 
           if not options[:at]
-            start_time = Time.new()
+            start_time = Time.new().round()
           else
             start_time = Time.parse options[:at]
           end
 
           return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
 
-          if start_time > Time.new()
+          if start_time > Time.new().round()
             Views.warning("WARNING: logging time in the future may cause trouble maintaining running records")
           end
 

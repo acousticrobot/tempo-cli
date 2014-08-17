@@ -13,7 +13,7 @@ module Tempo
           return Views.project_assistance if Model::Project.index.empty?
 
           if not options[:at]
-            time_out = Time.new()
+            time_out = Time.new().round
           else
             time_out = Time.parse options[:at]
           end
