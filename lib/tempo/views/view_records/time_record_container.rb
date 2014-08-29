@@ -18,7 +18,7 @@ module Tempo
           @post = options.fetch( :post, nil )
           @type = "container"
           @collection = [] # handle records on init?
-          Reporter.add_view_record self
+          Reporter.add_view_record self unless options[:postpone]
         end
 
         # add a splat?

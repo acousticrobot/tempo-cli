@@ -27,6 +27,9 @@ module Tempo
       # category :error will raise an error after all viewRecords
       # have been run through the reporters
       #
+      # Containers send :pospone => true in options in order to manage
+      # triggering the message themselves
+      #
       class Message
         attr_accessor :type, :message, :category
 
@@ -34,7 +37,7 @@ module Tempo
           @message = message
           @category = options.fetch( :category, :info )
           @type = "message"
-          Reporter.add_view_record self
+          Reporter.add_view_record self unless options[:postpone]
         end
 
         def format(&block)
@@ -93,6 +96,9 @@ module Tempo
       # tempo model without error, but most likely won't be as useful as a child class
       # taylored to the specifics of the actual model's child class.
       #
+      # Containers send :pospone => true in options in order to manage
+      # triggering the message themselves
+      #
       class Model
         attr_accessor :id, :type
 
@@ -101,7 +107,7 @@ module Tempo
 
           # example: Tempo::Model::Something => "something"
           @type = /Tempo::Model::(.*)$/.match( model.class.to_s )[1].downcase
-          Reporter.add_view_record self
+          Reporter.add_view_record self unless options[:postpone]
         end
 
         def format(&block)
