@@ -11,7 +11,7 @@ module Tempo
           return Tempo::Views.project_assistance if Tempo::Model::Project.index.empty?
 
           # A from flag has been supplied by the user
-          # and possible a to flag as well,
+          # and possibly a to flag,
           # so we return a period of day records
           #
           if options[:from] != "last record"
