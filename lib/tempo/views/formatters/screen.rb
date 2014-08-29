@@ -31,6 +31,8 @@ module Tempo
           end
         end
 
+# PARTIALS --------------------------------------------------------------------/
+
         # spacer for project titles, active project marked with *
         def active_indicator(project)
           indicator = project.current ? "* " : "  "
@@ -53,6 +55,9 @@ module Tempo
         def id_partial(id)
           @options[:id] ? "[#{id}] ".rjust(6, ' ') : ""
         end
+
+# PARTIALS --------------------------------------------------------------------/
+
 
         def project_block(record)
 
