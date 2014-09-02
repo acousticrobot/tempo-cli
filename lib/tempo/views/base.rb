@@ -26,6 +26,7 @@ module Tempo
         Tempo::Views::Reporter.add_options view_opts
       end
 
+      # called in the preblock when verbose = true
       def options_report(command, global_options, options, args)
         globals_list = "global options: "
         global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }

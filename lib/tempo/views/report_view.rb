@@ -21,9 +21,8 @@ module Tempo
 
           day = Tempo::Model::TimeRecord.day_id_to_time d_id
 
-          container = ViewRecords::Container.new
+          container = ViewRecords::TimeRecordContainer.new
           container.pre = ViewRecords::Message.new day.strftime("Records for %m/%d/%Y:\n\n"), postpone: true
-          container.post = ViewRecords::Message.new "\n\n", postpone: true
 
           days_record.each do |time_record|
             container.add(time_record_view time_record, postpone: true)

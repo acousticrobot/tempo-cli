@@ -1,7 +1,5 @@
 # Wrapper object for ViewRecords, able to collect multiple viewrecords
 # this allows for a begining and end record, collecting total duration, etc.
-# TODO: Build a generic container object, implement specifics for the TimeRecordsContainer
-# and then move the generic container into the base.rb file
 
 # @pre = Optional record which is sent to the formatter before the collection
 # @post = Optionsal record which is sent to the formatter after the collection
@@ -10,7 +8,7 @@ module Tempo
     module ViewRecords
 
       class Container
-        attr_accessor :type, :pre, :post, :collection
+        attr_accessor :type, :pre, :post
 
         def initialize(options={})
           # TODO: add error checking for pre and post, better handling nil values
@@ -26,14 +24,12 @@ module Tempo
           @collection << record
         end
 
-        # change collection to records, keep it simple?
+        #TODO: Implement pre and post method with logic to handle both
+        #      views reocrds and strings. See post in TimeRecordContainer
+        #      for use case
+
         def records
           @collection
-        end
-
-        def format(&block)
-          block ||= lambda {|m| "#{m.message}"}
-          block.call self
         end
       end
     end
@@ -44,8 +40,28 @@ end
 module Tempo
   module Views
     module ViewRecords
-      class TimeRecordContainer < ViewRecords::Container
 
+      # Handle a collection of time records
+      # Pre can hold the title of the collection (date, project, etc.)
+      # postreturns the total duration of all contained records
+      class TimeRecordContainer < ViewRecords::Container
+        attr_accessor :duration
+
+        def initialize(options={})
+          super options
+          @type = "time_record_container"
+          @duration = Duration.new
+        end
+
+        def add(record)
+          # TODO: fail if not a time record
+          super record
+          @duration.add record.duration.total
+        end
+
+        def post
+          ViewRecords::Message.new "Total: ------- [#{duration.format}] --------------------------------\n\n", postpone: true
+        end
       end
     end
   end
