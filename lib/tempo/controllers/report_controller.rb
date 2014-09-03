@@ -47,7 +47,7 @@ module Tempo
 
           return Views.no_items( "time records#{error_timeframe}", :error ) if @time_records.index.empty?
 
-          Views.report_records_view
+          Views.report_records_view options
         end
       end #class << self
     end
