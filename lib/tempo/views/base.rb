@@ -22,6 +22,10 @@ module Tempo
             view_opts[:tags] = options[:tag] || options[:untag] ? true : false
             view_opts[:id] = global_options[:id] || options[:id] ? true : false
           end
+        when :report, :r
+          if /^p(roject)?$/.match(options[:order]) && ! global_options[:verbose]
+            view_opts[:bullet_report] = true
+          end
         end
         Tempo::Views::Reporter.add_options view_opts
       end
