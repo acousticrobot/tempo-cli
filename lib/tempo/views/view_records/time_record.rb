@@ -27,7 +27,7 @@ module Tempo
           @description = model.description
           @description ||= ""
           @duration = Duration.new model.duration
-          @end_time = model.end_time == :running ? Time.now() : model.end_time
+          @end_time = model.end_time == :running ? Time.now().round : model.end_time
           @project = model.project_title
           @running = model.running?
           self.class.max_description_length @description.length

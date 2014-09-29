@@ -146,7 +146,7 @@ module Tempo
         if @end_time.kind_of? Time
           end_time = @end_time
         else
-          end_time = Time.now()
+          end_time = Time.now().round
         end
         end_time.to_i - @start_time.to_i
       end
