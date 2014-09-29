@@ -377,6 +377,11 @@ command [:report, :r] do |c|
   c.default_value 'today'
   c.flag [:t, :to]
 
+  c.desc 'order reports by date or project'
+  c.arg_name '[project, date]'
+  c.default_value 'date'
+  c.flag [:o, :order]
+
   c.action do |global_options, options, args|
     controller = Tempo::Controllers::Report
 

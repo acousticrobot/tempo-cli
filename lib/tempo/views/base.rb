@@ -22,10 +22,15 @@ module Tempo
             view_opts[:tags] = options[:tag] || options[:untag] ? true : false
             view_opts[:id] = global_options[:id] || options[:id] ? true : false
           end
+        when :report, :r
+          if /^p(roject)?$/.match(options[:order]) && ! global_options[:verbose]
+            view_opts[:bullet_report] = true
+          end
         end
         Tempo::Views::Reporter.add_options view_opts
       end
 
+      # called in the preblock when verbose = true
       def options_report(command, global_options, options, args)
         globals_list = "global options: "
         global_options.each {|k,v| globals_list += "#{k} = #{v}, " if k.kind_of? String and k.length > 1 and !v.nil? }

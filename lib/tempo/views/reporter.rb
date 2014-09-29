@@ -61,8 +61,8 @@ module Tempo
 
         def report
           # TODO send records to added formatters
-          screen_formatter = Formatters::Screen.new
-          screen_formatter.format_records view_records, options
+          screen_formatter = Formatters::Screen.new(options)
+          screen_formatter.format_records view_records
         end
       end
     end

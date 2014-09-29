@@ -26,6 +26,12 @@ describe Tempo do
           record = Tempo::Views::ViewRecords::Message.new "a message view record"
           Tempo::Views::Reporter.view_records.length.must_equal length_before + 1
         end
+
+        it "doesn't add itself with options postpone" do
+          length_before = Tempo::Views::Reporter.view_records.length
+          record = Tempo::Views::ViewRecords::Message.new "a message view record", postpone: true
+          Tempo::Views::Reporter.view_records.length.must_equal length_before
+        end
       end
 
       describe "Duration" do

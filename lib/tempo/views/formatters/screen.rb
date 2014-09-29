@@ -31,6 +31,8 @@ module Tempo
           end
         end
 
+# PARTIALS --------------------------------------------------------------------/
+
         # spacer for project titles, active project marked with *
         def active_indicator(project)
           indicator = project.current ? "* " : "  "
@@ -54,6 +56,9 @@ module Tempo
           @options[:id] ? "[#{id}] ".rjust(6, ' ') : ""
         end
 
+# PARTIALS --------------------------------------------------------------------/
+
+
         def project_block(record)
 
           record.format do |r|
@@ -72,11 +77,16 @@ module Tempo
         end
 
         def timerecord_block(record)
+          #require 'pry'; binding.pry
           record.format do |r|
             id = id_partial r.id
             running = r.running ? "*" : " "
-            description = r.description.empty? ? "#{r.project}" : "#{r.project}: #{r.description}"
-            view =  "#{id}#{r.start_time.strftime('%H:%M')} - #{r.end_time.strftime('%H:%M')}#{running} [#{r.duration.format}] #{description}"
+            if @options[:bullet_report]
+              view =  " * #{r.description}"
+            else
+              description = r.description.empty? ? "#{r.project}" : "#{r.project}: #{r.description}"
+              view =  "#{id}#{r.start_time.strftime('%H:%M')} - #{r.end_time.strftime('%H:%M')}#{running} [#{r.duration.format}] #{description}"
+            end
             puts view
           end
         end

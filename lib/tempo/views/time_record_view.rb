@@ -2,8 +2,9 @@ module Tempo
   module Views
     class << self
 
-      def time_record_view(time_record)
-        ViewRecords::TimeRecord.new time_record
+      # Container sends postpone: true through options
+      def time_record_view(time_record, options={})
+        ViewRecords::TimeRecord.new time_record, options
       end
 
       def start_time_record_view(time_record)

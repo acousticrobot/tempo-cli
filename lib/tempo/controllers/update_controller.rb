@@ -43,7 +43,9 @@ module Tempo
             record = @time_records.find_by_id( options[:id], day )
             return Views.no_match_error( "time record on #{day.strftime('%m/%d/%Y')}", "id = #{options[:id]}", false ) if !record
           else
-            record = @time_records.index.last
+            # TODO: this will still not pick the days last entry
+            # by time if ids are out of order and none are running.
+            record = @time_records.current || @time_records.index.last
             return Views.no_items( "time records on #{day.strftime('%m/%d/%Y')}", :error ) if ! record
           end
 
@@ -66,7 +68,6 @@ module Tempo
             if options[:start]
               start_time = Time.parse options[:start]
               return Views.no_match_error( "valid timeframe", options[:at], false ) if start_time.nil?
-
               if record.valid_start_time? start_time
                 record.start_time = start_time
 

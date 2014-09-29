@@ -13,16 +13,38 @@ module Tempo
 
       class Base
 
+        def initialize(options={})
+          @options = options
+        end
+
+        def report(record)
+          class_block = "#{record.type}_block"
+
+          # We handle containers separately
+          if /container/.match class_block
+            format_records_container(record)
+          else
+            send(class_block, record) if respond_to? class_block
+          end
+        end
+
         # Here we check if our class methods include a proc block to handle the particular
         # record type.  See View Records for all possible record types.  See screen formatter
         # for examples of proc blocks.
         #
-        def format_records(records, options={})
-          @options = options
+        def format_records(records)
           records.each do |record|
-            class_block = "#{record.type}_block"
-            send( class_block, record ) if respond_to? class_block
+            report record
           end
+        end
+
+        # Records containers handle nested records
+        def format_records_container(container)
+          report container.pre if container.pre
+          container.records.each do |record|
+            report record
+          end
+          report container.post if container.post
         end
       end
     end
