@@ -477,13 +477,21 @@ Cleaning the projects assures that:
 2. Any files with time record conflicts are caught and can be corrected."
 
 command [:clean] do |c|
-
+  require 'readline'
   c.action do |global_options, options, args|
     controller = Tempo::Controllers::Records
 
-    # controller.backup_records options, args
-
-    controller.clean_records options, args
+    puts "\nCleaning Tempo records resaves all records, attempting to update outdated information and correct erroneous records.
+In the event that a record cannot be corrected, you wil be prompted to repair the record manually.
+A backup of the records will also be created before any changes are made."
+    puts "\nDo you wish to continue? [YyNn]"
+    confirm = Readline.readline('> ', true).match(/(y|Y)(es)?/)
+    if confirm
+      controller.backup_records options, args
+      #controller.clean_records options, args
+    else
+      puts "cancelling clean command"
+    end
   end
 end
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tempo-cli (0.2.5)
+    tempo-cli (0.2.6)
       chronic (~> 0.10)
       gli (~> 2.10)
 
@@ -27,7 +27,7 @@ GEM
     ffi (1.9.0)
     gherkin (2.12.0)
       multi_json (~> 1.3)
-    gli (2.11.0)
+    gli (2.12.0)
     json (1.8.1)
     method_source (0.8.1)
     multi_json (1.7.7)
