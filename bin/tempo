@@ -481,20 +481,16 @@ command [:clean] do |c|
   c.action do |global_options, options, args|
     controller = Tempo::Controllers::Records
 
-    puts "\nCleaning Tempo records resaves all records, attempting to update outdated information and correct erroneous records.
-In the event that a record cannot be corrected, you wil be prompted to repair the record manually.
-A backup of the records will also be created before any changes are made."
-    puts "\nDo you wish to continue? [YyNn]"
-    confirm = Readline.readline('> ', true).match(/(y|Y)(es)?/)
-    if confirm
+    confirm = Tempo::Views::interactive_confirm_clean
+
+    if confirm.positive_response?
       controller.backup_records options, args
-      #controller.clean_records options, args
+      controller.clean_records options, args
     else
-      puts "cancelling clean command"
+      Tempo::Views::message "Cancelling clean"
     end
   end
 end
-
 
 pre do |global,command,options,args|
 

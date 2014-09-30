@@ -46,6 +46,30 @@ module Tempo
         end
       end
 
+      # Query records are handled by the console formatter,
+      # returning results from a call to Readline
+      class Query
+        attr_accessor :type, :query, :match, :response
+
+        def initialize(query, options={})
+          @query = query
+          @type = "query"
+          @match = options.fetch(:match, /(y|Y)(es)?/)
+          @response = Reporter.add_view_record self
+        end
+
+        def positive_response?
+          true if @response.match(@match)
+        end
+
+        def format(&block)
+          # TODO: should we create an interactive default? using:
+          # confirm = Readline.readline('> ', true).match(/(y|Y)(es)?/)
+          block ||= lambda { |q| puts "#{q.query}"; Readline.readline('> ', true) }
+          response = block.call self
+        end
+      end
+
       # Specifically for managing a time duration, nested in other
       # view records. This can be used with a start and end time,
       # or used to manage a sum of times.

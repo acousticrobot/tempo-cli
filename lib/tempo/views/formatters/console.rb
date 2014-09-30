@@ -22,9 +22,13 @@ module Tempo
           end
         end
 
-        def interactive_block(record)
-          # handle interactive message
+        def query_block(query)
+          query.format do |q|
+            puts q.query
+            response = Readline.readline('> ', true)
+          end
         end
+
       end
     end
   end

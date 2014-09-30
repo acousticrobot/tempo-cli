@@ -18,11 +18,11 @@ module Tempo
 
         def backup_records(options, args)
           dir = options.fetch( :directory, ENV['HOME'])
-          Views::message("Backing up #{dir}/tempo...")
+          Views::interactive_progress "Backing up #{dir}/tempo"
 
           if File.exists?(File.join(dir, 'tempo'))
             dest = FileRecord::Directory.backup directory: dir
-            Views::message("Sucessfully created #{dest}")
+            Views::interactive_progress "Sucessfully created #{dest}"
           else
             Views::no_items("directory #{dir}/tempo", :error)
           end
@@ -30,14 +30,15 @@ module Tempo
 
         def clean_records(options, args)
           dir = File.join( options.fetch( :directory, ENV['HOME']), "tempo", "tempo_time_records")
-          Views::message("Loading records from #{dir}")
+          Views::interactive_progress "Loading records from #{dir}"
 
           all_files = Dir["#{dir}/*.yaml"]
+
           # if including subfolders
           # Dir["/path/to/search/**/*.rb"]
 
           all_files.each do |f|
-            Views::message("Loading records for #{f}", :verbose)
+            # Views::message "Loading records for #{f}"
           end
         end
       end #class << self
