@@ -170,13 +170,15 @@ end
 
 def view_records_factory
   time_record_factory
-  @message_1 = Tempo::Views::ViewRecords::Message.new "All The Things I Did", class: :title
-  @message_2 = Tempo::Views::ViewRecords::Message.new "on a busy busy day", class: :title
+  @message_1 = Tempo::Views::ViewRecords::Message.new "All The Things I Did"#, class: :title
+  @message_2 = Tempo::Views::ViewRecords::Message.new "on a busy busy day"#, class: :title
   @error = Tempo::Views::ViewRecords::Message.new "raising an error", category: :error
   @duration = Tempo::Views::ViewRecords::Duration.new 9600 # 2 hours and 40 minutes
   @project_1 = Tempo::Views::ViewRecords::Project.new @project_1
   @project_2 = Tempo::Views::ViewRecords::Project.new @project_2
   @time_record_1 = Tempo::Views::ViewRecords::TimeRecord.new @record_1
   @time_record_6 = Tempo::Views::ViewRecords::TimeRecord.new @record_6
-  #@records = [@message, @project, @time_record]
+  @progress_message = Tempo::Views::ViewRecords::Message.new "Making progress", category: :progress
+  # change to interaction:
+  @interaction = Tempo::Views::ViewRecords::Message.new "Making progress", category: :progress
 end

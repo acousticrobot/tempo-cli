@@ -6,6 +6,11 @@
 #
 # class instance variables:
 #
+# @@console
+#   A shell formtter which receives view records as they are created and can
+#   intercept messages that should be displayed in real time, as well as interactive
+#   prompts
+#
 # @@formats
 #   an array of formatters, which will be passed the view records on exit
 #   Reporter will always run the error formater first, to check for errors in
@@ -20,6 +25,7 @@ module Tempo
   module Views
 
     class Reporter
+      @@console
       @@formats
       @@view_records
       @@options
@@ -40,6 +46,12 @@ module Tempo
           @@options ||= {}
         end
 
+        # All records are sent directly to the console, so it can decide if
+        # action is required immediately based on the type of record
+        def console
+          @@console ||= Formatters::Console.new(options)
+        end
+
         def add_options(options)
           @@options ||= {}
           @@options.merge! options
@@ -50,6 +62,9 @@ module Tempo
 
           if /Views::ViewRecords/.match record.class.name
             @@view_records << record
+
+            # console must be able to return a value
+            return console.report record
           else
             raise InvalidViewRecordError
           end

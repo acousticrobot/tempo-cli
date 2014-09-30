@@ -22,6 +22,12 @@ describe Tempo do
         proc { Tempo::Views::Reporter.add_view_record record }.must_raise Tempo::InvalidViewRecordError
       end
 
+      it "sends the reports immediately to the console formatter" do
+        Tempo::Views::Reporter.clear_records
+        out = capture_stdout { Tempo::Views::ViewRecords::Message.new "an immediate message to report", category: :immediate }
+        assert_equal "an immediate message to report\n", out.string
+      end
+
       it "sends the reports to the screen formatter on report" do
         Tempo::Views::Reporter.clear_records
         record_1 = Tempo::Views::ViewRecords::Message.new "a message to report"

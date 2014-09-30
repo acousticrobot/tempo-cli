@@ -1,11 +1,10 @@
-# Tempo View Formatters are triggered by the View Reporter.
-# The View Reporter sends it's stored view messages to each
-# of it's formatters. It calls the method process records and
-# passes in the view records.  If the formatter has a class method
-# that handles the type of block passed in, it will process
-# that view record. These class methods take the name "<record type>_block"
-# where record type can be any child class of ViewRecord::Base
-# see <TODO> for an example of proc blocks.
+# Tempo View Formatters are triggered by the View Reporter, and all inherit from
+# Views::Base
+#
+# The screen formatter is the primary formatter for reporting results back to the
+# screen. All formatting is handled after the main processes, when the Reporter is
+# invoked during the post block. (If immediate feedback is needed,
+# see Formatters::Console)
 
 module Tempo
   module Views
@@ -31,7 +30,7 @@ module Tempo
           end
         end
 
-# PARTIALS --------------------------------------------------------------------/
+# PARTIALS vv-----------------------------------------------------------------vv
 
         # spacer for project titles, active project marked with *
         def active_indicator(project)
@@ -56,7 +55,7 @@ module Tempo
           @options[:id] ? "[#{id}] ".rjust(6, ' ') : ""
         end
 
-# PARTIALS --------------------------------------------------------------------/
+# PARTIALS ^^-----------------------------------------------------------------^^
 
 
         def project_block(record)
