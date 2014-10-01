@@ -92,6 +92,15 @@ describe Tempo do
       Tempo::Model::MessageLog.index[0].message.must_equal "day 1 pet the sheep"
     end
 
+    it "can clear records out after load" do
+      log_record_factory
+      time = Time.new(2014, 1, 1)
+      Tempo::Model::MessageLog.load_day_record time
+      Tempo::Model::MessageLog.ids( time ).must_equal [1,2,3]
+      Tempo::Model::MessageLog.clear_all
+      Tempo::Model::MessageLog.ids( time ).must_equal []
+    end
+
     it "knows the date of the last record" do
       log_record_factory
       last_day = Tempo::Model::MessageLog.last_day

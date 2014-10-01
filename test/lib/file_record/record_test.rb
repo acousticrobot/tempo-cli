@@ -28,7 +28,7 @@ describe FileRecord do
       end
     end
 
-    describe "redording a Tempo Log" do
+    describe "recording a Tempo Log" do
 
       it "should create daily records containing each instance" do
         test_file_1 = File.join(ENV['HOME'],'tempo','tempo_message_logs', '20140101.yaml')

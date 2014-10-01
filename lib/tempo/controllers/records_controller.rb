@@ -36,9 +36,8 @@ module Tempo
 
           # if including subfolders
           # Dir["/path/to/search/**/*.rb"]
-
           all_files.each do |f|
-            # Views::message "Loading records for #{f}"
+            Views::message "Loading records for day-id #{f}"
           end
         end
       end #class << self

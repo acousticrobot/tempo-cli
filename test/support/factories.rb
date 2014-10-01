@@ -27,16 +27,6 @@ module Tempo
       end
     end
 
-    class Log
-      def self.clear_all()
-        @ids = {}
-        @index = []
-        @days_index = {}
-        @id_counter = {}
-        @current = nil
-      end
-    end
-
     class MessageLog < Tempo::Model::Log
       attr_accessor :message
 

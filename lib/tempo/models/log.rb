@@ -131,6 +131,15 @@ module Tempo
           FileRecord::FileUtility.new(self, options).file_path
         end
 
+        # Used when cleaning (and testing) records
+        def clear_all
+          @ids = {}
+          @index = []
+          @days_index = {}
+          @id_counter = {}
+          @current = nil
+        end
+
         # takes and integer, and time or day_id
         # and returns the instance that matches both
         # the id and d_id
