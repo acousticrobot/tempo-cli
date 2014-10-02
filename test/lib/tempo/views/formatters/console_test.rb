@@ -13,7 +13,7 @@ describe Tempo do
 
           it "outputs the message" do
             record =  @progress_message
-            formatter = Tempo::Views::Formatters::Console.new
+            formatter = Tempo::Views::Formatters::Interactive.new
             out = capture_stdout { formatter.report record }
 
             assert_equal "Making progress...\n", out.string

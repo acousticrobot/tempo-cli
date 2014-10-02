@@ -41,6 +41,12 @@ module Tempo
         # super handles start_time, not end time
         options[:start_time] ||= Time.now
         @end_time = options.fetch :end_time, :running
+
+        if options[:round_time]
+          options[:start_time] = options[:start_time].round
+          @end_time = @end_time.round
+        end
+
         verify_times options[:start_time], @end_time
 
         super options

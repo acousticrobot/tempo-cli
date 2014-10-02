@@ -7,7 +7,7 @@ module Tempo
   module Views
     module Formatters
 
-      class Console < Tempo::Views::Formatters::Base
+      class Interactive < Tempo::Views::Formatters::Base
 
 
         def message_block(record)
@@ -17,6 +17,9 @@ module Tempo
               puts "#{m.message}"
             when :progress
               puts "#{m.message}..."
+            when :progress_partial
+              $stdout.sync = true
+              print "#{m.message}..."
             end
             m.message
           end

@@ -49,7 +49,7 @@ module Tempo
         # All records are sent directly to the console, so it can decide if
         # action is required immediately based on the type of record
         def console
-          @@console ||= Formatters::Console.new(options)
+          @@console ||= Formatters::Interactive.new(options)
         end
 
         def add_options(options)

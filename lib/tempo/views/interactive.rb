@@ -11,6 +11,10 @@ module Tempo
         ViewRecords::Message.new message, category: :progress
       end
 
+      def interactive_progress_partial(message)
+        ViewRecords::Message.new message, category: :progress_partial
+      end
+
       def interactive_confirm_clean
         query = "\nCleaning Tempo records resaves all records, attempting to update information and correct erroneous records.\n" +
                   "In the event that a record cannot be corrected, you wil be prompted to repair the record manually.\n" +

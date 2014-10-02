@@ -29,15 +29,18 @@ module Tempo
         end
 
         def clean_records(options, args)
+
           dir = File.join( options.fetch( :directory, ENV['HOME']), "tempo", "tempo_time_records")
           Views::interactive_progress "Loading records from #{dir}"
 
-          all_files = Dir["#{dir}/*.yaml"]
+          days = Model::TimeRecord.record_d_ids(options)
 
-          # if including subfolders
-          # Dir["/path/to/search/**/*.rb"]
-          all_files.each do |f|
-            Views::message "Loading records for day-id #{f}"
+          options[:round_time] = true
+          days.each do |d_id|
+            Views::interactive_progress_partial "#{d_id[4..5].to_i}/#{d_id[6..7]}/#{d_id[0..3]}"
+            Model::TimeRecord.load_day_record(d_id, options)
+            Model::TimeRecord.save_to_file(options)
+            Model::TimeRecord.clear_all
           end
         end
       end #class << self

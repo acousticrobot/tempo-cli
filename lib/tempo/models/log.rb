@@ -46,6 +46,10 @@ module Tempo
           FileRecord::FileUtility.new(self, {time: time}).filename
         end
 
+        def d_id_from_file(file)
+          /(\d+)\.yaml/.match(file)[1]
+        end
+
         # Returns the immediate directory for the log
         # Tempo::Model::MessageLog => tempo_message_logs
         def dir
@@ -56,6 +60,10 @@ module Tempo
         # send alternate directory through options
         def records(options={})
           FileRecord::FileUtility.new(self, options).log_records
+        end
+
+        def record_d_ids(options={})
+          records(options).each_with_object(Array.new) {|file,d_ids| d_ids << d_id_from_file(file)}
         end
 
         # returns the loaded record with the latest start time
@@ -102,10 +110,9 @@ module Tempo
 
         # Return a Time object for the last record's date
         def last_day(options={})
-          reg = /(\d+)\.yaml/
           recs = records options
           if recs.last
-            d_id = reg.match(recs.last)[1]
+            d_id = d_id_from_file(recs.last)
             time = day_id_to_time d_id if d_id
             return time
           end
@@ -131,7 +138,8 @@ module Tempo
           FileRecord::FileUtility.new(self, options).file_path
         end
 
-        # Used when cleaning (and testing) records
+        # Normally not necessary to perform, only
+        # used when cleaning (and testing) records
         def clear_all
           @ids = {}
           @index = []
