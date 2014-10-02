@@ -32,9 +32,9 @@ describe FileRecord do
 
       it "should create daily records containing each instance" do
         test_file_1 = File.join(ENV['HOME'],'tempo','tempo_message_logs', '20140101.yaml')
-        File.delete( test_file ) if File.exists?( test_file_1 )
+        File.delete( test_file_1 ) if File.exists?( test_file_1 )
         test_file_2 = File.join(ENV['HOME'],'tempo','tempo_message_logs', '20140102.yaml')
-        File.delete( test_file ) if File.exists?( test_file_2 )
+        File.delete( test_file_2 ) if File.exists?( test_file_2 )
 
         log_factory
         FileRecord::Record.save_log(Tempo::Model::MessageLog)
@@ -66,6 +66,9 @@ describe FileRecord do
                               ":id: 3",
                               ":message: day 2 water the bonsai"]
       end
+    end
+
+    describe "reading a Tempo Log" do
     end
   end
 end

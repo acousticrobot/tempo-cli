@@ -42,15 +42,6 @@ module FileRecord
         end
       end
 
-      # Used by read_model and read_log to load all instances from a file
-      #
-      def read_instances( model, file, options={} )
-        instances = YAML::load_stream( File.open( file ) )
-        instances.each do |i|
-          model.new( i )
-        end
-      end
-
       # Read in all models instances from the model file
       def read_model( model, options={} )
 
@@ -66,6 +57,16 @@ module FileRecord
 
         if File.exists? file_path
           read_instances model, file_path
+        end
+      end
+
+      protected
+
+      # Used by read_model and read_log to load all instances from a file
+      def read_instances( model, file, options={} )
+        instances = YAML::load_stream( File.open( file ) )
+        instances.each do |i|
+          model.new( i )
         end
       end
     end
