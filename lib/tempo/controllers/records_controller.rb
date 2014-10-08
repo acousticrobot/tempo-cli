@@ -18,7 +18,7 @@ module Tempo
 
         def backup_records(options, args)
           dir = options.fetch( :directory, ENV['HOME'])
-          Views::interactive_progress "Backing up #{dir}/tempo"
+          Views::interactive_progress "\nBacking up #{dir}/tempo"
 
           if File.exists?(File.join(dir, 'tempo'))
             dest = FileRecord::Directory.backup directory: dir
@@ -37,10 +37,21 @@ module Tempo
 
           options[:round_time] = true
           days.each do |d_id|
-            Views::interactive_progress_partial "#{d_id[4..5].to_i}/#{d_id[6..7]}/#{d_id[0..3]}"
-            Model::TimeRecord.load_day_record(d_id, options)
-            Model::TimeRecord.save_to_file(options)
-            Model::TimeRecord.clear_all
+            begin
+              date = "#{d_id[4..5].to_i}/#{d_id[6..7]}/#{d_id[0..3]}"
+              Views::interactive_progress_partial date
+              Model::TimeRecord.load_day_record(d_id, options)
+              Model::TimeRecord.save_to_file(options)
+              Model::TimeRecord.clear_all
+            rescue TimeConflictError => e
+              Views::message " exiting on error..."
+              Views::message "\nAn error occurred which prevented cleaning all the records on #{date}"
+              Views::message "Please repair the records in file #{dir}/#{Model::TimeRecord.file(d_id)}"
+
+              Views::message "Or run `tempo clean --force` to delete all conflicting data\n"
+              return Views::error e
+              # if force == true, swallow error
+            end
           end
         end
       end #class << self
