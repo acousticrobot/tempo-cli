@@ -47,12 +47,10 @@ module Tempo
               Views::message " exiting on error..."
               Views::message "\nAn error occurred which prevented cleaning all the records on #{date}"
               Views::message "Please repair the records in file #{dir}/#{Model::TimeRecord.file(d_id)}"
-
-              Views::message "Or run `tempo clean --force` to delete all conflicting data\n"
               return Views::error e
-              # if force == true, swallow error
             end
           end
+          Views::message "\nSuccess -- all files are clean!"
         end
       end #class << self
     end
