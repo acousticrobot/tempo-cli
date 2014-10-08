@@ -42,9 +42,9 @@ module Tempo
         options[:start_time] ||= Time.now
         @end_time = options.fetch :end_time, :running
 
-        if options[:round_time]
-          options[:start_time] = options[:start_time].round
-          @end_time = @end_time.round
+        if ! options[:exact_time]
+          options[:start_time] = options[:start_time].round unless options[:start_time] == :running
+          @end_time = @end_time.round unless @end_time == :running
         end
 
         verify_times options[:start_time], @end_time
