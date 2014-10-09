@@ -73,14 +73,28 @@ module FileRecord
       "#{sn[0]}_#{sn[-1]}s"
     end
 
-    # Tempo::Model::Log -> Users/usrname/(alternate_directory/)tempo/tempo_logs/
+
+    def log_year_directory
+      if @time.kind_of? Time
+        @time.strftime("%Y")
+      else
+        @time[0..3]
+      end
+    end
+
+    # Tempo::Model::Log -> Users/usrname/(alternate_directory/)tempo/tempo_logs'
     # Will also create the directory if not found
-    # This method does not require time to be present in options
-    def log_directory_path
+    def log_main_directory_path
       dir = File.join(@directory, module_name, log_directory)
+    end
+
+    # Tempo::Model::Log -> Users/usrname/(alternate_directory/)tempo/tempo_logs/20XX
+    # Will also create the directory if not found
+    def log_directory_path
+      dir = File.join(log_main_directory_path, log_year_directory)
 
       if @create and !File.exists?(dir)
-        Dir.mkdir(dir, 0700)
+        FileUtils.mkdir_p dir
       end
 
       dir
@@ -106,7 +120,13 @@ module FileRecord
 
     # Returns the list of log records from a log directory
     def log_records
-      Dir[log_directory_path + "/*.yaml"].sort!
+      records = []
+      return records if !File.exists?(log_main_directory_path)
+      years = Pathname.new(log_main_directory_path).children.select { |c| c.directory? }
+      years.each do |dir|
+        records = records | Dir[dir.to_s + "/*.yaml"]
+      end
+      records.sort!
     end
 
     # remove existing file when passed destroy:true in options

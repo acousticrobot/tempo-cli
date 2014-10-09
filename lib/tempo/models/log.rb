@@ -52,7 +52,7 @@ module Tempo
 
         # Returns the immediate directory for the log
         # Tempo::Model::MessageLog => tempo_message_logs
-        def dir
+        def dir(time)
           FileRecord::FileUtility.new(self).log_directory
         end
 

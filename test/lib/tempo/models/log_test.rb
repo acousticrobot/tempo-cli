@@ -34,8 +34,8 @@ describe Tempo do
     end
 
     it "knows which directory to save to" do
-      log_factory
-      Tempo::Model::MessageLog.dir.must_equal "tempo_message_logs"
+      date = Time.new(2021,1,1)
+      Tempo::Model::MessageLog.dir(date).must_equal "tempo_message_logs"
     end
 
     it "knows which file name to save to" do
@@ -44,13 +44,14 @@ describe Tempo do
       Tempo::Model::MessageLog.file(date).must_equal "20140101.yaml"
     end
 
+    #TODO-NEW-LOG-DIR
     it "grants children the ability to write to a file" do
       log_factory
       test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
       FileUtils.rm_r test_dir if File.exists?(test_dir)
       Tempo::Model::MessageLog.save_to_file
-      test_file_1 = File.join(test_dir, "20140101.yaml")
-      test_file_2 = File.join(test_dir, "20140102.yaml")
+      test_file_1 = File.join(test_dir, "2014/20140101.yaml")
+      test_file_2 = File.join(test_dir, "2014/20140102.yaml")
       contents = eval_file_as_array( test_file_1 )
       # testing with regex because time zone will be different on different computers,
       # ex: ":start_time: 2014-01-02 07:15:00.000000000 -05:00"

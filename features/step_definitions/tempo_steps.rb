@@ -53,9 +53,9 @@ Given /^an alternate directory and an existing project file$/ do
 end
 
 Given /^an existing time record file$/ do
-  @records_directory = File.join(ENV['HOME'], 'tempo/tempo_time_records')
+  @records_directory = File.join(ENV['HOME'], 'tempo/tempo_time_records', '2014')
   FileUtils.rm_r(@records_directory) if File.exists?(@records_directory)
-  Dir.mkdir(@records_directory, 0700)
+  FileUtils.mkdir_p @records_directory
   projects_file = File.join(@records_directory, '20140101.yaml')
 
   File.open(projects_file,'w') do |f|
@@ -107,7 +107,7 @@ end
 
 
 Then /^the time record (.*?) should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
-  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1[0..3]}", "#{arg1}.yaml")
   contents = []
   File.open(file, "r") do |f|
     f.readlines.each do |line|
@@ -118,7 +118,7 @@ Then /^the time record (.*?) should contain "(.*?)" at line (\d+)$/ do |arg1, ar
 end
 
 Then /^the time record (.*?) should not contain "(.*?)"$/ do |arg1, arg2|
-  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1[0..3]}", "#{arg1}.yaml")
   contents = []
   File.open(file, "r") do |f|
     f.readlines.each do |line|
@@ -129,7 +129,7 @@ Then /^the time record (.*?) should not contain "(.*?)"$/ do |arg1, arg2|
 end
 
 Then /^the time record (.*?) should not exist$/ do |arg1|
-  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1}.yaml")
+  file = File.join(ENV['HOME'], 'tempo/tempo_time_records', "#{arg1[0..3]}", "#{arg1}.yaml")
   File.exists?(file).should == false
 end
 
@@ -200,7 +200,7 @@ Then /^the alternate directory (.*?) file should not contain "(.*?)"$/ do |arg1,
 end
 
 Then /^the alternate directory time record (\d+) should contain "(.*?)" at line (\d+)$/ do |arg1, arg2, arg3|
-  file = File.join(ENV['HOME'], 'alt_dir', 'tempo', 'tempo_time_records', "#{arg1}.yaml")
+  file = File.join(ENV['HOME'], 'alt_dir', 'tempo', 'tempo_time_records', "#{arg1[0..3]}", "#{arg1}.yaml")
   contents = []
   File.open(file, "r") do |f|
     f.readlines.each do |line|
@@ -211,7 +211,7 @@ Then /^the alternate directory time record (\d+) should contain "(.*?)" at line 
 end
 
 Then /^the alternate directory time record (.*?) should not exist$/ do |arg1|
-  file = File.join(ENV['HOME'], 'alt_dir', 'tempo/tempo_time_records', "#{arg1}.yaml")
+  file = File.join(ENV['HOME'], 'alt_dir', 'tempo/tempo_time_records', "#{arg1[0..3]}", "#{arg1}.yaml")
   File.exists?(file).should == false
 end
 

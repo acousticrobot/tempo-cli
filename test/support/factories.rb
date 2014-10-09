@@ -123,10 +123,10 @@ end
 # For creating a file to load records from
 def log_record_factory
   Tempo::Model::MessageLog.clear_all
-  test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs')
+  test_dir = File.join(ENV['HOME'],'tempo','tempo_message_logs','2014')
 
   FileUtils.rm_r test_dir if File.exists?(test_dir)
-  Dir.mkdir(test_dir, 0700) unless File.exists?(test_dir)
+  FileUtils.mkdir_p(test_dir) unless File.exists?(test_dir)
   file_lines = ["---", ":start_time: 2014-01-01 07:15:00.000000000 -05:00",
                 ":id: 1", ":message: day 1 pet the sheep",
                 "---", ":start_time: 2014-01-01 07:45:00.000000000 -05:00",

@@ -275,8 +275,8 @@ describe Tempo do
     it "saves to file a collection of projects" do
       time_record_factory
       Tempo::Model::TimeRecord.save_to_file
-      test_file_1 = File.join(ENV['HOME'],'tempo/tempo_time_records/20140101.yaml')
-      test_file_2 = File.join(ENV['HOME'],'tempo/tempo_time_records/20140102.yaml')
+      test_file_1 = File.join(ENV['HOME'],'tempo/tempo_time_records/2014/20140101.yaml')
+      test_file_2 = File.join(ENV['HOME'],'tempo/tempo_time_records/2014/20140102.yaml')
       contents = eval_file_as_array( test_file_1 )
 
       # testing with regex because time zone will be different on different computers,
