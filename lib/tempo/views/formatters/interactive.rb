@@ -32,6 +32,12 @@ module Tempo
           end
         end
 
+        def format_records_container(container)
+          # Pass through over-ride
+          # We don't allow interactive containers at this time because they
+          # would need to be able to detect when the container is complete.
+          # (report containers raised errors on nil durations).
+        end
       end
     end
   end
