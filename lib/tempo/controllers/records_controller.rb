@@ -28,14 +28,22 @@ module Tempo
           end
         end
 
-        def clean_records(options, args)
+        def old_records_present?(options)
+          fr = FileRecord::FileUtility.new(Tempo::Model::TimeRecord, options)
+          fr.old_style_log_records_exists?
+        end
 
+        def clean_records(options, args)
           dir = File.join( options.fetch( :directory, ENV['HOME']), "tempo", "tempo_time_records")
+
+          if old_records_present?(options)
+            puts "old records present"
+          end
+
           Views::interactive_progress "Loading records from #{dir}"
 
           days = Model::TimeRecord.record_d_ids(options)
 
-          options[:round_time] = true
           days.each do |d_id|
             begin
               date = "#{d_id[4..5].to_i}/#{d_id[6..7]}/#{d_id[0..3]}"

@@ -118,6 +118,13 @@ module FileRecord
       clean_path File.join(dir, filename)
     end
 
+    def old_style_log_records_exists?
+      return false if !File.exists?(log_main_directory_path)
+      Pathname.new(log_main_directory_path).children do |c|
+        return true if c.match(/\.yaml/)
+      end
+    end
+
     # Returns the list of log records from a log directory
     def log_records
       records = []

@@ -29,14 +29,16 @@ module FileRecord
         FileUtils.cp_r source, directory
       end
 
-      # Backup the tempo directory to tempo_backup_20140101_HrMnS.tar.gz
+      # Backup the tempo directory to tempo_backup/tempo_backup_20140101_HrMnS.tar.gz
       # pass in an optional directory (see create_new)
       # Pass in a timestamp, or default to 20140101_120000
       def backup(options={})
         directory = options.fetch(:directory, Dir.home)
-        timestamp = options.fetch(:timestamp, Time.new.strftime("%y%m%d_%H%M%S"))
+        timestamp = options.fetch(:timestamp, Time.new.strftime("%Y%m%d_%H%M%S"))
         source = File.join(directory, "tempo")
-        destination = File.join(directory, "tempo_backup_#{timestamp}.tar.gz")
+        dest = File.join(directory, "tempo_backups")
+        Dir.mkdir dest unless Dir.exists? dest
+        destination = File.join(directory, "tempo_backups", "tempo_backup_#{timestamp}.tar.gz")
 
         io = tar(source)
         gz = gzip(io)
