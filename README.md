@@ -4,7 +4,13 @@ A command line interface for time tracking by project.
 
 ## Installation
 
-    gem install tempo-cli   
+    gem install tempo-cli  
+
+## Version 1.0
+
+If you are updatging from version ~> 0.2.6 to 1.0, there is a new structure to the time records - time records are now kept in sub-folders by year.
+
+Run `tempo clean` to make a backup of your old directory, move files into the proper folders, and check all earlier records for errors.
 
 ### binary
 
@@ -18,11 +24,9 @@ Tempo cli runs with the binary `tempo`, but you can alias a shorter binary for y
 
 Tempo tracks time against projects.  Projects can be nested, and tagged, and each time entry can have an additional description.  Time reports are produced by day.  
 
-Future enhancements will include reports by project and time totals by day or by project.
-
 ### Records
 
-All records are produced in YAML files.  These reports can be edited by hand, but keep in mind that any invalid data could cause problems when it is read back into the app. Make sure time formatting is valid and that they don't overlap, and that all ids are unique per page. 
+All records are produced in YAML files.  These records can be edited by hand, but keep in mind that any invalid data could cause problems when it is read back into the app. Make sure time formatting is valid and that they don't overlap, and that all ids are unique per page. 
 
 Each day's time records are designed to work independently. When adding or updating time records, only the records for the days in question are loaded into the app. The most recent day's records will also always be read in, to assure no running records are created earlier than existing records. 
 
@@ -235,8 +239,9 @@ The description, if passed in, will be used to replace the existing description.
 
 ##### command options
  
-    --from=time - begin time records on this date
-    --to=time   - end time records on this date
+    -f, --from=time             - begin time records on this date
+    -o, --order=[project, date] - order reports by date or project
+    -t, --to=time               - end time records on this date
 
     Reports time entries for a day or a period of days. By default, lists the last recorded day's entries. To list a different day, supply a day as the args. To list a series of records, include a --from and --to value
 
@@ -253,6 +258,9 @@ The description, if passed in, will be used to replace the existing description.
 
     # report a period of days
     $ tempo report -f 'last monday' -t 'last friday' 
+
+    # organize reports as bullet lists under each project
+    $ tempo report --o p
 
 ## Assumptions and Limitations
 

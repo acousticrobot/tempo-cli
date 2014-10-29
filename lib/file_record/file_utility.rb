@@ -128,7 +128,7 @@ module FileRecord
 
     def move_old_records
       return false if !File.exists?(log_main_directory_path)
-      puts "moving everybody in #{log_main_directory_path}"
+      puts "moving files in #{log_main_directory_path}"
       Pathname.new(log_main_directory_path).children.each do |c|
         if c.to_s.match(/\.yaml/)
           year = File.basename(c).match(/(^\d{4})/)[1]

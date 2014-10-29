@@ -16,7 +16,7 @@ module Tempo
       end
 
       def interactive_confirm_clean
-        query = "\nCleaning Tempo records resaves all records, attempting to update information and correct erroneous records.\n" +
+        query = "\nCleaning Tempo records resaves all records, looking for errors.\n" +
                   "In the event that a record cannot be corrected, you wil be prompted to repair the record manually.\n" +
                   "A backup of the records will also be created before any changes are made.\n\n" +
                   "Do you wish to continue? [YyNn]"
