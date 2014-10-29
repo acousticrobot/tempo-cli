@@ -2,15 +2,16 @@
 
 A command line interface for time tracking by project.
 
-## Installation
-
-    gem install tempo-cli  
-
-## Version 1.0
+## A note on Version 1.0
 
 If you are updatging from version ~> 0.2.6 to 1.0, there is a new structure to the time records - time records are now kept in sub-folders by year.
 
 Run `tempo clean` to make a backup of your old directory, move files into the proper folders, and check all earlier records for errors.
+
+
+## Installation
+
+    gem install tempo-cli  
 
 ### binary
 
