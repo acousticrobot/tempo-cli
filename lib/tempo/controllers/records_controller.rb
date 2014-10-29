@@ -29,15 +29,25 @@ module Tempo
         end
 
         def old_records_present?(options)
-          fr = FileRecord::FileUtility.new(Tempo::Model::TimeRecord, options)
-          fr.old_style_log_records_exists?
+          file_utility = FileRecord::FileUtility.new(Tempo::Model::TimeRecord, options)
+          file_utility.old_style_log_records_exists?
+        end
+
+        def move_old_records(options)
+          file_utility = FileRecord::FileUtility.new(Tempo::Model::TimeRecord, options)
+          file_utility.move_old_records
         end
 
         def clean_records(options, args)
           dir = File.join( options.fetch( :directory, ENV['HOME']), "tempo", "tempo_time_records")
 
-          if old_records_present?(options)
-            puts "old records present"
+          if old_records_present? options
+
+            confirm = Tempo::Views::interactive_confirm_move_old_records
+
+            if confirm.positive_response?
+              move_old_records options
+            end
           end
 
           Views::interactive_progress "Loading records from #{dir}"

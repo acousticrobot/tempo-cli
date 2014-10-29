@@ -70,4 +70,15 @@ module Tempo
       @message
     end
   end
+
+  class DuplicateRecordError < Exception
+
+    def initialize(file)
+      @message = "The file #{file} already exists"
+    end
+
+    def to_s
+      @message
+    end
+  end
 end

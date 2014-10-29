@@ -120,8 +120,23 @@ module FileRecord
 
     def old_style_log_records_exists?
       return false if !File.exists?(log_main_directory_path)
-      Pathname.new(log_main_directory_path).children do |c|
-        return true if c.match(/\.yaml/)
+      Pathname.new(log_main_directory_path).children.each do |c|
+        return true if c.to_s.match(/\.yaml/)
+      end
+      false
+    end
+
+    def move_old_records
+      return false if !File.exists?(log_main_directory_path)
+      puts "moving everybody in #{log_main_directory_path}"
+      Pathname.new(log_main_directory_path).children.each do |c|
+        if c.to_s.match(/\.yaml/)
+          year = File.basename(c).match(/(^\d{4})/)[1]
+          raise Tempo::DuplicateRecordError.new(File.join(log_main_directory_path,year,File.basename(c))) if File.exists?(File.join(log_main_directory_path,year,File.basename(c)))
+          FileUtils.mkdir_p File.join(log_main_directory_path,year) if !File.exists? File.join(log_main_directory_path,year)
+          FileUtils.cp c, File.join(log_main_directory_path,year,File.basename(c))
+          FileUtils.rm c
+        end
       end
     end
 

@@ -22,6 +22,11 @@ module Tempo
                   "Do you wish to continue? [YyNn]"
         interactive_query(query)
       end
+
+      def interactive_confirm_move_old_records
+        query = "\nYou have files which match an older file structure, do you want to move them so they will be included in your records? [YyNn]"
+        interactive_query(query)
+      end
     end
   end
 end
